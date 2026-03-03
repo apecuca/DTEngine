@@ -1,5 +1,5 @@
-#ifndef INCLUDED_ENTITY_H
-#define INCLUDED_ENTITY_H
+#ifndef DTENGINE_ENTITY_H
+#define DTENGINE_ENTITY_H
 
 #include <cstdint>
 #include <vector>

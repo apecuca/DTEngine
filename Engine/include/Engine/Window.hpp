@@ -1,5 +1,5 @@
-#ifndef INCLUDED_WINDOW_H
-#define INCLUDED_WINDOW_H
+#ifndef DTENGINE_WINDOW_H
+#define DTENGINE_WINDOW_H
 #pragma once
 
 #include <iostream>

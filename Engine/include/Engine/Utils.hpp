@@ -1,5 +1,5 @@
-#ifndef INCLUDED_UTILS_H
-#define INCLUDED_UTILS_H
+#ifndef DTENGINE_UTILS_H
+#define DTENGINE_UTILS_H
 
 namespace DTEngine
 {

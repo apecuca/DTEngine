@@ -1,5 +1,5 @@
-#ifndef INCLUDED_GAMEOBJECT_H
-#define INCLUDED_GAMEOBJECT_H
+#ifndef DTENGINE_GAMEOBJECT_H
+#define DTENGINE_GAMEOBJECT_H
 
 #include "Entity.hpp"
 
