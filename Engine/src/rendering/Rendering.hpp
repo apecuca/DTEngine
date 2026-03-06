@@ -4,10 +4,12 @@
 #include "InternalWork.hpp"
 #include <iostream>
 #include <memory>
+#include <vector>
 
 namespace DTEngine {
 
 class Window;
+class SpriteRenderer;
 
 class Rendering : public InternalWork
 {
@@ -23,6 +25,9 @@ public:
     // Returns if the main window is still running
     bool IsWindowRunning();
 
+    void AddRenderSource(SpriteRenderer* spr);
+    void RemoveRenderSource(SpriteRenderer* spr);
+
     void RenderCycle();
 
 protected:
@@ -30,6 +35,8 @@ protected:
 
 private:
     std::unique_ptr<DTEngine::Window> window;
+
+    std::vector<SpriteRenderer*> renderers;
 };
 }
 

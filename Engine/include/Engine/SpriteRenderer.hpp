@@ -8,6 +8,8 @@ namespace DTEngine
 
 class SpriteRenderer : public Component
 {
+friend class Rendering;
+
 public:
     virtual ~SpriteRenderer();
     SpriteRenderer(GameObject& _gameObject);
@@ -16,6 +18,8 @@ private:
     void Start() override;
 
     void Update() override;
+
+    void RenderCall();
 };
 
 }
