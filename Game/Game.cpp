@@ -15,7 +15,7 @@ engine(_eng)
     GameObject* newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
 
-    engine.InitWindow(800, 600, "Omg hi bestie");
+    //engine.InitWindow(800, 600, "Omg hi bestie");
     engine.LoadWorld(_world);
 
 }

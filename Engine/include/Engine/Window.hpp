@@ -7,19 +7,24 @@
 class GLFWwindow;
 
 namespace DTEngine {
+
 class Window
 {
+friend class Rendering;
+
 public:
     ~Window();
     Window(int _width, int _height, std::string _name);
-    
+
+private:
     void Clear();
     void SwapBuffers();
     void ReadInputs();
 
     bool IsRunning();
 
-private:
+    void ConfigWindow();
+
     static void callback_framebufferSize(GLFWwindow* window, int newWidth, int newHeight);
 
 private:

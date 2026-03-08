@@ -19,7 +19,7 @@ public:
 
 public:
     // Initialized the main window
-    void InitWindow(int width, int height, std::string name);
+    //void InitWindow(int width, int height, std::string name);
 
     // Loads a world as the active
     World* LoadWorld(std::unique_ptr<World>& world);

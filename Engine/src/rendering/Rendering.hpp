@@ -9,6 +9,7 @@
 namespace DTEngine {
 
 class Window;
+class Shader;
 class SpriteRenderer;
 
 class Rendering : public InternalWork
@@ -28,6 +29,8 @@ public:
     void AddRenderSource(SpriteRenderer* spr);
     void RemoveRenderSource(SpriteRenderer* spr);
 
+    int LoadShader(std::string vertexFile, std::string fragmentFile);
+
     void RenderCycle();
 
 protected:
@@ -36,7 +39,11 @@ protected:
 private:
     std::unique_ptr<DTEngine::Window> window;
 
+    std::vector<std::unique_ptr<Shader>> registeredShaders;
+
     std::vector<SpriteRenderer*> renderers;
+
+    unsigned int shad_program;
 };
 }
 

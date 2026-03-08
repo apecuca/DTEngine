@@ -21,37 +21,20 @@ width(_width), height(_height)
     
     instance = this;
 
-    if (!glfwInit())
-        throw std::string("Failed to initialize GLFW");
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
     winPtr = glfwCreateWindow(_width, _height, _name.c_str(), NULL, NULL);
 
     if (!winPtr) {
         glfwTerminate();
-        throw std::string("Failed to initialize GLFW");
+        throw std::string("Failed to initialize Window");
     }
+}
 
-    glfwMakeContextCurrent(winPtr);
-
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-        throw std::string ("Failed to initialize GLAD");
-    }
-
+void Window::ConfigWindow()
+{
     // Set viewport size
 	glViewport(0, 0, width, height);
 
-	// Enable vsync
-	glfwSwapInterval(1); 
-
-	// Blend function (alpha channel support)
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	// Set callbacks
+    // Set callbacks
 	glfwSetFramebufferSizeCallback(winPtr, callback_framebufferSize);
 }
 

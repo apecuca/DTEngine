@@ -5,10 +5,9 @@
 
 int main(int, char**){
     std::cout << "Hello, from DTEngine!\n";
-
-    DTEngine::Engine engine;
     
     try {
+        DTEngine::Engine engine;
         Game game(engine);
         engine.Run();
     } catch (std::string err) {

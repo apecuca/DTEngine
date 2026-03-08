@@ -25,10 +25,12 @@ Engine::Engine()
     running = true;
 }
 
+/*
 void Engine::InitWindow(int width, int height, std::string name)
 {
     internalWorks->GetRendering()->InitWindow(width, height, name);
 }
+*/
 
 void Engine::Run()
 {
