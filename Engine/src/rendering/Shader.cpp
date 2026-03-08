@@ -1,8 +1,11 @@
 #include "Shader.hpp"
 
-#include "glad/glad.h"
+#include <Engine/Utils.hpp>
 #include "core/InternalWorksManager.hpp"
 #include "Rendering.hpp"
+
+#include "glad/glad.h"
+#include "glm/glm.hpp"
 
 using namespace DTEngine;
 
@@ -58,6 +61,10 @@ Shader::Shader(
 
     glDeleteShader(vertexShader);
     glDeleteShader(fragmentShader);
+
+    // Default shader values
+    Bind();
+    SetVec4("baseColor", Vector4(1.0f, 0.741f, 0.75f, 1.0f));
 }
 
 int Shader::LoadShader(std::string vertexFile, std::string fragmentFile)
@@ -68,4 +75,14 @@ int Shader::LoadShader(std::string vertexFile, std::string fragmentFile)
 void Shader::Bind()
 {
     glUseProgram(program);
+}
+
+void Shader::SetVec4(const std::string& name, const Vector4& value) const
+{
+    glm::vec4 vec(value.x, value.y, value.z, value.w);
+    glUniform4fv(glGetUniformLocation(program, name.c_str()), 1, &vec[0]);
+}
+void Shader::SetVec4(const std::string& name, float x, float y, float z, float w) const
+{
+    glUniform4f(glGetUniformLocation(program, name.c_str()), x, y, z, w);
 }

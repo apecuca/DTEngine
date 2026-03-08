@@ -38,6 +38,20 @@ public:
 
 };
 
+struct Vector4 : public Vector3
+{
+public:
+    ~Vector4() = default;
+    Vector4();
+    Vector4(const Vector2& _other);
+    Vector4(const Vector3& _other);
+    Vector4(const Vector4& _other);
+    Vector4(float _x, float _y, float _z, float _w);
+
+public:
+    float w;
+};
+
 }
 
 #endif

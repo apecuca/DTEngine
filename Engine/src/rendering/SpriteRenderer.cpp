@@ -22,7 +22,6 @@ SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
 {
     InternalWorksManager::GetInstance()->GetRendering()->AddRenderSource(this);
 
-    /*
     // Basic vertices
     float vertices[] = {
         0.5f,  0.5f, 0.0f,  // top right
@@ -34,18 +33,6 @@ SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
     };  
-    */
-
-    // Triangle :D (Hello triangle)
-    float vertices[] ={
-        -0.5f, -0.5f, 0.0f, // left  
-         0.5f, -0.5f, 0.0f, // right 
-         0.0f,  0.5f, 0.0f  // top
-    };
-
-    GLuint indices[] = {
-        0, 1, 2
-    };
 
     // Create and link VAO and VBO
     glGenVertexArrays(1, &VAO);
@@ -90,8 +77,7 @@ void SpriteRenderer::RenderCall()
     rend->BindShader(usedShaderId);
 
     glBindVertexArray(VAO);
-    //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 }
 
 void SpriteRenderer::SetShader(int shaderIndex)

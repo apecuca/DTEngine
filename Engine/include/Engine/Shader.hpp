@@ -6,6 +6,8 @@
 namespace DTEngine
 {
 
+class Vector4;
+
 class Shader
 {
 friend class Rendering;
@@ -17,6 +19,9 @@ public:
         const std::string& fragmentFile, const char* fragmentSource);
 
     static int LoadShader(std::string vertexFile, std::string fragmentFile);
+
+    void SetVec4(const std::string& name, const Vector4& value) const;
+    void SetVec4(const std::string& name, float x, float y, float z, float w) const;
 
 private:
     void Bind();

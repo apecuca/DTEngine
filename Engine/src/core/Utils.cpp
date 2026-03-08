@@ -4,6 +4,10 @@
 
 using namespace DTEngine;
 
+//
+// VECTOR2
+//
+
 Vector2::Vector2() :
     x(0.0f), y(0.0f)
 {
@@ -30,6 +34,10 @@ float Vector2::Distance(const Vector2& a, const Vector2& b)
 
     return d;
 }
+
+//
+// VECTOR3
+//
 
 Vector3::Vector3() :
     Vector2(),
@@ -67,4 +75,43 @@ float Vector3::Distance(const Vector3& a, const Vector3& b)
 	d = std::sqrt(d);
 
 	return d;
+}
+
+//
+// VECTOR4
+//
+
+Vector4::Vector4() :
+    Vector3(),
+    w(0.0f)
+{
+    //
+}
+
+Vector4::Vector4(const Vector2& _other) :
+    Vector3(_other),
+    w(0.0f)
+{
+    //
+}
+
+Vector4::Vector4(const Vector3& _other) :
+    Vector3(_other),
+    w(0.0f)
+{
+    //
+}
+
+Vector4::Vector4(const Vector4& _other) :
+    Vector3(_other.x, _other.y, _other.z),
+    w(0.0f)
+{
+    //
+}
+
+Vector4::Vector4(float _x, float _y, float _z, float _w) :
+    Vector3(_x, _y, _z),
+    w(_w)
+{
+    //
 }
