@@ -13,6 +13,7 @@ add_library(Engine STATIC ${ENGINE_SOURCES})
 
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
+find_package(glm CONFIG REQUIRED)
 
 target_include_directories(Engine
     PUBLIC
@@ -26,6 +27,7 @@ target_link_libraries(Engine
     PRIVATE
         glad::glad
         glfw
+        glm::glm
 )
 
 # ---- Assets ----
