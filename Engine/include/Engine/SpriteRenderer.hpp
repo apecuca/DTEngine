@@ -14,12 +14,19 @@ public:
     virtual ~SpriteRenderer();
     SpriteRenderer(GameObject& _gameObject);
 
+    void SetShader(int shaderIndex);
+
 private:
     void Start() override;
 
     void Update() override;
 
     void RenderCall();
+
+private:
+    int usedShaderId = 0;
+
+    unsigned int VAO, VBO, EBO; 
 };
 
 }

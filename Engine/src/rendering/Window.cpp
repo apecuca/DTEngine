@@ -40,7 +40,7 @@ void Window::ConfigWindow()
 
 void Window::Clear()
 {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.17f, 0.29f, 0.45f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 }
 

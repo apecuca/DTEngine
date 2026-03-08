@@ -19,7 +19,10 @@ public:
     static int LoadShader(std::string vertexFile, std::string fragmentFile);
 
 private:
-    unsigned int id;
+    void Bind();
+
+private:
+    unsigned int program;
 
 };
 

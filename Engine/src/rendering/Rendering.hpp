@@ -29,6 +29,7 @@ public:
     void AddRenderSource(SpriteRenderer* spr);
     void RemoveRenderSource(SpriteRenderer* spr);
 
+    void BindShader(int shaderIndex);
     int LoadShader(std::string vertexFile, std::string fragmentFile);
 
     void RenderCycle();
@@ -39,11 +40,9 @@ protected:
 private:
     std::unique_ptr<DTEngine::Window> window;
 
-    std::vector<std::unique_ptr<Shader>> registeredShaders;
+    std::vector<std::unique_ptr<Shader>> loadedShaders;
 
     std::vector<SpriteRenderer*> renderers;
-
-    unsigned int shad_program;
 };
 }
 

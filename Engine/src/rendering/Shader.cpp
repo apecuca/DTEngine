@@ -8,7 +8,7 @@ using namespace DTEngine;
 
 Shader::~Shader()
 {
-    //
+    glDeleteProgram(program);
 }
 
 Shader::Shader(
@@ -27,7 +27,6 @@ Shader::Shader(
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        //std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
         throw std::string("Error compiling vertex shader from file: " + std::string(vertexFile));
     }
 
@@ -41,21 +40,19 @@ Shader::Shader(
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        //std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
         throw std::string("Error compiling fragment shader from file: " + std::string(fragmentFile));
     }
 
     // link shaders
-    unsigned int shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    glLinkProgram(shaderProgram);
+    program = glCreateProgram();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
 
     // check for linking errors
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+    glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        //std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
+        glGetProgramInfoLog(program, 512, NULL, infoLog);
         throw std::string("Error linking shader program from vertex " + std::string(vertexFile) + " and fragment " + std::string(fragmentFile));
     }
 
@@ -66,4 +63,9 @@ Shader::Shader(
 int Shader::LoadShader(std::string vertexFile, std::string fragmentFile)
 {
     return InternalWorksManager::GetInstance()->GetRendering()->LoadShader(vertexFile, fragmentFile);
+}
+
+void Shader::Bind()
+{
+    glUseProgram(program);
 }

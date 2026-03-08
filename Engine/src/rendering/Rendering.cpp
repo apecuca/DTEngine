@@ -56,6 +56,8 @@ bool Rendering::Init()
     else
         ok = false;
 
+    window->ConfigWindow();
+
     // Load default shaders
     LoadShader("defaultSprite.vert", "defaultSprite.frag");
 
@@ -138,7 +140,15 @@ int Rendering::LoadShader(std::string vertexFile, std::string fragmentFile)
 
     // Create shader
     std::unique_ptr<Shader> newShad = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
-    registeredShaders.push_back(std::move(newShad));
+    loadedShaders.push_back(std::move(newShad));
 
-    return (registeredShaders.size() - 1);
+    return (loadedShaders.size() - 1);
+}
+
+void Rendering::BindShader(int shaderIndex)
+{
+    if (shaderIndex >= loadedShaders.size())
+        throw std::string("Shader index out of bounds");
+
+    loadedShaders.at(shaderIndex)->Bind();
 }
