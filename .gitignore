@@ -16,4 +16,4 @@ CMakeUserPresets.json
 /build
 
 # VSCode stuff
-.vscode/
+#.vscode/
