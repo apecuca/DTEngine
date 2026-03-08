@@ -3,12 +3,10 @@
 #include <Engine/Window.hpp>
 #include <Engine/SpriteRenderer.hpp>
 #include "Shader.hpp"
+#include <Engine/PathManager.hpp>
 
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
-
-#include <fstream>
-#include <sstream>
 
 #include <algorithm>
 
@@ -102,41 +100,9 @@ void Rendering::RemoveRenderSource(SpriteRenderer* spr)
 
 int Rendering::LoadShader(std::string vertexFile, std::string fragmentFile)
 {
-    // Read files
-    // Path translation
-    
-    //std::filesystem::path vertexPath = std::filesystem::current_path() / "Engine/assets/shaders" / vertexFile;;
-    //std::filesystem::path fragmentPath = std::filesystem::current_path() / "Engine/assets/shaders" / fragmentFile;
-    std::string vertexPath = "Engine/assets/shaders/" + vertexFile;
-    std::string fragmentPath = "Engine/assets/Shaders/" + fragmentFile;
-
-    // retrieve the vertex/fragment source code from filePath
-    std::string vertexCode;
-    std::string fragmentCode;
-    std::ifstream vShaderFile;
-    std::ifstream fShaderFile;
-
-    // ensure ifstream objects can throw exceptions
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try {
-        // open files
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
-        std::stringstream vShaderStream, fShaderStream;
-        // read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
-        // close file handlers
-        vShaderFile.close();
-        fShaderFile.close();
-        // convert stream into string
-        vertexCode = vShaderStream.str();
-        fragmentCode = fShaderStream.str();
-    }
-    catch (std::ifstream::failure& e) {
-        throw std::string("Shader files err: " + std::string(e.what()));
-    }
+    // retrieve the vertex/fragment source code from path
+    std::string vertexCode = PathManager::GetFileContents("shaders/" + vertexFile);
+    std::string fragmentCode = PathManager::GetFileContents("shaders/" + fragmentFile);
 
     // Create shader
     std::unique_ptr<Shader> newShad = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
