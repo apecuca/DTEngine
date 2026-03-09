@@ -14,10 +14,12 @@ add_library(Engine STATIC ${ENGINE_SOURCES})
 find_package(glfw3 CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(Stb REQUIRED)
 
 target_include_directories(Engine
     PUBLIC
         "${CMAKE_CURRENT_SOURCE_DIR}/include"
+        "${Stb_INCLUDE_DIR}"
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/Engine"
