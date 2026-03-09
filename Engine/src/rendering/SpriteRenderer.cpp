@@ -1,8 +1,11 @@
 #include "SpriteRenderer.hpp"
 
-#include "Engine/GameObject.hpp"
+#include <Engine/GameObject.hpp>
+#include <Engine/Utils.hpp>
+#include <Engine/Shader.hpp>
+#include <Engine/Sprite.hpp>
+#include "rendering/Rendering.hpp"
 #include "core/InternalWorksManager.hpp"
-#include "Rendering.hpp"
 
 #include "glad/glad.h"
 
@@ -18,17 +21,22 @@ SpriteRenderer::~SpriteRenderer()
 }
 
 SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
-    Component(_gameObject)
+Component(_gameObject)
 {
     InternalWorksManager::GetInstance()->GetRendering()->AddRenderSource(this);
+    
+    // Default values
+    color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
 
     // Basic vertices
     float vertices[] = {
-        0.5f,  0.5f, 0.0f,  // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f,  // bottom left
-        -0.5f,  0.5f, 0.0f   // top left 
+        // positions            // texture coords
+        0.5f,  0.5f, 0.0f,      1.0f, 1.0f, // top right
+        0.5f, -0.5f, 0.0f,      1.0f, 0.0f, // bottom right
+       -0.5f, -0.5f, 0.0f,      0.0f, 0.0f, // bottom left
+       -0.5f,  0.5f, 0.0f,      0.0f, 1.0f  // top left 
     };
+    
     unsigned int indices[] = {  // note that we start from 0!
         0, 1, 3,   // first triangle
         1, 2, 3    // second triangle
@@ -47,8 +55,13 @@ SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    // Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    // texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
 
     // note that this is allowed, the call to glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0); 
@@ -74,13 +87,28 @@ void SpriteRenderer::Update()
 void SpriteRenderer::RenderCall()
 {
     Rendering* rend = InternalWorksManager::GetInstance()->GetRendering();
-    rend->BindShader(usedShaderId);
+    Sprite& sprt = rend->GetSprite(usedSpriteId);
+    Shader& shad = rend->GetShader(usedShaderId);
+
+    sprt.Bind();
+
+    shad.Bind();
+
+    shad.SetVec4("baseColor", color);
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+    sprt.Unbind();
+    shad.Unbind();
 }
 
 void SpriteRenderer::SetShader(int shaderIndex)
 {
     usedShaderId = shaderIndex;
+}
+
+void SpriteRenderer::SetSprite(int spriteIndex)
+{
+    usedSpriteId = spriteIndex;
 }

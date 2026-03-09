@@ -65,6 +65,8 @@ Shader::Shader(
     // Default shader values
     Bind();
     SetVec4("baseColor", Vector4(1.0f, 0.741f, 0.75f, 1.0f));
+    SetInt("tex", 0);
+    Unbind();
 }
 
 int Shader::LoadShader(std::string vertexFile, std::string fragmentFile)
@@ -77,6 +79,17 @@ void Shader::Bind()
     glUseProgram(program);
 }
 
+void Shader::Unbind()
+{
+    glUseProgram(0);
+}
+
+// ------------------------------------------------------------------------
+void Shader::SetInt(const std::string& name, int value) const
+{
+    glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+}
+// ------------------------------------------------------------------------
 void Shader::SetVec4(const std::string& name, const Vector4& value) const
 {
     glm::vec4 vec(value.x, value.y, value.z, value.w);

@@ -1,5 +1,7 @@
 #include <PathManager.hpp>
 
+#include "stb_image.h"
+
 #include <fstream>
 #include <sstream>
 
@@ -31,31 +33,22 @@ std::string PathManager::GetFileContents(const std::string& path)
     }
 
     return content;
+}
 
-    /*
-    std::ifstream vShaderFile;
-    std::ifstream fShaderFile;
+unsigned char* PathManager::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels)
+{
+    std::string normalizedPath = "Engine/assets/images/" + path;
 
-    // ensure ifstream objects can throw exceptions
-    vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
-    try {
-        // open files
-        vShaderFile.open(vertexPath);
-        fShaderFile.open(fragmentPath);
-        std::stringstream vShaderStream, fShaderStream;
-        // read file's buffer contents into streams
-        vShaderStream << vShaderFile.rdbuf();
-        fShaderStream << fShaderFile.rdbuf();
-        // close file handlers
-        vShaderFile.close();
-        fShaderFile.close();
-        // convert stream into string
-        vertexCode = vShaderStream.str();
-        fragmentCode = fShaderStream.str();
-    }
-    catch (std::ifstream::failure& e) {
-        throw std::string("Shader files err: " + std::string(e.what()));
-    }
-    */
+    stbi_set_flip_vertically_on_load(true);
+    unsigned char* data = stbi_load(normalizedPath.c_str(), &outWidth, &outHeight, &nrChannels, 0);
+
+    if (!data)
+        throw std::string("Failed to read image from " + normalizedPath);
+
+    return data;
+}
+
+void PathManager::CloseImage(unsigned char* data)
+{
+    stbi_image_free(data);
 }

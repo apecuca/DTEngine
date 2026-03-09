@@ -10,6 +10,7 @@ namespace DTEngine {
 
 class Window;
 class Shader;
+class Sprite;
 class SpriteRenderer;
 
 class Rendering : public InternalWork
@@ -29,8 +30,15 @@ public:
     void AddRenderSource(SpriteRenderer* spr);
     void RemoveRenderSource(SpriteRenderer* spr);
 
-    void BindShader(int shaderIndex);
-    int LoadShader(std::string vertexFile, std::string fragmentFile);
+    //void BindShader(int shaderIndex);
+    //void UnbindShader();
+    Shader& GetShader(int shaderIndex);
+    static int LoadShader(const std::string& vertexFile, const std::string& fragmentFile);
+
+    //void BindSprite(int spriteIndex);
+    //void UnbindSprite();
+    Sprite& GetSprite(int spriteIndex);
+    static int LoadSprite(const std::string& file);
 
     void RenderCycle();
 
@@ -41,6 +49,7 @@ private:
     std::unique_ptr<DTEngine::Window> window;
 
     std::vector<std::unique_ptr<Shader>> loadedShaders;
+    std::vector<std::unique_ptr<Sprite>> loadedSprites;
 
     std::vector<SpriteRenderer*> renderers;
 };
