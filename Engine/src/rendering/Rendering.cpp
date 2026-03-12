@@ -60,8 +60,8 @@ bool Rendering::Init()
 
     // Load default stuff
     LoadShader("defaultSprite.vert", "defaultSprite.frag");
-    LoadSprite("default/square.png");
-    LoadSprite("default/grid.png");
+    LoadSprite("square.png");
+    LoadSprite("grid.png");
 
     return ok;
 }

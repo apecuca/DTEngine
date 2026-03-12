@@ -9,7 +9,7 @@ using namespace DTEngine;
 
 std::string PathManager::GetFileContents(const std::string& path)
 {
-    std::string normalizedPath = "Engine/assets/" + path;
+    std::string normalizedPath = "Engine/resources/" + path;
 
     std::string content;
     std::ifstream file;
@@ -37,7 +37,7 @@ std::string PathManager::GetFileContents(const std::string& path)
 
 unsigned char* PathManager::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels)
 {
-    std::string normalizedPath = "Engine/assets/images/" + path;
+    std::string normalizedPath = "Engine/resources/images/" + path;
 
     stbi_set_flip_vertically_on_load(true);
     unsigned char* data = stbi_load(normalizedPath.c_str(), &outWidth, &outHeight, &nrChannels, 0);
