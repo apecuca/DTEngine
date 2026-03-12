@@ -4,20 +4,25 @@
 namespace DTEngine
 {
 
+class Vector2;
+
 class Sprite
 {
-//friend class Rendering;
 friend class SpriteRenderer;
 
 public:
     ~Sprite();
-    Sprite(unsigned char* data, int width, int height, int nrChannels);
+    Sprite(unsigned char* data, int _width, int _height, int nrChannels);
+
+public:
+    Vector2 GetSize();
+
+public:
+    float pixelsPerUnit;
 
 private:
-    void Bind();
-    void Unbind();
+    int width, height;
 
-private:
     unsigned int texId;
 };
     

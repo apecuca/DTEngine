@@ -15,6 +15,9 @@ engine(_eng)
     GameObject* newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
     rnd->SetSprite(1);
+    newobj->position.x = 1.0f;
+    newobj->rotation.z = 70.0f;
+    newobj->scale = Vector2(0.5f, 0.5f);
 
     //engine.InitWindow(800, 600, "Omg hi bestie");
     engine.LoadWorld(_world);

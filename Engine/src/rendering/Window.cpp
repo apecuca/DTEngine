@@ -1,5 +1,7 @@
 #include "Window.hpp"
 
+#include <Engine/Utils.hpp>
+
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
@@ -9,12 +11,12 @@ using namespace DTEngine;
 
 Window::~Window()
 {
-    //
+    instance = nullptr;
 }
 
 Window::Window(int _width, int _height, std::string _name)
 :
-width(_width), height(_height)
+width(_width), height(_height), fov(defaultFov)
 {
     if (instance != nullptr)
         throw std::string("Duplicated window instance");
@@ -65,4 +67,9 @@ void Window::callback_framebufferSize(GLFWwindow* window, int newWidth, int newH
 	instance->height = newHeight;
 
 	glViewport(0, 0, instance->width, instance->height);
+}
+
+Vector2 Window::GetSize()
+{
+    return Vector2(width, height);
 }

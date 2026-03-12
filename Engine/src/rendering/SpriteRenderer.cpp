@@ -4,10 +4,14 @@
 #include <Engine/Utils.hpp>
 #include <Engine/Shader.hpp>
 #include <Engine/Sprite.hpp>
+#include <Engine/Window.hpp>
 #include "rendering/Rendering.hpp"
 #include "core/InternalWorksManager.hpp"
 
 #include "glad/glad.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 using namespace DTEngine;
 
@@ -87,19 +91,56 @@ void SpriteRenderer::Update()
 void SpriteRenderer::RenderCall()
 {
     Rendering* rend = InternalWorksManager::GetInstance()->GetRendering();
+    Window* window = Window::instance;
     Sprite& sprt = rend->GetSprite(usedSpriteId);
     Shader& shad = rend->GetShader(usedShaderId);
 
-    sprt.Bind();
+    // Cool variables :)
+    Vector2 winSize = window->GetSize();
+    float aspect = winSize.x / winSize.y;
+    float fov = window->fov;
+    glm::vec3 position(gameObject.position.x, gameObject.position.y, 0.0f);
+    glm::vec3 scale(gameObject.scale.x, gameObject.scale.y, 1.0f);
+    glm::vec3 rotation(gameObject.rotation.x, gameObject.rotation.y, gameObject.rotation.z);
+    Vector2 spriteInternalSize = sprt.GetSize();
+    glm::mat4 projMat(1.0f), viewMat(1.0f), modelMat(1.0f);
 
+    // Transform the matrices
+    projMat = glm::ortho(-aspect * fov, aspect * fov, -1.0f * fov, 1.0f * fov, 0.0f, 100.0f);
+    viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -10.0f));
+    modelMat = glm::translate(modelMat, position);
+    // Rotation
+    if (glm::length(rotation) != 0)
+    {
+        modelMat = glm::rotate(modelMat,
+            glm::radians(glm::length(rotation)),
+            glm::normalize(rotation));
+    }
+    // Sprite size
+    glm::vec3 spriteSize = glm::vec3(spriteInternalSize.x, spriteInternalSize.y, 1.0f) / sprt.pixelsPerUnit;
+    spriteSize.z = 1.0f;
+    modelMat = glm::scale(modelMat, spriteSize);
+    // GameObject scale
+    modelMat = glm::scale(modelMat, scale);
+
+    // Update shader
     shad.Bind();
+    shad.SetMat4("projection", projMat);
+    shad.SetMat4("view", viewMat);
+    shad.SetMat4("model", modelMat);
+    shad.SetVec4("color", color);
 
-    shad.SetVec4("baseColor", color);
+    // Draw texture
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, sprt.texId);
 
+    // Draw vertices
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-    sprt.Unbind();
+    // Unbind
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
     shad.Unbind();
 }
 

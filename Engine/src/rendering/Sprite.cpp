@@ -1,5 +1,7 @@
 #include "Sprite.hpp"
 
+#include <Engine/Utils.hpp>
+
 #include "glad/glad.h"
 
 using namespace DTEngine;
@@ -9,7 +11,8 @@ Sprite::~Sprite()
     glDeleteTextures(1, &texId);
 }
 
-Sprite::Sprite(unsigned char* data, int width, int height, int nrChannels)
+Sprite::Sprite(unsigned char* data, int _width, int _height, int nrChannels) :
+    width(_width), height(_height), pixelsPerUnit(32)
 {
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);
@@ -33,14 +36,7 @@ Sprite::Sprite(unsigned char* data, int width, int height, int nrChannels)
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-void Sprite::Bind()
+Vector2 Sprite::GetSize()
 {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texId);
-}
-
-void Sprite::Unbind()
-{
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
+    return Vector2(width, height);
 }

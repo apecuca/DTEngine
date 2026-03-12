@@ -15,7 +15,8 @@ GameObject::~GameObject()
 GameObject::GameObject() :
     Entity(),
     originalParent(nullptr),
-    parent(nullptr)
+    parent(nullptr),
+    scale(1.0f, 1.0f)
 {
     //
 }

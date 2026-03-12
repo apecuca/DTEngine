@@ -8,6 +8,8 @@ class GLFWwindow;
 
 namespace DTEngine {
 
+struct Vector2;
+
 class Window
 {
 friend class Rendering;
@@ -15,6 +17,9 @@ friend class Rendering;
 public:
     ~Window();
     Window(int _width, int _height, std::string _name);
+
+public:
+    Vector2 GetSize();
 
 private:
     void Clear();
@@ -31,6 +36,10 @@ private:
     GLFWwindow* winPtr;
 
     int width, height;
+    constexpr static float defaultFov = 5.0f;
+
+public:
+    float fov;
 
     static DTEngine::Window* instance;
 };

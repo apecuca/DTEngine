@@ -110,6 +110,7 @@ private:
 public:
     Vector2 position;
     Vector2 scale;
+    Vector3 rotation;
     GameObject* parent;
 
 private:
