@@ -21,29 +21,27 @@ public:
     ~Rendering();
     Rendering();
     
-    // Initialized the main window
-    void InitWindow(int width, int height, std::string name);
-    
     // Returns if the main window is still running
     bool IsWindowRunning();
 
     void AddRenderSource(SpriteRenderer* spr);
     void RemoveRenderSource(SpriteRenderer* spr);
 
-    //void BindShader(int shaderIndex);
-    //void UnbindShader();
     Shader& GetShader(int shaderIndex);
     static int LoadShader(const std::string& vertexFile, const std::string& fragmentFile);
-
-    //void BindSprite(int spriteIndex);
-    //void UnbindSprite();
+    
     Sprite& GetSprite(int spriteIndex);
     static int LoadSprite(const std::string& file);
-
+    
     void RenderCycle();
-
-protected:
+    
+    protected:
     bool Init() override;
+    
+    private:
+    bool InitAndConfigWindow();
+    bool ConfigPostProcessing();
+    void LoadScreenShader();
 
 private:
     std::unique_ptr<DTEngine::Window> window;
@@ -52,6 +50,11 @@ private:
     std::vector<std::unique_ptr<Sprite>> loadedSprites;
 
     std::vector<SpriteRenderer*> renderers;
+
+    // Frame Buffer Object, Frame Buffer Texture, Render Buffer Object
+    unsigned int FBO, FBT, RBO;
+    unsigned int screenquadVAO, screenquadVBO;
+    std::unique_ptr<Shader> screenShader;
 };
 }
 

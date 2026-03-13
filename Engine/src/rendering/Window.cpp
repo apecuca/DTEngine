@@ -23,12 +23,22 @@ width(_width), height(_height), fov(defaultFov)
     
     instance = this;
 
-    winPtr = glfwCreateWindow(_width, _height, _name.c_str(), NULL, NULL);
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+    width = mode->width;
+    height = mode->height;
+
+    winPtr = glfwCreateWindow(width, height, _name.c_str(), NULL, NULL);
 
     if (!winPtr) {
         glfwTerminate();
         throw std::string("Failed to initialize Window");
     }
+
+    int xpos, ypos;
+    glfwGetMonitorPos(monitor, &xpos, &ypos);
+    glfwSetWindowPos(winPtr, xpos, ypos);
 }
 
 void Window::ConfigWindow()
@@ -42,8 +52,10 @@ void Window::ConfigWindow()
 
 void Window::Clear()
 {
+    //glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.17f, 0.29f, 0.45f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Window::SwapBuffers()

@@ -42,12 +42,15 @@ void World::Destroy(const GameObject* obj)
 void World::ProcessDestroyQueue()
 {
     gameObjects.erase(
-        std::remove_if(gameObjects.begin(), gameObjects.end(),
+        std::remove_if(
+            gameObjects.begin(), 
+            gameObjects.end(),
             [](const std::unique_ptr<GameObject>& obj)
             {
                 return obj->GetMarkedForDestruction();
             }),
-        gameObjects.end());
+            gameObjects.end()
+        );
 
     for (auto& obj : gameObjects)
         obj->ProcessComponentDestructionQueue();

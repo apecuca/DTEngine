@@ -11,7 +11,7 @@ class Vector4;
 
 class Shader
 {
-//friend class Rendering;
+friend class Rendering;
 friend class SpriteRenderer;
 
 public:

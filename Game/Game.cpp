@@ -4,6 +4,7 @@
 #include <Engine/World.hpp>
 #include <Engine/Component.hpp>
 #include <Engine/SpriteRenderer.hpp>
+#include <Engine/Window.hpp>
 
 using namespace DTEngine;
 
@@ -14,8 +15,6 @@ engine(_eng)
 
     GameObject* newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
-    rnd->SetSprite(1);
-    newobj->position.x = 1.0f;
     newobj->rotation.z = 70.0f;
     newobj->scale = Vector2(0.5f, 0.5f);
 
