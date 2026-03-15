@@ -26,8 +26,9 @@ width(_width), height(_height), fov(defaultFov)
     GLFWmonitor* monitor = glfwGetPrimaryMonitor();
     const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
-    width = mode->width;
-    height = mode->height;
+    // Same size as the screen results in black background
+    width = mode->width + 1;
+    height = mode->height + 1;
 
     winPtr = glfwCreateWindow(width, height, _name.c_str(), NULL, NULL);
 
@@ -53,8 +54,8 @@ void Window::ConfigWindow()
 void Window::Clear()
 {
     //glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(0.17f, 0.29f, 0.45f, 1.0f);
-    //glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    //glClearColor(0.17f, 0.29f, 0.45f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -75,8 +76,8 @@ bool Window::IsRunning()
 
 void Window::callback_framebufferSize(GLFWwindow* window, int newWidth, int newHeight)
 {
-	instance->width = newWidth;
-	instance->height = newHeight;
+	instance->width = newWidth + 1;
+	instance->height = newHeight + 1;
 
 	glViewport(0, 0, instance->width, instance->height);
 }
