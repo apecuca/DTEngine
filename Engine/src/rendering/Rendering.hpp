@@ -45,6 +45,9 @@ private:
     bool ConfigPostProcessing();
     void LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out);
 
+    enum RenderPassType { WORLD, PICKING };
+    void RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType);
+
 private:
     std::unique_ptr<DTEngine::Window> window;
 
@@ -54,9 +57,9 @@ private:
     std::vector<SpriteRenderer*> renderers;
 
     // Frame Buffer Object, Frame Buffer Texture, Render Buffer Object
-    unsigned int FBO, FBT, RBO;
+    unsigned int worldFBO, worldFBT, worldRBO;
     unsigned int screenquadVAO, screenquadVBO;
-    unsigned int pickingFBO, pickingTexture;
+    unsigned int pickingFBO, pickingFBT;
     std::unique_ptr<Shader> screenShader;
     std::unique_ptr<Shader> pickingShader;
 };

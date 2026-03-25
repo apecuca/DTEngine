@@ -85,11 +85,13 @@ bool Rendering::InitAndConfigWindow()
     window->ConfigWindow();
     auto screenSize = window->GetSize();
 
+    // Generate picking objects
+    // Picking Frame Buffer Object
     glGenFramebuffers(1, &pickingFBO);
     glBindFramebuffer(GL_FRAMEBUFFER, pickingFBO);
 
-    glGenTextures(1, &pickingTexture);
-    glBindTexture(GL_TEXTURE_2D, pickingTexture);
+    glGenTextures(1, &pickingFBT);
+    glBindTexture(GL_TEXTURE_2D, pickingFBT);
 
     glTexImage2D(
         GL_TEXTURE_2D,
@@ -103,13 +105,7 @@ bool Rendering::InitAndConfigWindow()
         nullptr
     );
 
-    glFramebufferTexture2D(
-        GL_FRAMEBUFFER,
-        GL_COLOR_ATTACHMENT0,
-        GL_TEXTURE_2D,
-        pickingTexture,
-        0
-    );
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickingFBT, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
@@ -133,12 +129,12 @@ bool Rendering::ConfigPostProcessing()
     screenShader->SetInt("screenHeight", screenSize.y);
 
     // Frame buffer object
-	glGenFramebuffers(1, &FBO);
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
+	glGenFramebuffers(1, &worldFBO);
+	glBindFramebuffer(GL_FRAMEBUFFER, worldFBO);
 
 	// Generate and setup FBT (Frame buffer texture)
-	glGenTextures(1, &FBT);
-	glBindTexture(GL_TEXTURE_2D, FBT);
+	glGenTextures(1, &worldFBT);
+	glBindTexture(GL_TEXTURE_2D, worldFBT);
 
     // Parameters
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -158,13 +154,13 @@ bool Rendering::ConfigPostProcessing()
         NULL
     );
 	// Attach binded texture to framebuffer
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, FBT, 0);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, worldFBT, 0);
 
 	// Generate and setups RBO (Render buffer object)
-	glGenRenderbuffers(1, &RBO);
-	glBindRenderbuffer(GL_RENDERBUFFER, RBO);
+	glGenRenderbuffers(1, &worldRBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, worldRBO);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, screenSize.x, screenSize.y);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, worldRBO);
 
 	auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
@@ -215,50 +211,58 @@ bool Rendering::IsWindowRunning()
 
 void Rendering::RenderCycle()
 {
-    Vector2 size = window->GetSize();
-
-    //
     // PICKING PASS
-    //
-    glBindFramebuffer(GL_FRAMEBUFFER,pickingFBO);
+    RenderPass(pickingFBO, RenderPassType::PICKING);
 
-    unsigned int zero = 0;
-    glClearBufferuiv(GL_COLOR,0,&zero);
-
-    pickingShader->Bind();
-
-    for(auto& spr : renderers)
-    {
-        pickingShader->SetUInt("objectID", spr->GetID());
-        spr->RenderCall();
-    }
-
-    //
     // SCENE PASS
-    //
-    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+    RenderPass(worldFBO, RenderPassType::WORLD);
 
-    window->Clear();
-
-    for(auto& spr : renderers)
-        spr->RenderCall();
-
-    //
     // FINAL PASS
-    //
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
-
     window->Clear();
 
     screenShader->Bind();
 
     glBindVertexArray(screenquadVAO);
-    glBindTexture(GL_TEXTURE_2D, FBT);
-
+    glBindTexture(GL_TEXTURE_2D, worldFBT);
     glDrawArrays(GL_TRIANGLES,0,6);
 
     window->SwapBuffers();
     window->ReadInputs();
+}
+
+void Rendering::RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType)
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
+
+    // Useful variables
+    unsigned int zero = 0;
+
+    // Prepare each pass type
+    switch (renderType) {
+        case RenderPassType::PICKING:
+            glClearBufferuiv(GL_COLOR,0,&zero);
+            pickingShader->Bind();
+            break;
+
+        case RenderPassType::WORLD:
+            window->Clear();
+            break;
+
+        default: break;
+    }
+
+    // World rendereres
+    for(auto& spr : renderers)
+    {
+        if (renderType == RenderPassType::PICKING)
+            pickingShader->SetUInt("objectID", spr->GetID());
+        spr->RenderCall();
+    }
+
+    // UI here
+    
+    // Unbind everything
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
 }
 
 void Rendering::AddRenderSource(SpriteRenderer* spr)
