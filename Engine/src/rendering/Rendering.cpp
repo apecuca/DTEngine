@@ -83,16 +83,54 @@ bool Rendering::InitAndConfigWindow()
     );
 
     window->ConfigWindow();
+    auto screenSize = window->GetSize();
+
+    glGenFramebuffers(1, &pickingFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, pickingFBO);
+
+    glGenTextures(1, &pickingTexture);
+    glBindTexture(GL_TEXTURE_2D, pickingTexture);
+
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_R32UI,
+        screenSize.x,
+        screenSize.y,
+        0,
+        GL_RED_INTEGER,
+        GL_UNSIGNED_INT,
+        nullptr
+    );
+
+    glFramebufferTexture2D(
+        GL_FRAMEBUFFER,
+        GL_COLOR_ATTACHMENT0,
+        GL_TEXTURE_2D,
+        pickingTexture,
+        0
+    );
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    // Init picking shader
+    LoadInternalShader("framebuffer.vert", "picking.frag", pickingShader);
 
     return true;
 }
 
 bool Rendering::ConfigPostProcessing()
 {
-    // Init screen shader
-    LoadScreenShader();
+    Vector2 screenSize = window->GetSize();
 
-    Vector2 screenSize = Window::instance->GetSize();
+    // Init screen shader
+    LoadInternalShader("framebuffer.vert", "framebuffer.frag", screenShader);
+    
+    // Update screen shader
+    screenShader->Bind();
+    screenShader->SetInt("screenTexture", 0);
+    screenShader->SetInt("screenWidth", screenSize.x);
+    screenShader->SetInt("screenHeight", screenSize.y);
 
     // Frame buffer object
 	glGenFramebuffers(1, &FBO);
@@ -177,29 +215,48 @@ bool Rendering::IsWindowRunning()
 
 void Rendering::RenderCycle()
 {
-    // Clear window
+    Vector2 size = window->GetSize();
+
+    //
+    // PICKING PASS
+    //
+    glBindFramebuffer(GL_FRAMEBUFFER,pickingFBO);
+
+    unsigned int zero = 0;
+    glClearBufferuiv(GL_COLOR,0,&zero);
+
+    pickingShader->Bind();
+
+    for(auto& spr : renderers)
+    {
+        pickingShader->SetUInt("objectID", spr->GetID());
+        spr->RenderCall();
+    }
+
+    //
+    // SCENE PASS
+    //
+    glBindFramebuffer(GL_FRAMEBUFFER,FBO);
+
     window->Clear();
 
-    // Bind framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, FBO);
-
-    // Draw everything
-    for (auto& spr : renderers)
+    for(auto& spr : renderers)
         spr->RenderCall();
 
-    // Unbind framebuffer
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //
+    // FINAL PASS
+    //
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
 
-    // Disable Depth Test
-    glDisable(GL_DEPTH_TEST);
+    window->Clear();
 
-    // Draw quad
     screenShader->Bind();
+
     glBindVertexArray(screenquadVAO);
     glBindTexture(GL_TEXTURE_2D, FBT);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
 
-    // Swap buffers and read inputs
+    glDrawArrays(GL_TRIANGLES,0,6);
+
     window->SwapBuffers();
     window->ReadInputs();
 }
@@ -231,25 +288,14 @@ int Rendering::LoadShader(const std::string& vertexFile, const std::string& frag
     return (instance->loadedShaders.size() - 1);
 }
 
-void Rendering::LoadScreenShader()
+void Rendering::LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out)
 {
-    std::string vertexFile = "framebuffer.vert";
-    std::string fragmentFile = "framebuffer.frag";
-
     // retrieve the vertex/fragment source code from path
     std::string vertexCode = PathManager::GetFileContents("shaders/" + vertexFile);
     std::string fragmentCode = PathManager::GetFileContents("shaders/" + fragmentFile);
 
     // Create shader
-    screenShader = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
-
-    // Update screen shader
-    screenShader->Bind();
-
-    Vector2 winSize = Window::instance->GetSize();
-    screenShader->SetInt("screenTexture", 0);
-    screenShader->SetInt("screenWidth", winSize.x);
-    screenShader->SetInt("screenHeight", winSize.y);
+    out = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
 }
 
 Shader& Rendering::GetShader(int shaderIndex)
@@ -281,4 +327,27 @@ Sprite& Rendering::GetSprite(int spriteIndex)
         throw std::string("Shader index out of bounds");
 
     return *(loadedSprites[spriteIndex].get());
+}
+
+unsigned int Rendering::GetObjectUnderMouse(int x, int y)
+{
+    Vector2 size = window->GetSize();
+
+    unsigned int id = 0;
+
+    glBindFramebuffer(GL_FRAMEBUFFER,pickingFBO);
+
+    glReadPixels(
+        x,
+        size.y - y,
+        1,
+        1,
+        GL_RED_INTEGER,
+        GL_UNSIGNED_INT,
+        &id
+    );
+
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
+
+    return id;
 }

@@ -23,6 +23,7 @@ public:
     static int LoadShader(std::string vertexFile, std::string fragmentFile);
 
     void SetInt(const std::string& name, int value) const;
+    void SetUInt(const std::string& name, unsigned int value) const;
     void SetVec4(const std::string& name, const Vector4& value) const;
     void SetVec4(const std::string& name, float x, float y, float z, float w) const;
     void SetMat4(const std::string& name, const glm::mat4& mat) const;

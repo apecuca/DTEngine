@@ -1,6 +1,8 @@
 #include "Window.hpp"
 
 #include <Engine/Utils.hpp>
+#include "core/InternalWorksManager.hpp"
+#include "rendering/Rendering.hpp"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -67,6 +69,12 @@ void Window::SwapBuffers()
 void Window::ReadInputs()
 {
     glfwPollEvents();
+
+    glfwGetCursorPos(winPtr, &mousex, &mousey);
+
+    auto* rendering = InternalWorksManager::GetInstance()->GetRendering();
+    int objId = rendering->GetObjectUnderMouse(mousex, mousey);
+    glfwSetWindowAttrib(winPtr, GLFW_MOUSE_PASSTHROUGH, objId == 0 ? GLFW_TRUE : GLFW_FALSE);
 }
 
 bool Window::IsRunning()

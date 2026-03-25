@@ -36,6 +36,7 @@ private:
     GLFWwindow* winPtr;
 
     int width, height;
+    double mousex, mousey;
     constexpr static float defaultFov = 5.0f;
 
 public:
