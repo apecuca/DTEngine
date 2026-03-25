@@ -42,5 +42,3 @@ add_custom_target(copy_resources ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${RESOURCES_SOURCE} ${RESOURCES_DEST}
     COMMENT "Refreshing resources folder"
 )
-
-add_dependencies(copy_resources Engine)

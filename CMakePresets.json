@@ -33,11 +33,13 @@
   "buildPresets": [
     {
       "name": "mingw-gcc-15-release",
-      "configurePreset": "mingw-gcc-15-release"
+      "configurePreset": "mingw-gcc-15-release",
+      "targets": ["copy_resources"]
     },
     {
       "name": "mingw-gcc-15-debug",
-      "configurePreset": "mingw-gcc-15-debug"
+      "configurePreset": "mingw-gcc-15-debug",
+      "targets": ["copy_resources"]
     }
   ]
 }
