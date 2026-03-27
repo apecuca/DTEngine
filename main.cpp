@@ -8,7 +8,7 @@ int main(int, char**){
     
     try {
         DTEngine::Engine engine;
-        Game game(engine);
+        Game game;
         engine.Run();
     } catch (std::string err) {
         std::cout << "Err: " << err << std::endl;

@@ -21,10 +21,13 @@ public:
 public:
     Vector2 GetSize();
 
+    void SetSolidState(bool state, bool overrideInternalLogic);
+
 private:
     void Clear();
     void SwapBuffers();
     void ReadInputs();
+    void UpdateSolidState();
 
     bool IsRunning();
 
@@ -35,6 +38,8 @@ private:
 private:
     GLFWwindow* winPtr;
 
+    bool solid;
+    bool overridingState;
     int width, height;
     double mousex, mousey;
     constexpr static float defaultFov = 5.0f;

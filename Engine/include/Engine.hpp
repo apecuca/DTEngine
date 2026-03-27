@@ -18,15 +18,6 @@ public:
     ~Engine();
 
 public:
-    // Initialized the main window
-    //void InitWindow(int width, int height, std::string name);
-
-    // Loads a world as the active
-    World* LoadWorld(std::unique_ptr<World>& world);
-
-    // Returns a pointer to the active world
-    //World* GetActiveWorld();
-
     // Called once to start, runs the engine's main loop
     void Run();
 
@@ -37,8 +28,6 @@ private:
 private:
     //std::unique_ptr<Rendering> rendering;
     std::unique_ptr<InternalWorksManager> internalWorks;
-
-    std::unique_ptr<World> activeWorld;
 
     bool running;
 };

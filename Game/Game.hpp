@@ -2,16 +2,11 @@
 #define INCLUDED_GAME_H
 #pragma once
 
-namespace DTEngine {class Engine;}
-
 class Game
 {
 public:
-    Game(DTEngine::Engine& _eng);
+    Game();
     ~Game() = default;
-
-private:
-    DTEngine::Engine& engine;
 };
 
 #endif

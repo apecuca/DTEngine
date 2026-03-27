@@ -1,16 +1,16 @@
 #ifndef DTENGINE_WORLD_H
 #define DTENGINE_WORLD_H
 
-#include <memory>
-
 #include "Engine/GameObject.hpp"
+
+#include <memory>
 
 namespace DTEngine
 {
 
 class World final  : public GameObject
 {
-friend class Engine;
+friend class WorldManager;
 
 public:
     ~World();

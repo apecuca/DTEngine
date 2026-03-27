@@ -18,7 +18,7 @@ class Rendering : public InternalWork
 friend class InternalWorksManager;
 
 public:
-    ~Rendering();
+    virtual ~Rendering();
     Rendering();
     
     // Returns if the main window is still running

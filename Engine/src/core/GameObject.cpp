@@ -16,7 +16,9 @@ GameObject::GameObject() :
     Entity(),
     originalParent(nullptr),
     parent(nullptr),
-    scale(1.0f, 1.0f)
+    position(0.0f, 0.0f),
+    scale(1.0f, 1.0f),
+    clickable(true)
 {
     //
 }

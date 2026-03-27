@@ -112,6 +112,7 @@ public:
     Vector2 scale;
     Vector3 rotation;
     GameObject* parent;
+    bool clickable;
 
 private:
     bool markedForDestruction = false;

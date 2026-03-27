@@ -18,7 +18,7 @@ Window::~Window()
 
 Window::Window(int _width, int _height, std::string _name)
 :
-width(_width), height(_height), fov(defaultFov)
+width(_width), height(_height), fov(defaultFov), overridingState(false)
 {
     if (instance != nullptr)
         throw std::string("Duplicated window instance");
@@ -70,11 +70,27 @@ void Window::ReadInputs()
 {
     glfwPollEvents();
 
-    glfwGetCursorPos(winPtr, &mousex, &mousey);
+    UpdateSolidState();
+}
 
+void Window::UpdateSolidState()
+{
+    if (overridingState)
+        return;
+
+    glfwGetCursorPos(winPtr, &mousex, &mousey);
     auto* rendering = InternalWorksManager::GetInstance()->GetRendering();
     int objId = rendering->GetObjectUnderMouse(mousex, mousey);
-    glfwSetWindowAttrib(winPtr, GLFW_MOUSE_PASSTHROUGH, objId == 0 ? GLFW_TRUE : GLFW_FALSE);
+    bool newSolid = objId == 0 ? false : true;
+    if (newSolid != solid)
+        SetSolidState(newSolid, false);
+}
+
+void Window::SetSolidState(bool state, bool overrideInternalLogic)
+{
+    solid = state;
+    overridingState = overrideInternalLogic;
+    glfwSetWindowAttrib(winPtr, GLFW_MOUSE_PASSTHROUGH, !solid);
 }
 
 bool Window::IsRunning()

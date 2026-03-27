@@ -1,10 +1,13 @@
 #include "Engine.hpp"
 
-#include "Engine/Window.hpp"
-#include "GLFW/glfw3.h"
+#include <Engine/Window.hpp>
+#include <Engine/WorldManager.hpp>
+#include <Engine/World.hpp>
+
 #include "rendering/Rendering.hpp"
-#include "World.hpp"
-#include "InternalWorksManager.hpp"
+#include "core/InternalWorksManager.hpp"
+
+#include "GLFW/glfw3.h"
 
 //std::unique_ptr<DTEngine::World> DTEngine::Engine::activeWorld;
 
@@ -25,33 +28,33 @@ Engine::Engine()
     running = true;
 }
 
-/*
-void Engine::InitWindow(int width, int height, std::string name)
-{
-    internalWorks->GetRendering()->InitWindow(width, height, name);
-}
-*/
-
 void Engine::Run()
 {
     if (!internalWorks->GetRendering()->IsWindowRunning())
         throw std::string("Window was not initialized.");
 
-    while (!ShouldStop()) {
-        // Update internal variables here
+    if (!internalWorks->GetWorldManager()->IsWorldActive())
+        throw std::string("No world loaded.");
 
-        if (activeWorld == nullptr)
-            continue;
+    while (!ShouldStop()) {
+        //
+        // This is the main loop of the engine
+        //
+
+        WorldManager* mng_world = internalWorks->GetWorldManager();
+        Rendering* mng_rendering = internalWorks->GetRendering();
 
         // Update behaviours
-        activeWorld->WorldUpdate();
+        mng_world->UpdateActiveWorld();
 
         // Render call
-        internalWorks->GetRendering()->RenderCycle();
+        mng_rendering->RenderCycle();
 
         // Finish frame
-        activeWorld->ProcessDestroyQueue();
+        mng_world->OnEndOfFrame();
     }
+
+    internalWorks->UnloadEverything();
 }
 
 bool Engine::ShouldStop()
@@ -64,20 +67,3 @@ bool Engine::ShouldStop()
     
     return true;
 }
-
-World* Engine::LoadWorld(std::unique_ptr<World>& world)
-{
-    activeWorld.reset(world.release());
-    activeWorld->WorldStart();
-    return activeWorld.get();
-}
-
-/*
-World* Engine::GetActiveWorld()
-{
-    if (activeWorld != nullptr)
-        return activeWorld.get();
-
-    return nullptr;
-}
-*/
