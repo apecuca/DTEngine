@@ -16,6 +16,7 @@ class SpriteRenderer;
 class Rendering : public InternalWork
 {
 friend class InternalWorksManager;
+friend class RenderingManager;
 
 public:
     virtual ~Rendering();
