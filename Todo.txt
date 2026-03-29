@@ -3,3 +3,6 @@ This is more of a "don't forget" list, rather than future planning
 
 [ ] Set internal and user asset folder in PathSystem
     - [ ] Move asset/resources copying from CMakeLists to PathSystem
+[ ] Change InternalWorks's classname to InternalSystem
+    [ ] Also update InternalWorksManager to InternalSystemHandler
+[ ] Create a Trello board to manage the project
