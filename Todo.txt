@@ -1,0 +1,5 @@
+I'll update this file as the project goes on.
+This is more of a "don't forget" list, rather than future planning
+
+[ ] Set internal and user asset folder in PathSystem
+    - [ ] Move asset/resources copying from CMakeLists to PathSystem
