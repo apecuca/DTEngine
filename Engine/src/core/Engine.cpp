@@ -1,10 +1,10 @@
 #include "Engine.hpp"
 
 #include <Engine/Window.hpp>
-#include <Engine/WorldManager.hpp>
 #include <Engine/World.hpp>
 
-#include "rendering/Rendering.hpp"
+#include "core/WorldSystem.hpp"
+#include "rendering/RenderingSystem.hpp"
 #include "core/InternalWorksManager.hpp"
 
 #include "GLFW/glfw3.h"
@@ -30,10 +30,10 @@ Engine::Engine()
 
 void Engine::Run()
 {
-    if (!internalWorks->GetRendering()->IsWindowRunning())
+    if (!InternalWorksManager::GetSystem<RenderingSystem>()->IsWindowRunning())
         throw std::string("Window was not initialized.");
 
-    if (!internalWorks->GetWorldManager()->IsWorldActive())
+    if (!InternalWorksManager::GetSystem<WorldSystem>()->IsWorldActive())
         throw std::string("No world loaded.");
 
     while (!ShouldStop()) {
@@ -41,17 +41,17 @@ void Engine::Run()
         // This is the main loop of the engine
         //
 
-        WorldManager* mng_world = internalWorks->GetWorldManager();
-        Rendering* mng_rendering = internalWorks->GetRendering();
+        WorldSystem* sys_world = InternalWorksManager::GetSystem<WorldSystem>();
+        RenderingSystem* sys_rendering = InternalWorksManager::GetSystem<RenderingSystem>();
 
         // Update behaviours
-        mng_world->UpdateActiveWorld();
+        sys_world->UpdateActiveWorld();
 
         // Render call
-        mng_rendering->RenderCycle();
+        sys_rendering->RenderCycle();
 
         // Finish frame
-        mng_world->OnEndOfFrame();
+        sys_world->OnEndOfFrame();
     }
 
     internalWorks->UnloadEverything();
@@ -62,7 +62,7 @@ bool Engine::ShouldStop()
     if (!internalWorks->IsFullyWorking())
         return true;
 
-    if (running && internalWorks->GetRendering()->IsWindowRunning())
+    if (running && InternalWorksManager::GetSystem<RenderingSystem>()->IsWindowRunning())
         return false;
     
     return true;

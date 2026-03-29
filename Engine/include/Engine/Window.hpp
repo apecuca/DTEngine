@@ -12,7 +12,7 @@ struct Vector2;
 
 class Window
 {
-friend class Rendering;
+friend class RenderingSystem;
 
 public:
     ~Window();

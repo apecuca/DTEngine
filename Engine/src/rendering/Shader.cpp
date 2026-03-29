@@ -2,7 +2,7 @@
 
 #include <Engine/Utils.hpp>
 #include "core/InternalWorksManager.hpp"
-#include "Rendering.hpp"
+#include "rendering/RenderingSystem.hpp"
 
 #include "glad/glad.h"
 #include "glm/glm.hpp"
@@ -67,11 +67,6 @@ Shader::Shader(
     SetVec4("baseColor", Vector4(1.0f, 0.741f, 0.75f, 1.0f));
     SetInt("tex", 0);
     Unbind();
-}
-
-int Shader::LoadShader(std::string vertexFile, std::string fragmentFile)
-{
-    return InternalWorksManager::GetInstance()->GetRendering()->LoadShader(vertexFile, fragmentFile);
 }
 
 void Shader::Bind()

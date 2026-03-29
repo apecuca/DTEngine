@@ -11,7 +11,7 @@ class Vector4;
 
 class Shader
 {
-friend class Rendering;
+friend class RenderingSystem;
 friend class SpriteRenderer;
 
 public:
@@ -19,8 +19,6 @@ public:
     Shader(
         const std::string& vertexFile, const char* vertexSource, 
         const std::string& fragmentFile, const char* fragmentSource);
-
-    static int LoadShader(std::string vertexFile, std::string fragmentFile);
 
     void SetInt(const std::string& name, int value) const;
     void SetUInt(const std::string& name, unsigned int value) const;

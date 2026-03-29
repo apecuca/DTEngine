@@ -1,7 +1,8 @@
 #include "InternalWorksManager.hpp"
 
-#include <Engine/WorldManager.hpp>
-#include "rendering/Rendering.hpp"
+#include "core/WorldSystem.hpp"
+#include "rendering/RenderingSystem.hpp"
+#include "core/PathSystem.hpp"
 
 #include <iostream>
 
@@ -23,42 +24,35 @@ InternalWorksManager::InternalWorksManager()
     instance = this;
 }
 
-InternalWorksManager* InternalWorksManager::GetInstance()
-{
-    return instance;
-}
-
 bool InternalWorksManager::IsFullyWorking() const
 {
-    if (rendering == nullptr) return false;
-    if (worldManager == nullptr) return false;
+    if (renderingSystem == nullptr) return false;
+    if (worldSystem == nullptr) return false;
+    if (pathSystem == nullptr) return false;
 
     return true;
 }
 
 bool InternalWorksManager::InitWorks()
 {
-    rendering = std::make_unique<Rendering>();
-    if (!rendering->Init()) return false;
+    pathSystem = std::make_unique<PathSystem>();
+    if (!pathSystem->Init()) return false;
+    systems[typeid(PathSystem)] = pathSystem.get();
 
-    worldManager = std::make_unique<WorldManager>();
-    if (!worldManager->Init()) return false;
+    renderingSystem = std::make_unique<RenderingSystem>();
+    if (!renderingSystem->Init()) return false;
+    systems[typeid(RenderingSystem)] = renderingSystem.get();
+
+    worldSystem = std::make_unique<WorldSystem>();
+    if (!worldSystem->Init()) return false;
+    systems[typeid(WorldSystem)] = worldSystem.get();
 
     return true;
 }
 
 void InternalWorksManager::UnloadEverything()
 {
-    worldManager.reset();
-    rendering.reset();
-}
-
-Rendering* InternalWorksManager::GetRendering()
-{
-    return rendering.get();
-}
-
-WorldManager* InternalWorksManager::GetWorldManager()
-{
-    return worldManager.get();
+    worldSystem.reset();
+    renderingSystem.reset();
+    pathSystem.reset();
 }

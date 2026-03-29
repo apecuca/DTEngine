@@ -1,12 +1,12 @@
-#include "Rendering.hpp"
+#include "rendering/RenderingSystem.hpp"
 
 #include <Engine/Window.hpp>
 #include <Engine/SpriteRenderer.hpp>
-#include <Engine/PathManager.hpp>
 #include <Engine/Sprite.hpp>
 #include <Engine/Shader.hpp>
 #include <Engine/Utils.hpp>
 #include "core/InternalWorksManager.hpp"
+#include "core/PathSystem.hpp"
 
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
@@ -15,17 +15,17 @@
 
 using namespace DTEngine;
 
-Rendering::~Rendering()
+RenderingSystem::~RenderingSystem()
 {
     //
 }
 
-Rendering::Rendering()
+RenderingSystem::RenderingSystem()
 {
     //
 }
 
-bool Rendering::Init()
+bool RenderingSystem::Init()
 {
     if (!glfwInit())
         throw std::string("Failed to initialize GLFW");
@@ -44,7 +44,7 @@ bool Rendering::Init()
     return true;
 }
 
-bool Rendering::InitAndConfigWindow()
+bool RenderingSystem::InitAndConfigWindow()
 {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -115,7 +115,7 @@ bool Rendering::InitAndConfigWindow()
     return true;
 }
 
-bool Rendering::ConfigPostProcessing()
+bool RenderingSystem::ConfigPostProcessing()
 {
     Vector2 screenSize = window->GetSize();
 
@@ -202,14 +202,14 @@ bool Rendering::ConfigPostProcessing()
     return true;
 }
 
-bool Rendering::IsWindowRunning()
+bool RenderingSystem::IsWindowRunning()
 {
     if (window == nullptr) return false;
 
     return window->IsRunning();
 }
 
-void Rendering::RenderCycle()
+void RenderingSystem::RenderCycle()
 {
     // PICKING PASS
     RenderPass(pickingFBO, RenderPassType::PICKING);
@@ -230,7 +230,7 @@ void Rendering::RenderCycle()
     window->ReadInputs();
 }
 
-void Rendering::RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType)
+void RenderingSystem::RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
 
@@ -265,44 +265,42 @@ void Rendering::RenderPass(unsigned int& frameBufferObject, const RenderPassType
     glBindFramebuffer(GL_FRAMEBUFFER,0);
 }
 
-void Rendering::AddRenderSource(SpriteRenderer* spr)
+void RenderingSystem::AddRenderSource(SpriteRenderer* spr)
 {
     renderers.push_back(spr);
 }
 
-void Rendering::RemoveRenderSource(SpriteRenderer* spr)
+void RenderingSystem::RemoveRenderSource(SpriteRenderer* spr)
 {
     std::erase_if(renderers, [&](const SpriteRenderer* it){
         return it == spr;
     });
 }
 
-int Rendering::LoadShader(const std::string& vertexFile, const std::string& fragmentFile)
+int RenderingSystem::LoadShader(const std::string& vertexFile, const std::string& fragmentFile)
 {
-    Rendering* instance = InternalWorksManager::GetInstance()->GetRendering();
-
     // retrieve the vertex/fragment source code from path
-    std::string vertexCode = PathManager::GetFileContents("shaders/" + vertexFile);
-    std::string fragmentCode = PathManager::GetFileContents("shaders/" + fragmentFile);
+    std::string vertexCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + vertexFile);
+    std::string fragmentCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + fragmentFile);
 
     // Create shader
     std::unique_ptr<Shader> newShad = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
-    instance->loadedShaders.push_back(std::move(newShad));
+    loadedShaders.push_back(std::move(newShad));
 
-    return (instance->loadedShaders.size() - 1);
+    return (loadedShaders.size() - 1);
 }
 
-void Rendering::LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out)
+void RenderingSystem::LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out)
 {
     // retrieve the vertex/fragment source code from path
-    std::string vertexCode = PathManager::GetFileContents("shaders/" + vertexFile);
-    std::string fragmentCode = PathManager::GetFileContents("shaders/" + fragmentFile);
+    std::string vertexCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + vertexFile);
+    std::string fragmentCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + fragmentFile);
 
     // Create shader
     out = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
 }
 
-Shader& Rendering::GetShader(int shaderIndex)
+Shader& RenderingSystem::GetShader(int shaderIndex)
 {
     if (shaderIndex >= loadedShaders.size())
         throw std::string("Shader index out of bounds");
@@ -310,22 +308,20 @@ Shader& Rendering::GetShader(int shaderIndex)
     return *(loadedShaders[shaderIndex].get());
 }
 
-int Rendering::LoadSprite(const std::string& path)
+int RenderingSystem::LoadSprite(const std::string& path)
 {
-    Rendering* instance = InternalWorksManager::GetInstance()->GetRendering();
-
     int width, height, nrChannels;
-    unsigned char* imageData = PathManager::GetImageContent(path, width, height, nrChannels);
+    unsigned char* imageData = InternalWorksManager::GetSystem<PathSystem>()->GetImageContent(path, width, height, nrChannels);
 
     std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, nrChannels);
-    instance->loadedSprites.push_back(std::move(newSprite));
+    loadedSprites.push_back(std::move(newSprite));
 
-    PathManager::CloseImage(imageData);
+    InternalWorksManager::GetSystem<PathSystem>()->CloseImage(imageData);
 
-    return (instance->loadedSprites.size() - 1);
+    return (loadedSprites.size() - 1);
 }
 
-Sprite& Rendering::GetSprite(int spriteIndex)
+Sprite& RenderingSystem::GetSprite(int spriteIndex)
 {
     if (spriteIndex >= loadedSprites.size())
         throw std::string("Shader index out of bounds");
@@ -333,7 +329,7 @@ Sprite& Rendering::GetSprite(int spriteIndex)
     return *(loadedSprites[spriteIndex].get());
 }
 
-unsigned int Rendering::GetObjectUnderMouse(int x, int y)
+unsigned int RenderingSystem::GetObjectUnderMouse(int x, int y)
 {
     Vector2 size = window->GetSize();
 

@@ -26,7 +26,6 @@ private:
     bool ShouldStop();
 
 private:
-    //std::unique_ptr<Rendering> rendering;
     std::unique_ptr<InternalWorksManager> internalWorks;
 
     bool running;

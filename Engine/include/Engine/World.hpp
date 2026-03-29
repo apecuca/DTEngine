@@ -10,7 +10,7 @@ namespace DTEngine
 
 class World final  : public GameObject
 {
-friend class WorldManager;
+friend class WorldSystem;
 
 public:
     ~World();

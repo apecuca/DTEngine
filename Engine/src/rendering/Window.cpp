@@ -2,7 +2,7 @@
 
 #include <Engine/Utils.hpp>
 #include "core/InternalWorksManager.hpp"
-#include "rendering/Rendering.hpp"
+#include "rendering/RenderingSystem.hpp"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -79,8 +79,8 @@ void Window::UpdateSolidState()
         return;
 
     glfwGetCursorPos(winPtr, &mousex, &mousey);
-    auto* rendering = InternalWorksManager::GetInstance()->GetRendering();
-    int objId = rendering->GetObjectUnderMouse(mousex, mousey);
+    auto* renderSys = InternalWorksManager::GetSystem<RenderingSystem>();
+    int objId = renderSys->GetObjectUnderMouse(mousex, mousey);
     bool newSolid = objId == 0 ? false : true;
     if (newSolid != solid)
         SetSolidState(newSolid, false);

@@ -1,4 +1,4 @@
-#include <PathManager.hpp>
+#include "core/PathSystem.hpp"
 
 #include "stb_image.h"
 
@@ -7,7 +7,22 @@
 
 using namespace DTEngine;
 
-std::string PathManager::GetFileContents(const std::string& path)
+PathSystem::~PathSystem()
+{
+    //
+}
+
+PathSystem::PathSystem()
+{
+    //
+}
+
+bool PathSystem::Init()
+{
+    return true;
+}
+
+std::string PathSystem::GetFileContents(const std::string& path)
 {
     std::string normalizedPath = "Engine/resources/" + path;
 
@@ -35,7 +50,7 @@ std::string PathManager::GetFileContents(const std::string& path)
     return content;
 }
 
-unsigned char* PathManager::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels)
+unsigned char* PathSystem::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels)
 {
     std::string normalizedPath = "Engine/resources/images/" + path;
 
@@ -48,7 +63,7 @@ unsigned char* PathManager::GetImageContent(const std::string& path, int& outWid
     return data;
 }
 
-void PathManager::CloseImage(unsigned char* data)
+void PathSystem::CloseImage(unsigned char* data)
 {
     stbi_image_free(data);
 }

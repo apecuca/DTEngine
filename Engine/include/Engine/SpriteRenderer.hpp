@@ -8,7 +8,7 @@ namespace DTEngine
 
 class SpriteRenderer : public Component
 {
-friend class Rendering;
+friend class RenderingSystem;
 
 public:
     virtual ~SpriteRenderer();

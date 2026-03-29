@@ -1,7 +1,7 @@
-#ifndef INCLUDED_RENDERING_H
-#define INCLUDED_RENDERING_H
+#ifndef INCLUDED_RENDERINGSYSTEM_H
+#define INCLUDED_RENDERINGSYSTEM_H
 
-#include "InternalWork.hpp"
+#include "core/InternalWork.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -13,14 +13,14 @@ class Shader;
 class Sprite;
 class SpriteRenderer;
 
-class Rendering : public InternalWork
+class RenderingSystem : public InternalWork
 {
 friend class InternalWorksManager;
 friend class RenderingManager;
 
 public:
-    virtual ~Rendering();
-    Rendering();
+    virtual ~RenderingSystem();
+    RenderingSystem();
     
     // Returns if the main window is still running
     bool IsWindowRunning();
@@ -29,10 +29,10 @@ public:
     void RemoveRenderSource(SpriteRenderer* spr);
 
     Shader& GetShader(int shaderIndex);
-    static int LoadShader(const std::string& vertexFile, const std::string& fragmentFile);
+    int LoadShader(const std::string& vertexFile, const std::string& fragmentFile);
     
     Sprite& GetSprite(int spriteIndex);
-    static int LoadSprite(const std::string& file);
+    int LoadSprite(const std::string& file);
     
     unsigned int GetObjectUnderMouse(int x, int y);
     
