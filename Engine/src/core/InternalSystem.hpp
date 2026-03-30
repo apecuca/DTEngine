@@ -4,13 +4,13 @@
 namespace DTEngine 
 {
 
-class InternalWork
+class InternalSystem
 {
-friend class InternalWorksManager;
+friend class SystemRegistry;
 
 protected:
-    ~InternalWork() = default;
-    InternalWork() = default;
+    ~InternalSystem() = default;
+    InternalSystem() = default;
 
     virtual bool Init() = 0;
 };

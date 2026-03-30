@@ -5,7 +5,7 @@
 
 #include "core/WorldSystem.hpp"
 #include "rendering/RenderingSystem.hpp"
-#include "core/InternalWorksManager.hpp"
+#include "core/SystemRegistry.hpp"
 
 #include "GLFW/glfw3.h"
 
@@ -21,8 +21,8 @@ Engine::~Engine()
 Engine::Engine()
 {
     // Internal stuff
-    internalWorks = std::make_unique<InternalWorksManager>();
-    if (!internalWorks->InitWorks())
+    systemRegistry = std::make_unique<SystemRegistry>();
+    if (!systemRegistry->InitWorks())
         throw std::string("Failed to initialize internal works");
 
     running = true;
@@ -30,10 +30,10 @@ Engine::Engine()
 
 void Engine::Run()
 {
-    if (!InternalWorksManager::GetSystem<RenderingSystem>()->IsWindowRunning())
+    if (!systemRegistry->GetSystem<RenderingSystem>()->IsWindowRunning())
         throw std::string("Window was not initialized.");
 
-    if (!InternalWorksManager::GetSystem<WorldSystem>()->IsWorldActive())
+    if (!systemRegistry->GetSystem<WorldSystem>()->IsWorldActive())
         throw std::string("No world loaded.");
 
     while (!ShouldStop()) {
@@ -41,8 +41,8 @@ void Engine::Run()
         // This is the main loop of the engine
         //
 
-        WorldSystem* sys_world = InternalWorksManager::GetSystem<WorldSystem>();
-        RenderingSystem* sys_rendering = InternalWorksManager::GetSystem<RenderingSystem>();
+        WorldSystem* sys_world = systemRegistry->GetSystem<WorldSystem>();
+        RenderingSystem* sys_rendering = systemRegistry->GetSystem<RenderingSystem>();
 
         // Update behaviours
         sys_world->UpdateActiveWorld();
@@ -54,15 +54,15 @@ void Engine::Run()
         sys_world->OnEndOfFrame();
     }
 
-    internalWorks->UnloadEverything();
+    systemRegistry->UnloadEverything();
 }
 
 bool Engine::ShouldStop()
 {
-    if (!internalWorks->IsFullyWorking())
+    if (!systemRegistry->IsFullyWorking())
         return true;
 
-    if (running && InternalWorksManager::GetSystem<RenderingSystem>()->IsWindowRunning())
+    if (running && systemRegistry->GetSystem<RenderingSystem>()->IsWindowRunning())
         return false;
     
     return true;

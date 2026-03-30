@@ -9,7 +9,7 @@ namespace DTEngine {
 
 class Window;
 class World;
-class InternalWorksManager;
+class SystemRegistry;
 
 class Engine
 {
@@ -26,7 +26,7 @@ private:
     bool ShouldStop();
 
 private:
-    std::unique_ptr<InternalWorksManager> internalWorks;
+    std::unique_ptr<SystemRegistry> systemRegistry;
 
     bool running;
 };

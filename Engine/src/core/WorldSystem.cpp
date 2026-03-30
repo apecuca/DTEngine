@@ -1,7 +1,7 @@
 #include "core/WorldSystem.hpp"
 
 #include <Engine/World.hpp>
-#include "core/InternalWorksManager.hpp"
+#include "core/SystemRegistry.hpp"
 
 using namespace DTEngine;
 
@@ -29,7 +29,7 @@ bool WorldSystem::IsWorldActive()
 
 World* WorldSystem::LoadWorld(std::unique_ptr<World>& world)
 {
-    auto instance = InternalWorksManager::GetSystem<WorldSystem>();
+    auto instance = SystemRegistry::GetSystem<WorldSystem>();
 
     instance->activeWorld.reset(world.release());
     instance->activeWorld->WorldStart();

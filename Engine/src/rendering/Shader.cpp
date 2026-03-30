@@ -1,8 +1,6 @@
 #include "Shader.hpp"
 
 #include <Engine/Utils.hpp>
-#include "core/InternalWorksManager.hpp"
-#include "rendering/RenderingSystem.hpp"
 
 #include "glad/glad.h"
 #include "glm/glm.hpp"

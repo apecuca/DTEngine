@@ -1,4 +1,4 @@
-#include "InternalWorksManager.hpp"
+#include "core/SystemRegistry.hpp"
 
 #include "core/WorldSystem.hpp"
 #include "rendering/RenderingSystem.hpp"
@@ -8,23 +8,23 @@
 
 using namespace DTEngine;
 
-InternalWorksManager* InternalWorksManager::instance;
+SystemRegistry* SystemRegistry::instance;
 
-InternalWorksManager::~InternalWorksManager()
+SystemRegistry::~SystemRegistry()
 {
     if (instance == this)
         instance = nullptr;
 }
 
-InternalWorksManager::InternalWorksManager()
+SystemRegistry::SystemRegistry()
 {
     if (instance != nullptr)
-        throw std::string("InternalWorksManager instance duplicate found");
+        throw std::string("SystemRegistry instance duplicate found");
 
     instance = this;
 }
 
-bool InternalWorksManager::IsFullyWorking() const
+bool SystemRegistry::IsFullyWorking() const
 {
     if (renderingSystem == nullptr) return false;
     if (worldSystem == nullptr) return false;
@@ -33,7 +33,7 @@ bool InternalWorksManager::IsFullyWorking() const
     return true;
 }
 
-bool InternalWorksManager::InitWorks()
+bool SystemRegistry::InitWorks()
 {
     pathSystem = std::make_unique<PathSystem>();
     if (!pathSystem->Init()) return false;
@@ -50,7 +50,7 @@ bool InternalWorksManager::InitWorks()
     return true;
 }
 
-void InternalWorksManager::UnloadEverything()
+void SystemRegistry::UnloadEverything()
 {
     worldSystem.reset();
     renderingSystem.reset();

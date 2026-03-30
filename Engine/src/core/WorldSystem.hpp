@@ -1,7 +1,7 @@
 #ifndef DTENGINE_WORLDSYSTEM_H
 #define DTENGINE_WORLDSYSTEM_H
 
-#include "core/InternalWork.hpp"
+#include "core/InternalSystem.hpp"
 
 #include <memory>
 
@@ -10,9 +10,9 @@ namespace DTEngine
 
 class World;
 
-class WorldSystem : public InternalWork
+class WorldSystem : public InternalSystem
 {
-friend class InternalWorksManager;
+friend class SystemRegistry;
 friend class Engine;
 
 public:

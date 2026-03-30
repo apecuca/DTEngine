@@ -5,7 +5,7 @@
 #include <Engine/Sprite.hpp>
 #include <Engine/Shader.hpp>
 #include <Engine/Utils.hpp>
-#include "core/InternalWorksManager.hpp"
+#include "core/SystemRegistry.hpp"
 #include "core/PathSystem.hpp"
 
 #include <glad/glad.h>
@@ -279,9 +279,11 @@ void RenderingSystem::RemoveRenderSource(SpriteRenderer* spr)
 
 int RenderingSystem::LoadShader(const std::string& vertexFile, const std::string& fragmentFile)
 {
+    PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+
     // retrieve the vertex/fragment source code from path
-    std::string vertexCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + vertexFile);
-    std::string fragmentCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + fragmentFile);
+    std::string vertexCode = pathSystem->GetFileContents("shaders/" + vertexFile);
+    std::string fragmentCode = pathSystem->GetFileContents("shaders/" + fragmentFile);
 
     // Create shader
     std::unique_ptr<Shader> newShad = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
@@ -292,9 +294,11 @@ int RenderingSystem::LoadShader(const std::string& vertexFile, const std::string
 
 void RenderingSystem::LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out)
 {
+    PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+
     // retrieve the vertex/fragment source code from path
-    std::string vertexCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + vertexFile);
-    std::string fragmentCode = InternalWorksManager::GetSystem<PathSystem>()->GetFileContents("shaders/" + fragmentFile);
+    std::string vertexCode = pathSystem->GetFileContents("shaders/" + vertexFile);
+    std::string fragmentCode = pathSystem->GetFileContents("shaders/" + fragmentFile);
 
     // Create shader
     out = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
@@ -310,13 +314,15 @@ Shader& RenderingSystem::GetShader(int shaderIndex)
 
 int RenderingSystem::LoadSprite(const std::string& path)
 {
+    PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+
     int width, height, nrChannels;
-    unsigned char* imageData = InternalWorksManager::GetSystem<PathSystem>()->GetImageContent(path, width, height, nrChannels);
+    unsigned char* imageData = pathSystem->GetImageContent(path, width, height, nrChannels);
 
     std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, nrChannels);
     loadedSprites.push_back(std::move(newSprite));
 
-    InternalWorksManager::GetSystem<PathSystem>()->CloseImage(imageData);
+    pathSystem->CloseImage(imageData);
 
     return (loadedSprites.size() - 1);
 }

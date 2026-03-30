@@ -11,15 +11,15 @@ namespace DTEngine
 class RenderingSystem;
 class WorldSystem;
 class PathSystem;
-class InternalWork;
+class InternalSystem;
 
-class InternalWorksManager
+class SystemRegistry
 {
 friend class Engine;
 
 public:
-    ~InternalWorksManager();
-    InternalWorksManager();
+    ~SystemRegistry();
+    SystemRegistry();
 
 public:
     template <typename T>
@@ -37,9 +37,9 @@ private:
     void UnloadEverything();
 
 private:
-    static InternalWorksManager* instance;
+    static SystemRegistry* instance;
 
-    std::unordered_map<std::type_index, InternalWork*> systems;
+    std::unordered_map<std::type_index, InternalSystem*> systems;
 
     std::unique_ptr<RenderingSystem> renderingSystem;
     std::unique_ptr<WorldSystem> worldSystem;

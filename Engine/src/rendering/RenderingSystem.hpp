@@ -1,7 +1,7 @@
 #ifndef INCLUDED_RENDERINGSYSTEM_H
 #define INCLUDED_RENDERINGSYSTEM_H
 
-#include "core/InternalWork.hpp"
+#include "core/InternalSystem.hpp"
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -13,9 +13,9 @@ class Shader;
 class Sprite;
 class SpriteRenderer;
 
-class RenderingSystem : public InternalWork
+class RenderingSystem : public InternalSystem
 {
-friend class InternalWorksManager;
+friend class SystemRegistry;
 friend class RenderingManager;
 
 public:

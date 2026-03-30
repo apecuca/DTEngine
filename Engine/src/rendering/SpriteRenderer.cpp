@@ -6,7 +6,7 @@
 #include <Engine/Sprite.hpp>
 #include <Engine/Window.hpp>
 #include "rendering/RenderingSystem.hpp"
-#include "core/InternalWorksManager.hpp"
+#include "core/SystemRegistry.hpp"
 
 #include "glad/glad.h"
 #include <glm/glm.hpp>
@@ -17,7 +17,7 @@ using namespace DTEngine;
 
 SpriteRenderer::~SpriteRenderer()
 {
-    InternalWorksManager::GetSystem<RenderingSystem>()->RemoveRenderSource(this);
+    SystemRegistry::GetSystem<RenderingSystem>()->RemoveRenderSource(this);
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -27,7 +27,7 @@ SpriteRenderer::~SpriteRenderer()
 SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
 Component(_gameObject)
 {
-    InternalWorksManager::GetSystem<RenderingSystem>()->AddRenderSource(this);
+    SystemRegistry::GetSystem<RenderingSystem>()->AddRenderSource(this);
     
     // Default values
     color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
@@ -90,7 +90,7 @@ void SpriteRenderer::Update()
 
 void SpriteRenderer::RenderCall()
 {
-    RenderingSystem* rend = InternalWorksManager::GetSystem<RenderingSystem>();
+    RenderingSystem* rend = SystemRegistry::GetSystem<RenderingSystem>();
     Window* window = Window::instance;
     Sprite& sprt = rend->GetSprite(usedSpriteId);
     Shader& shad = rend->GetShader(usedShaderId);

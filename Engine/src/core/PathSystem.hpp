@@ -1,16 +1,16 @@
 #ifndef DTENGINE_PATHSYSTEM_H
 #define DTENGINE_PATHSYSTEM_H
 
-#include "core/InternalWork.hpp"
+#include "core/InternalSystem.hpp"
 
 #include <string>
 
 namespace DTEngine
 {
 
-class PathSystem : InternalWork
+class PathSystem : InternalSystem
 {
-friend class InternalWorksManager;
+friend class SystemRegistry;
 
 public:
     ~PathSystem();
