@@ -1,8 +1,2 @@
-I'll update this file as the project goes on.
-This is more of a "don't forget" list, rather than future planning
-
-[ ] Set internal and user asset folder in PathSystem
-    - [ ] Move asset/resources copying from CMakeLists to PathSystem
-[ ] Change InternalWorks's classname to InternalSystem
-    [ ] Also update InternalWorksManager to InternalSystemHandler
-[ ] Create a Trello board to manage the project
+Moved to a Trello board :D
+https://trello.com/b/knhxwrqW/dtengine
