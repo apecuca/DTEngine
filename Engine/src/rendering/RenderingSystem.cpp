@@ -5,6 +5,7 @@
 #include <Engine/Sprite.hpp>
 #include <Engine/Shader.hpp>
 #include <Engine/Utils.hpp>
+#include <Engine/GameObject.hpp>
 #include "core/SystemRegistry.hpp"
 #include "core/PathSystem.hpp"
 
@@ -254,9 +255,13 @@ void RenderingSystem::RenderPass(unsigned int& frameBufferObject, const RenderPa
     // World rendereres
     for(auto& spr : renderers)
     {
-        if (renderType == RenderPassType::PICKING)
+        if (renderType == RenderPassType::PICKING) {
+            if (!spr->gameObject.clickable)
+                continue; // ignore objects marked as clickthrough
+
             pickingShader->SetUInt("objectID", spr->GetID());
-        spr->RenderCall();
+        }
+        spr->RenderCall(renderType == RenderPassType::PICKING);
     }
 
     // UI here
