@@ -15,6 +15,7 @@ Game::Game()
     GameObject* newobj = _world->Instantiate();
     newobj->clickable = false;
     auto rnd = newobj->AddComponent<SpriteRenderer>();
+    rnd->color.x = 0.5f;
     newobj->rotation.z = 70.0f;
     newobj->scale = Vector2(0.5f, 0.5f);
 

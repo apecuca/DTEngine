@@ -30,6 +30,7 @@ void GameObject::MarkForDestruction()
 
 void GameObject::ProcessComponentDestructionQueue()
 {
+    /*
     components.erase(
         std::remove_if(components.begin(), components.end(),
             [](const std::unique_ptr<Component>& comp)
@@ -37,6 +38,7 @@ void GameObject::ProcessComponentDestructionQueue()
                 return comp->markedForDestruction;
             }),
         components.end());
+        */
 }
 
 bool GameObject::GetMarkedForDestruction() const
@@ -106,12 +108,12 @@ bool GameObject::HasChild(GameObject* obj, int& outPosition)
 
 void GameObject::InternalStart()
 {
-    for (auto& comp : components)
-        comp->Start();
+    for (auto& slot : componentSlots)
+        slot.component->Start();
 }
 
 void GameObject::InternalUpdate()
 {
-    for (auto& comp : components)
-        comp->Update();
+    for (auto& slot : componentSlots)
+        slot.component->Update();
 }
