@@ -4,6 +4,8 @@
 #include <algorithm>
 #include "Component.hpp"
 
+#include <iostream>
+
 using namespace DTEngine;
 
 GameObject::~GameObject()
@@ -26,6 +28,11 @@ GameObject::GameObject() :
 void GameObject::MarkForDestruction()
 {
     markedForDestruction = true;
+
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
+        slot.component->markedForDestruction = true;
+    }
 }
 
 void GameObject::ProcessComponentDestructionQueue()

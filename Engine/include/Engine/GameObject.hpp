@@ -3,6 +3,7 @@
 
 #include "Entity.hpp"
 #include "Component.hpp"
+#include <Engine/EntityHandle.hpp>
 
 #include <memory>
 #include <ostream>
@@ -31,7 +32,7 @@ public:
 
     template <typename T>
     requires std::derived_from<T, Component>
-    ComponentHandle<T> AddComponent()
+    EntityHandle<T> AddComponent()
     {
         ComponentSlot newSlot;
         newSlot.component = std::make_unique<T>(*this);
@@ -47,9 +48,9 @@ public:
 
     template <typename T>
     requires std::derived_from<T, Component>
-    ComponentHandle<T> GetComponent()
+    EntityHandle<T> GetComponent()
     {
-        ComponentHandle<T> handle;
+        EntityHandle<T> handle;
 
         for (auto& slot : componentSlots)
             if (typeid(*slot.component) == typeid(T))
@@ -64,7 +65,7 @@ public:
 
     template <typename T>
     requires std::derived_from<T, Component>
-    const ComponentHandle<T> GetComponent() const
+    const EntityHandle<T> GetComponent() const
     {
         return GetComponent<T>();
     }
@@ -108,9 +109,6 @@ public:
     Vector3 rotation;
     GameObject* parent;
     bool clickable;
-
-private:
-    bool markedForDestruction = false;
     
     GameObject* originalParent;
     std::vector<GameObject*> children;

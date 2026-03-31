@@ -13,17 +13,13 @@ using namespace DTEngine;
 Game::Game()
 {
     std::unique_ptr<World> _world = std::make_unique<World>();
-
-    GameObject* newobj = _world->Instantiate();
-    newobj->clickable = false;
+    
+    auto newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
 
-    rnd->color.x = 0.5f;
-    newobj->rotation.z = 70.0f;
-    newobj->scale = Vector2(0.5f, 0.5f);
-    newobj->RemoveComponent<SpriteRenderer>();
-    auto rnd2 = newobj->AddComponent<SpriteRenderer>();
-    rnd2->color.w = 0.5f;
+    auto newobj2 = _world->Instantiate();
+    newobj2->position = Vector2(2.0f, 2.0f);
+    auto rnd2 = newobj2->AddComponent<SpriteRenderer>();
 
     //engine.InitWindow(800, 600, "Omg hi bestie");
     //engine.LoadWorld(_world);

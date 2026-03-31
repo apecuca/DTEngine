@@ -17,53 +17,84 @@ World::World() :
     //
 }
 
-GameObject* World::Instantiate()
+EntityHandle<GameObject> World::Instantiate()
 {
-    std::unique_ptr<GameObject> newObj = std::make_unique<GameObject>();
-    newObj->SetParent(this);
-    GameObject* raw = newObj.get();
-    gameObjects.emplace_back(std::move(newObj));
+    GameObjectSlot newSlot;
+    newSlot.gameObject = std::make_unique<GameObject>();
+    auto objRawPtr = newSlot.gameObject.get();
+    int slotIndex;
+    bool available = GetAvailableSlot(slotIndex);
+    if (available)
+        gameObjectSlots.at(slotIndex).gameObject = std::move(newSlot.gameObject);
+    else
+        gameObjectSlots.emplace_back(std::move(newSlot));
 
-    return raw; 
+    EntityHandle<GameObject> handle;
+    for (auto& slot : gameObjectSlots)
+            if (*slot.gameObject == *objRawPtr)
+            {
+                handle.ptr = objRawPtr;
+                handle.generation = &(slot.generation);
+                handle.index = slot.generation;
+            }
+
+    return handle;
 }
 
-void World::Destroy(const GameObject* obj)
+void World::Destroy(const EntityHandle<GameObject>& obj)
 {
-    auto it = std::find_if(gameObjects.begin(), gameObjects.end(),
-        [obj](const std::unique_ptr<GameObject>& ptr)
+    auto it = std::find_if(gameObjectSlots.begin(), gameObjectSlots.end(),
+        [obj](const GameObjectSlot& slot)
         {
-            return ptr.get() == obj;
+            if (slot.gameObject == nullptr) return false;
+            return *slot.gameObject == *obj.ptr; 
         });
 
-    if (it != gameObjects.end())
-        it->get()->MarkForDestruction();
+    if (it != gameObjectSlots.end())
+        it->gameObject->MarkForDestruction();
+}
+
+
+bool World::GetAvailableSlot(int& position)
+{
+    position = -1;
+    for (int i = 0; i < gameObjectSlots.size(); i++) {
+        GameObjectSlot& slot = gameObjectSlots.at(i);
+        if (slot.gameObject == nullptr) {
+            position = i;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void World::ProcessDestroyQueue()
 {
-    gameObjects.erase(
-        std::remove_if(
-            gameObjects.begin(), 
-            gameObjects.end(),
-            [](const std::unique_ptr<GameObject>& obj)
-            {
-                return obj->GetMarkedForDestruction();
-            }),
-            gameObjects.end()
-        );
+    for (auto& slot : gameObjectSlots) {
+        if (slot.gameObject == nullptr) continue;
 
-    for (auto& obj : gameObjects)
-        obj->ProcessComponentDestructionQueue();
+        if (slot.gameObject->markedForDestruction) {
+            slot.gameObject.reset();
+            slot.generation++;
+        }
+    }
+
+    for (auto& slot : gameObjectSlots)
+        if (slot.gameObject != nullptr)
+            slot.gameObject->ProcessComponentDestructionQueue();
 }
 
 void World::WorldStart()
 {
-    for (auto& obj : gameObjects)
-        obj->InternalStart();
+    for (auto& slot : gameObjectSlots)
+        if (slot.gameObject != nullptr)
+            slot.gameObject->InternalStart();
 }
 
 void World::WorldUpdate()
 {
-    for (auto& obj : gameObjects)
-        obj->InternalUpdate();
+    for (auto& slot : gameObjectSlots)
+        if (slot.gameObject != nullptr)
+            slot.gameObject->InternalUpdate();
 }

@@ -2,6 +2,7 @@
 #define DTENGINE_WORLD_H
 
 #include "Engine/GameObject.hpp"
+#include <Engine/EntityHandle.hpp>
 
 #include <memory>
 
@@ -17,12 +18,14 @@ public:
     World();
 
     // Instantiated a new object in the world
-    GameObject* Instantiate();
+    EntityHandle<GameObject> Instantiate();
 
     // Destroys an object instantiated in the world
-    void Destroy(const GameObject* obj);
+    void Destroy(const EntityHandle<GameObject>& obj);
 
 private:
+    bool GetAvailableSlot(int& position);
+
     // Processes the destruction queue
     void ProcessDestroyQueue();
 
@@ -30,7 +33,13 @@ private:
     void WorldUpdate();
 
 private:
-    std::vector<std::unique_ptr<GameObject>> gameObjects;
+    struct GameObjectSlot
+    {
+        std::unique_ptr<GameObject> gameObject;
+        uint32_t generation = 0;
+    };
+
+    std::vector<GameObjectSlot> gameObjectSlots;
 };
 
 }

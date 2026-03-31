@@ -11,6 +11,9 @@ namespace DTEngine
     
 class Entity
 {
+template <typename T>
+friend struct EntityHandle;
+
 public:
     using ID = std::uint32_t;
 
@@ -24,6 +27,7 @@ public:
     ID GetID() const { return id; }
 
 protected:
+    bool markedForDestruction = false;
     ID id;
 
     static ID nextID;
