@@ -30,20 +30,33 @@ void GameObject::MarkForDestruction()
 
 void GameObject::ProcessComponentDestructionQueue()
 {
-    /*
-    components.erase(
-        std::remove_if(components.begin(), components.end(),
-            [](const std::unique_ptr<Component>& comp)
-            {
-                return comp->markedForDestruction;
-            }),
-        components.end());
-        */
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
+
+        if (slot.component->markedForDestruction) {
+            slot.component.reset();
+            slot.generation++;
+        }
+    }
 }
 
 bool GameObject::GetMarkedForDestruction() const
 {
     return markedForDestruction;
+}
+
+bool GameObject::GetAvailableSlot(int& position)
+{
+    position = -1;
+    for (int i = 0; i < componentSlots.size(); i++) {
+        ComponentSlot& slot = componentSlots.at(i);
+        if (slot.component == nullptr) {
+            position = i;
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void GameObject::SetParent(GameObject* obj)
@@ -108,12 +121,16 @@ bool GameObject::HasChild(GameObject* obj, int& outPosition)
 
 void GameObject::InternalStart()
 {
-    for (auto& slot : componentSlots)
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
         slot.component->Start();
+    }
 }
 
 void GameObject::InternalUpdate()
 {
-    for (auto& slot : componentSlots)
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
         slot.component->Update();
+    }
 }
