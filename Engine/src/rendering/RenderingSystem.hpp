@@ -30,9 +30,12 @@ public:
 
     Shader& GetShader(int shaderIndex);
     int LoadShader(const std::string& vertexFile, const std::string& fragmentFile);
+    void LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out);
+    void LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile);
     
     Sprite& GetSprite(int spriteIndex);
     int LoadSprite(const std::string& file);
+    void LoadInternalSprite(const std::string& file);
     
     unsigned int GetObjectUnderMouse(int x, int y);
     
@@ -44,7 +47,6 @@ protected:
 private:
     bool InitAndConfigWindow();
     bool ConfigPostProcessing();
-    void LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out);
 
     enum RenderPassType { WORLD, PICKING };
     void RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType);

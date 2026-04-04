@@ -5,6 +5,7 @@
 #include <Engine/SpriteRenderer.hpp>
 #include <Engine/Window.hpp>
 #include <Engine/WorldManager.hpp>
+#include <Engine/RenderingManager.hpp>
 
 #include <iostream>
 
@@ -16,6 +17,8 @@ Game::Game()
     
     auto newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
+    rnd->SetSprite(RenderingManager::LoadSprite("pose.png"));
+    newobj->scale = Vector2(0.1f, 0.1f);
 
     auto newobj2 = _world->Instantiate();
     newobj2->position = Vector2(2.0f, 2.0f);

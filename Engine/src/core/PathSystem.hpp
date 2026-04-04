@@ -17,12 +17,21 @@ public:
     PathSystem();
 
 public:
-    std::string GetFileContents(const std::string& path);
-    unsigned char* GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels);
-    void CloseImage(unsigned char* data);
+    void SetAssetsPath(const std::string& path);
+    std::string GetAssetsPath() const;
+
+    inline std::string GetResourcesPath() const { return resourcesPath; }
+
+    std::string GetFileContents(const std::string& path) const;
+    unsigned char* GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels) const;
+    void CloseImage(unsigned char* data) const;
 
 protected:
     bool Init() override;
+
+private:
+    std::string assetsPath;
+    const std::string resourcesPath = "Engine/resources/";
 
 };
 

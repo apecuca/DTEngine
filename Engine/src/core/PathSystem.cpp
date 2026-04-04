@@ -22,10 +22,20 @@ bool PathSystem::Init()
     return true;
 }
 
-std::string PathSystem::GetFileContents(const std::string& path)
+void PathSystem::SetAssetsPath(const std::string& path)
 {
-    std::string normalizedPath = "Engine/resources/" + path;
+    assetsPath = path;
+    if (*assetsPath.end() != '/')
+        assetsPath += "/";
+}
 
+std::string PathSystem::GetAssetsPath() const
+{
+    return assetsPath;
+}
+
+std::string PathSystem::GetFileContents(const std::string& path) const
+{
     std::string content;
     std::ifstream file;
 
@@ -34,7 +44,7 @@ std::string PathSystem::GetFileContents(const std::string& path)
 
     try {
         // open files
-        file.open(normalizedPath);
+        file.open(path);
         std::stringstream fileStream;
         // read file's buffer contents into streams
         fileStream << file.rdbuf();
@@ -50,20 +60,20 @@ std::string PathSystem::GetFileContents(const std::string& path)
     return content;
 }
 
-unsigned char* PathSystem::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels)
+unsigned char* PathSystem::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels) const
 {
-    std::string normalizedPath = "Engine/resources/images/" + path;
+    //std::string normalizedPath = "Engine/resources/images/" + path;
 
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(normalizedPath.c_str(), &outWidth, &outHeight, &nrChannels, 0);
+    unsigned char* data = stbi_load(path.c_str(), &outWidth, &outHeight, &nrChannels, 0);
 
     if (!data)
-        throw std::string("Failed to read image from " + normalizedPath);
+        throw std::string("Failed to read image from " + path);
 
     return data;
 }
 
-void PathSystem::CloseImage(unsigned char* data)
+void PathSystem::CloseImage(unsigned char* data) const
 {
     stbi_image_free(data);
 }

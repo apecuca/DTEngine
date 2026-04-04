@@ -6,6 +6,7 @@
 #include "core/WorldSystem.hpp"
 #include "rendering/RenderingSystem.hpp"
 #include "core/SystemRegistry.hpp"
+#include "core/PathSystem.hpp"
 
 #include "GLFW/glfw3.h"
 
@@ -18,12 +19,14 @@ Engine::~Engine()
     //
 }
 
-Engine::Engine()
+Engine::Engine(const std::string& assetsPaths)
 {
     // Internal stuff
     systemRegistry = std::make_unique<SystemRegistry>();
     if (!systemRegistry->InitWorks())
-        throw std::string("Failed to initialize internal works");
+        throw std::string("Failed to initialize internal systems");
+
+    systemRegistry->GetSystem<PathSystem>()->SetAssetsPath(assetsPaths);
 
     running = true;
 }

@@ -38,9 +38,9 @@ bool RenderingSystem::Init()
         return false;
 
     // Load default stuff
-    LoadShader("defaultSprite.vert", "defaultSprite.frag");
-    LoadSprite("square.png");
-    LoadSprite("grid.png");
+    LoadInternalShader("defaultSprite.vert", "defaultSprite.frag");
+    LoadInternalSprite("square.png");
+    LoadInternalSprite("grid.png");
 
     return true;
 }
@@ -285,10 +285,11 @@ void RenderingSystem::RemoveRenderSource(SpriteRenderer* spr)
 int RenderingSystem::LoadShader(const std::string& vertexFile, const std::string& fragmentFile)
 {
     PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+    std::string assetsPath = pathSystem->GetAssetsPath();
 
     // retrieve the vertex/fragment source code from path
-    std::string vertexCode = pathSystem->GetFileContents("shaders/" + vertexFile);
-    std::string fragmentCode = pathSystem->GetFileContents("shaders/" + fragmentFile);
+    std::string vertexCode = pathSystem->GetFileContents(assetsPath + vertexFile);
+    std::string fragmentCode = pathSystem->GetFileContents(assetsPath + fragmentFile);
 
     // Create shader
     std::unique_ptr<Shader> newShad = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
@@ -300,13 +301,21 @@ int RenderingSystem::LoadShader(const std::string& vertexFile, const std::string
 void RenderingSystem::LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile, std::unique_ptr<Shader>& out)
 {
     PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+    std::string getResourcesPath = pathSystem->GetResourcesPath();
 
     // retrieve the vertex/fragment source code from path
-    std::string vertexCode = pathSystem->GetFileContents("shaders/" + vertexFile);
-    std::string fragmentCode = pathSystem->GetFileContents("shaders/" + fragmentFile);
+    std::string vertexCode = pathSystem->GetFileContents("Engine/resources/shaders/" + vertexFile);
+    std::string fragmentCode = pathSystem->GetFileContents("Engine/resources/shaders/" + fragmentFile);
 
     // Create shader
     out = std::make_unique<Shader>(vertexFile, vertexCode.c_str(), fragmentFile, fragmentCode.c_str());
+}
+
+void RenderingSystem::LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile)
+{
+    std::unique_ptr<Shader> newShad;
+    LoadInternalShader(vertexFile, fragmentFile, newShad);
+    loadedShaders.push_back(std::move(newShad));
 }
 
 Shader& RenderingSystem::GetShader(int shaderIndex)
@@ -320,16 +329,32 @@ Shader& RenderingSystem::GetShader(int shaderIndex)
 int RenderingSystem::LoadSprite(const std::string& path)
 {
     PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+    std::string assetsPath = pathSystem->GetAssetsPath();
 
     int width, height, nrChannels;
-    unsigned char* imageData = pathSystem->GetImageContent(path, width, height, nrChannels);
+    unsigned char* imageData = pathSystem->GetImageContent(assetsPath + path, width, height, nrChannels);
 
     std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, nrChannels);
-    loadedSprites.push_back(std::move(newSprite));
-
     pathSystem->CloseImage(imageData);
 
+    loadedSprites.push_back(std::move(newSprite));
+
     return (loadedSprites.size() - 1);
+}
+
+void RenderingSystem::LoadInternalSprite(const std::string& path)
+{
+    PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
+    std::string resourcesPath = pathSystem->GetResourcesPath();
+    std::string fullPath = resourcesPath + "images/" + path;
+
+    int width, height, nrChannels;
+    unsigned char* imageData = pathSystem->GetImageContent(fullPath, width, height, nrChannels);
+
+    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, nrChannels);
+    pathSystem->CloseImage(imageData);
+
+    loadedSprites.push_back(std::move(newSprite));
 }
 
 Sprite& RenderingSystem::GetSprite(int spriteIndex)
