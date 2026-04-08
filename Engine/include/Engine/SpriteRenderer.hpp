@@ -22,7 +22,7 @@ private:
 
     void Update() override;
 
-    void RenderCall(bool pickingPass);
+    void RenderCall();
 
 public:
     Vector4 color;

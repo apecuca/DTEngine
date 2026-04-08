@@ -79,9 +79,7 @@ void Window::UpdateSolidState()
         return;
 
     glfwGetCursorPos(winPtr, &mousex, &mousey);
-    auto* renderSys = SystemRegistry::GetSystem<RenderingSystem>();
-    int objId = renderSys->GetObjectUnderMouse(mousex, mousey);
-    bool newSolid = objId == 0 ? false : true;
+    bool newSolid = SystemRegistry::GetSystem<RenderingSystem>()->IsPositionSolid(mousex, mousey, GetSize());
     if (newSolid != solid)
         SetSolidState(newSolid, false);
 }
@@ -93,7 +91,7 @@ void Window::SetSolidState(bool state, bool overrideInternalLogic)
     glfwSetWindowAttrib(winPtr, GLFW_MOUSE_PASSTHROUGH, !solid);
 }
 
-bool Window::IsRunning()
+bool Window::IsRunning() const
 {
     return !glfwWindowShouldClose(winPtr);
 }
@@ -106,7 +104,7 @@ void Window::callback_framebufferSize(GLFWwindow* window, int newWidth, int newH
 	glViewport(0, 0, instance->width, instance->height);
 }
 
-Vector2 Window::GetSize()
+Vector2 Window::GetSize() const
 {
     return Vector2(width, height);
 }

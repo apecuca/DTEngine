@@ -84,34 +84,8 @@ bool RenderingSystem::InitAndConfigWindow()
     );
 
     window->ConfigWindow();
-    auto screenSize = window->GetSize();
-
-    // Generate picking objects
-    // Picking Frame Buffer Object
-    glGenFramebuffers(1, &pickingFBO);
-    glBindFramebuffer(GL_FRAMEBUFFER, pickingFBO);
-
-    glGenTextures(1, &pickingFBT);
-    glBindTexture(GL_TEXTURE_2D, pickingFBT);
-
-    glTexImage2D(
-        GL_TEXTURE_2D,
-        0,
-        GL_R32UI,
-        screenSize.x,
-        screenSize.y,
-        0,
-        GL_RED_INTEGER,
-        GL_UNSIGNED_INT,
-        nullptr
-    );
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, pickingFBT, 0);
 
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    // Init picking shader
-    LoadInternalShader("framebuffer.vert", "picking.frag", pickingShader);
 
     return true;
 }
@@ -203,7 +177,7 @@ bool RenderingSystem::ConfigPostProcessing()
     return true;
 }
 
-bool RenderingSystem::IsWindowRunning()
+bool RenderingSystem::IsWindowRunning() const
 {
     if (window == nullptr) return false;
 
@@ -212,9 +186,6 @@ bool RenderingSystem::IsWindowRunning()
 
 void RenderingSystem::RenderCycle()
 {
-    // PICKING PASS
-    RenderPass(pickingFBO, RenderPassType::PICKING);
-
     // SCENE PASS
     RenderPass(worldFBO, RenderPassType::WORLD);
 
@@ -226,7 +197,7 @@ void RenderingSystem::RenderCycle()
     glBindVertexArray(screenquadVAO);
     glBindTexture(GL_TEXTURE_2D, worldFBT);
     glDrawArrays(GL_TRIANGLES,0,6);
-
+    
     window->SwapBuffers();
     window->ReadInputs();
 }
@@ -235,36 +206,11 @@ void RenderingSystem::RenderPass(unsigned int& frameBufferObject, const RenderPa
 {
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferObject);
 
-    // Useful variables
-    unsigned int zero = 0;
-
-    // Prepare each pass type
-    switch (renderType) {
-        case RenderPassType::PICKING:
-            glClearBufferuiv(GL_COLOR,0,&zero);
-            pickingShader->Bind();
-            break;
-
-        case RenderPassType::WORLD:
-            window->Clear();
-            break;
-
-        default: break;
-    }
+    window->Clear();
 
     // World rendereres
     for(auto& spr : renderers)
-    {
-        if (renderType == RenderPassType::PICKING) {
-            if (!spr->gameObject.clickable)
-                continue; // ignore objects marked as clickthrough
-
-            pickingShader->SetUInt("objectID", spr->GetID());
-        }
-        spr->RenderCall(renderType == RenderPassType::PICKING);
-    }
-
-    // UI here
+        spr->RenderCall();
     
     // Unbind everything
     glBindFramebuffer(GL_FRAMEBUFFER,0);
@@ -365,25 +311,29 @@ Sprite& RenderingSystem::GetSprite(int spriteIndex)
     return *(loadedSprites[spriteIndex].get());
 }
 
-unsigned int RenderingSystem::GetObjectUnderMouse(int x, int y)
+bool RenderingSystem::IsPositionSolid(int x, int y, Vector2 size) const
 {
-    Vector2 size = window->GetSize();
+    bool value = false;
 
-    unsigned int id = 0;
+    unsigned char channel;
 
-    glBindFramebuffer(GL_FRAMEBUFFER,pickingFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER, worldFBO);
 
     glReadPixels(
         x,
         size.y - y,
         1,
         1,
-        GL_RED_INTEGER,
-        GL_UNSIGNED_INT,
-        &id
+        GL_ALPHA,
+        GL_UNSIGNED_BYTE,
+        &channel
     );
 
     glBindFramebuffer(GL_FRAMEBUFFER,0);
 
-    return id;
+    unsigned int alpha = static_cast<unsigned int>(channel);
+    if (alpha && alpha > 0)
+        value = true;
+
+    return value;
 }

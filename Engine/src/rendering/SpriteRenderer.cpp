@@ -88,7 +88,7 @@ void SpriteRenderer::Update()
     //
 }
 
-void SpriteRenderer::RenderCall(bool pickingPass)
+void SpriteRenderer::RenderCall()
 {
     RenderingSystem* rend = SystemRegistry::GetSystem<RenderingSystem>();
     Window* window = Window::instance;
@@ -128,10 +128,7 @@ void SpriteRenderer::RenderCall(bool pickingPass)
     shad.SetMat4("projection", projMat);
     shad.SetMat4("view", viewMat);
     shad.SetMat4("model", modelMat);
-    if (!pickingPass)
-        shad.SetVec4("color", color);
-    else
-        shad.SetVec4("color", Vector4(color.w, 0.0f, 0.0f, 0.0f));
+    shad.SetVec4("color", color);
 
     // Draw texture
     glActiveTexture(GL_TEXTURE0);

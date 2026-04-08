@@ -19,7 +19,7 @@ public:
     Window(int _width, int _height, std::string _name);
 
 public:
-    Vector2 GetSize();
+    Vector2 GetSize() const;
 
     void SetSolidState(bool state, bool overrideInternalLogic);
 
@@ -29,7 +29,7 @@ private:
     void ReadInputs();
     void UpdateSolidState();
 
-    bool IsRunning();
+    bool IsRunning() const;
 
     void ConfigWindow();
 

@@ -2,6 +2,7 @@
 #define INCLUDED_RENDERINGSYSTEM_H
 
 #include "core/InternalSystem.hpp"
+#include <Engine/Utils.hpp>
 #include <iostream>
 #include <memory>
 #include <vector>
@@ -23,7 +24,7 @@ public:
     RenderingSystem();
     
     // Returns if the main window is still running
-    bool IsWindowRunning();
+    bool IsWindowRunning() const;
 
     void AddRenderSource(SpriteRenderer* spr);
     void RemoveRenderSource(SpriteRenderer* spr);
@@ -37,7 +38,7 @@ public:
     int LoadSprite(const std::string& file);
     void LoadInternalSprite(const std::string& file);
     
-    unsigned int GetObjectUnderMouse(int x, int y);
+    bool IsPositionSolid(int x, int y, Vector2 size) const;
     
     void RenderCycle();
     
@@ -48,7 +49,7 @@ private:
     bool InitAndConfigWindow();
     bool ConfigPostProcessing();
 
-    enum RenderPassType { WORLD, PICKING };
+    enum RenderPassType { WORLD };
     void RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType);
 
 private:
@@ -62,9 +63,7 @@ private:
     // Frame Buffer Object, Frame Buffer Texture, Render Buffer Object
     unsigned int worldFBO, worldFBT, worldRBO;
     unsigned int screenquadVAO, screenquadVBO;
-    unsigned int pickingFBO, pickingFBT;
     std::unique_ptr<Shader> screenShader;
-    std::unique_ptr<Shader> pickingShader;
 };
 }
 
