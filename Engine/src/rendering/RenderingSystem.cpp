@@ -47,7 +47,7 @@ bool RenderingSystem::Init()
 
 bool RenderingSystem::InitAndConfigWindow()
 {
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
@@ -315,7 +315,7 @@ bool RenderingSystem::IsPositionSolid(int x, int y, Vector2 size) const
 {
     bool value = false;
 
-    unsigned char channel;
+    unsigned char pixel[4];
 
     glBindFramebuffer(GL_FRAMEBUFFER, worldFBO);
 
@@ -324,14 +324,14 @@ bool RenderingSystem::IsPositionSolid(int x, int y, Vector2 size) const
         size.y - y,
         1,
         1,
-        GL_ALPHA,
+        GL_RGBA,
         GL_UNSIGNED_BYTE,
-        &channel
+        &pixel
     );
 
     glBindFramebuffer(GL_FRAMEBUFFER,0);
 
-    unsigned int alpha = static_cast<unsigned int>(channel);
+    unsigned int alpha = static_cast<unsigned int>(pixel[3]);
     if (alpha && alpha > 0)
         value = true;
 
