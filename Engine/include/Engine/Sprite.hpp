@@ -12,13 +12,13 @@ friend class SpriteRenderer;
 
 public:
     ~Sprite();
-    Sprite(unsigned char* data, int _width, int _height, int nrChannels);
+    Sprite(unsigned char* data, int _width, int _height, float _pixelsPerUnit, int nrChannels);
 
 public:
     Vector2 GetSize();
 
 public:
-    float pixelsPerUnit;
+    const float pixelsPerUnit;
 
 private:
     int width, height;

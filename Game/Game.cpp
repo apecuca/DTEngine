@@ -17,13 +17,10 @@ Game::Game()
     
     auto newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
-    rnd->SetSprite(RenderingManager::LoadSprite("pose.png"));
-    newobj->scale = Vector2(0.1f, 0.1f);
-    rnd->color.w = 0.5f;
 
     auto newobj2 = _world->Instantiate();
-    newobj2->position = Vector2(2.0f, 2.0f);
     auto rnd2 = newobj2->AddComponent<SpriteRenderer>();
+    rnd2->SetSprite(RenderingManager::LoadSprite("pose.png", 1920.0f));
 
     //engine.InitWindow(800, 600, "Omg hi bestie");
     //engine.LoadWorld(_world);

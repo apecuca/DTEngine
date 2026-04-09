@@ -39,8 +39,8 @@ bool RenderingSystem::Init()
 
     // Load default stuff
     LoadInternalShader("defaultSprite.vert", "defaultSprite.frag");
-    LoadInternalSprite("square.png");
-    LoadInternalSprite("grid.png");
+    LoadInternalSprite("square.png", 32.0f);
+    LoadInternalSprite("grid.png", 128.0f);
 
     return true;
 }
@@ -272,7 +272,7 @@ Shader& RenderingSystem::GetShader(int shaderIndex)
     return *(loadedShaders[shaderIndex].get());
 }
 
-int RenderingSystem::LoadSprite(const std::string& path)
+int RenderingSystem::LoadSprite(const std::string& path, float pixelsPerUnit)
 {
     PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
     std::string assetsPath = pathSystem->GetAssetsPath();
@@ -280,7 +280,7 @@ int RenderingSystem::LoadSprite(const std::string& path)
     int width, height, nrChannels;
     unsigned char* imageData = pathSystem->GetImageContent(assetsPath + path, width, height, nrChannels);
 
-    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, nrChannels);
+    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, pixelsPerUnit, nrChannels);
     pathSystem->CloseImage(imageData);
 
     loadedSprites.push_back(std::move(newSprite));
@@ -288,7 +288,7 @@ int RenderingSystem::LoadSprite(const std::string& path)
     return (loadedSprites.size() - 1);
 }
 
-void RenderingSystem::LoadInternalSprite(const std::string& path)
+void RenderingSystem::LoadInternalSprite(const std::string& path, float pixelsPerUnit)
 {
     PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
     std::string resourcesPath = pathSystem->GetResourcesPath();
@@ -297,7 +297,7 @@ void RenderingSystem::LoadInternalSprite(const std::string& path)
     int width, height, nrChannels;
     unsigned char* imageData = pathSystem->GetImageContent(fullPath, width, height, nrChannels);
 
-    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, nrChannels);
+    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, pixelsPerUnit, nrChannels);
     pathSystem->CloseImage(imageData);
 
     loadedSprites.push_back(std::move(newSprite));
@@ -329,7 +329,7 @@ bool RenderingSystem::IsPositionSolid(int x, int y, Vector2 size) const
         &pixel
     );
 
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     unsigned int alpha = static_cast<unsigned int>(pixel[3]);
     if (alpha && alpha > 0)

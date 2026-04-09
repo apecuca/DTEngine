@@ -22,7 +22,7 @@ Sprite& RenderingManager::GetSprite(int spriteIndex)
     return SystemRegistry::GetSystem<RenderingSystem>()->GetSprite(spriteIndex);
 }
 
-int RenderingManager::LoadSprite(const std::string& file)
+int RenderingManager::LoadSprite(const std::string& file, float pixelsPerUnit)
 {
-    return SystemRegistry::GetSystem<RenderingSystem>()->LoadSprite(file);
+    return SystemRegistry::GetSystem<RenderingSystem>()->LoadSprite(file, pixelsPerUnit);
 }

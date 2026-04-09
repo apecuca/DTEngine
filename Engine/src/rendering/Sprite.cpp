@@ -11,8 +11,8 @@ Sprite::~Sprite()
     glDeleteTextures(1, &texId);
 }
 
-Sprite::Sprite(unsigned char* data, int _width, int _height, int nrChannels) :
-    width(_width), height(_height), pixelsPerUnit(32)
+Sprite::Sprite(unsigned char* data, int _width, int _height, float _pixelsPerUnit, int nrChannels) :
+    width(_width), height(_height), pixelsPerUnit(_pixelsPerUnit)
 {
     glGenTextures(1, &texId);
     glBindTexture(GL_TEXTURE_2D, texId);

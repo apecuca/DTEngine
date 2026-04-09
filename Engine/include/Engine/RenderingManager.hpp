@@ -22,7 +22,7 @@ public:
     static int LoadShader(const std::string& vertexFile, const std::string& fragmentFile);
     
     static Sprite& GetSprite(int spriteIndex);
-    static int LoadSprite(const std::string& file);
+    static int LoadSprite(const std::string& file, float pixelsPerUnit);
 
 private:
     ~RenderingManager() = default;
