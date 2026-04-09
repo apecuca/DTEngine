@@ -85,7 +85,7 @@ void Shader::SetInt(const std::string& name, int value) const
 // ------------------------------------------------------------------------
 void Shader::SetUInt(const std::string& name, unsigned int value) const
 {
-    glUniform1i(glGetUniformLocation(program, name.c_str()), value);
+    glUniform1ui(glGetUniformLocation(program, name.c_str()), value);
 }
 // ------------------------------------------------------------------------
 void Shader::SetVec4(const std::string& name, const Vector4& value) const

@@ -100,8 +100,6 @@ bool RenderingSystem::ConfigPostProcessing()
     // Update screen shader
     screenShader->Bind();
     screenShader->SetInt("screenTexture", 0);
-    screenShader->SetInt("screenWidth", screenSize.x);
-    screenShader->SetInt("screenHeight", screenSize.y);
 
     // Frame buffer object
 	glGenFramebuffers(1, &worldFBO);
