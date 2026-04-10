@@ -4,8 +4,60 @@
 
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 
 using namespace DTEngine;
+
+//
+// IMAGE DATA
+//
+
+ImageData::~ImageData()
+{
+    if (data)
+    {
+        stbi_image_free(data);
+        data = nullptr;
+    }
+}
+
+ImageData::ImageData(ImageData&& other) noexcept
+{
+    data = other.data;
+    width = other.width;
+    height = other.height;
+    channels = other.channels;
+
+    other.data = nullptr;
+    other.width = 0;
+    other.height = 0;
+    other.channels = 0;
+}
+
+ImageData& ImageData::operator=(ImageData&& other) noexcept
+{
+    if (this != &other)
+    {
+        if (data)
+            stbi_image_free(data);
+
+        data = other.data;
+        width = other.width;
+        height = other.height;
+        channels = other.channels;
+
+        other.data = nullptr;
+        other.width = 0;
+        other.height = 0;
+        other.channels = 0;
+    }
+
+    return *this;
+}
+
+//
+// PATH SYSTEM
+//
 
 PathSystem::~PathSystem()
 {
@@ -60,20 +112,15 @@ std::string PathSystem::GetFileContents(const std::string& path) const
     return content;
 }
 
-unsigned char* PathSystem::GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels) const
+ImageData PathSystem::GetImageContent(const std::string& path) const
 {
-    //std::string normalizedPath = "Engine/resources/images/" + path;
-
     stbi_set_flip_vertically_on_load(true);
-    unsigned char* data = stbi_load(path.c_str(), &outWidth, &outHeight, &nrChannels, 0);
 
-    if (!data)
+    ImageData img;
+    img.data = stbi_load(path.c_str(), &img.width, &img.height, &img.channels, 0);
+
+    if (!img.data)
         throw std::string("Failed to read image from " + path);
 
-    return data;
-}
-
-void PathSystem::CloseImage(unsigned char* data) const
-{
-    stbi_image_free(data);
+    return img;
 }

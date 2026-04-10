@@ -8,6 +8,26 @@
 namespace DTEngine
 {
 
+struct ImageData
+{
+public:
+    ~ImageData();
+    ImageData() = default;
+
+    ImageData(const ImageData&) = delete;
+    ImageData& operator=(const ImageData&) = delete;
+
+    ImageData(ImageData&& other) noexcept;
+
+    ImageData& operator=(ImageData&& other) noexcept;
+
+public:
+    unsigned char* data = nullptr;
+    int width = 0;
+    int height = 0;
+    int channels = 0;
+};
+
 class PathSystem : InternalSystem
 {
 friend class SystemRegistry;
@@ -23,8 +43,7 @@ public:
     inline std::string GetResourcesPath() const { return resourcesPath; }
 
     std::string GetFileContents(const std::string& path) const;
-    unsigned char* GetImageContent(const std::string& path, int& outWidth, int& outHeight, int& nrChannels) const;
-    void CloseImage(unsigned char* data) const;
+    ImageData GetImageContent(const std::string& path) const;
 
 protected:
     bool Init() override;

@@ -19,6 +19,8 @@ Game::Game()
     auto rnd = newobj->AddComponent<SpriteRenderer>();
 
     auto newobj2 = _world->Instantiate();
+    newobj2->position.x = 1.75;
+    newobj2->scale = Vector2(3.0f, 3.0f);
     auto rnd2 = newobj2->AddComponent<SpriteRenderer>();
     rnd2->SetSprite(RenderingManager::LoadSprite("pose.png", 1920.0f));
 

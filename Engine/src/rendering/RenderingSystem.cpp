@@ -12,8 +12,6 @@
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
 
-#include <algorithm>
-
 using namespace DTEngine;
 
 RenderingSystem::~RenderingSystem()
@@ -275,11 +273,9 @@ int RenderingSystem::LoadSprite(const std::string& path, float pixelsPerUnit)
     PathSystem* pathSystem = SystemRegistry::GetSystem<PathSystem>();
     std::string assetsPath = pathSystem->GetAssetsPath();
 
-    int width, height, nrChannels;
-    unsigned char* imageData = pathSystem->GetImageContent(assetsPath + path, width, height, nrChannels);
+    ImageData imageData = pathSystem->GetImageContent(assetsPath + path);
 
-    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, pixelsPerUnit, nrChannels);
-    pathSystem->CloseImage(imageData);
+    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData.data, imageData.width, imageData.height, pixelsPerUnit, imageData.channels);
 
     loadedSprites.push_back(std::move(newSprite));
 
@@ -292,11 +288,9 @@ void RenderingSystem::LoadInternalSprite(const std::string& path, float pixelsPe
     std::string resourcesPath = pathSystem->GetResourcesPath();
     std::string fullPath = resourcesPath + "images/" + path;
 
-    int width, height, nrChannels;
-    unsigned char* imageData = pathSystem->GetImageContent(fullPath, width, height, nrChannels);
+    ImageData imageData = pathSystem->GetImageContent(fullPath);
 
-    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData, width, height, pixelsPerUnit, nrChannels);
-    pathSystem->CloseImage(imageData);
+    std::unique_ptr<Sprite> newSprite = std::make_unique<Sprite>(imageData.data, imageData.width, imageData.height, pixelsPerUnit, imageData.channels);
 
     loadedSprites.push_back(std::move(newSprite));
 }
