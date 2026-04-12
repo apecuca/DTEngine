@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <ostream>
+#include <deque>
 
 namespace DTEngine
 {
@@ -119,7 +120,7 @@ public:
         uint32_t generation = 0;
     };
 
-    std::vector<ComponentSlot> componentSlots;
+    std::deque<ComponentSlot> componentSlots;
 };
 
 }

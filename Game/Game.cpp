@@ -7,6 +7,8 @@
 #include <Engine/WorldManager.hpp>
 #include <Engine/RenderingManager.hpp>
 
+#include "SuperComponent.hpp"
+
 #include <iostream>
 
 using namespace DTEngine;
@@ -17,11 +19,12 @@ Game::Game()
     
     auto newobj = _world->Instantiate();
     auto rnd = newobj->AddComponent<SpriteRenderer>();
-
+    newobj->AddComponent<SuperComponent>();
+    
     auto newobj2 = _world->Instantiate();
+    auto rnd2 = newobj2->AddComponent<SpriteRenderer>();
     newobj2->position.x = 1.75;
     newobj2->scale = Vector2(3.0f, 3.0f);
-    auto rnd2 = newobj2->AddComponent<SpriteRenderer>();
     rnd2->SetSprite(RenderingManager::LoadSprite("pose.png", 1920.0f));
 
     //engine.InitWindow(800, 600, "Omg hi bestie");

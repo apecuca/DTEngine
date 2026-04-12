@@ -5,6 +5,7 @@
 #include <Engine/EntityHandle.hpp>
 
 #include <memory>
+#include <deque>
 
 namespace DTEngine
 {
@@ -39,7 +40,7 @@ private:
         uint32_t generation = 0;
     };
 
-    std::vector<GameObjectSlot> gameObjectSlots;
+    std::deque<GameObjectSlot> gameObjectSlots;
 };
 
 }
