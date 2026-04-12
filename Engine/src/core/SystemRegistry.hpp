@@ -11,6 +11,7 @@ namespace DTEngine
 class RenderingSystem;
 class WorldSystem;
 class PathSystem;
+class TimeSystem;
 class InternalSystem;
 
 class SystemRegistry
@@ -44,6 +45,7 @@ private:
     std::unique_ptr<RenderingSystem> renderingSystem;
     std::unique_ptr<WorldSystem> worldSystem;
     std::unique_ptr<PathSystem> pathSystem;
+    std::unique_ptr<TimeSystem> timeSystem;
 };
 
 }

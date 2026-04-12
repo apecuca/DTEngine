@@ -13,6 +13,8 @@ struct Vector2;
 class Window
 {
 friend class RenderingSystem;
+friend class Engine;
+friend class TimeSystem;
 
 public:
     ~Window();
@@ -22,6 +24,8 @@ public:
     Vector2 GetSize() const;
 
     void SetSolidState(bool state, bool overrideInternalLogic);
+
+    static inline Window* GetInstance() { return instance; }
 
 private:
     void Clear();
@@ -44,10 +48,11 @@ private:
     double mousex, mousey;
     constexpr static float defaultFov = 5.0f;
 
+    static DTEngine::Window* instance;
+
 public:
     float fov;
 
-    static DTEngine::Window* instance;
 };
 }
 

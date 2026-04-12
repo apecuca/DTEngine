@@ -7,6 +7,7 @@
 #include "rendering/RenderingSystem.hpp"
 #include "core/SystemRegistry.hpp"
 #include "core/PathSystem.hpp"
+#include "core/TimeSystem.hpp"
 
 #include "GLFW/glfw3.h"
 
@@ -40,12 +41,19 @@ void Engine::Run()
         throw std::string("No world loaded.");
 
     while (!ShouldStop()) {
+        
         //
         // This is the main loop of the engine
         //
 
         WorldSystem* sys_world = systemRegistry->GetSystem<WorldSystem>();
         RenderingSystem* sys_rendering = systemRegistry->GetSystem<RenderingSystem>();
+        TimeSystem* sys_time = systemRegistry->GetSystem<TimeSystem>();
+        Window* win = Window::GetInstance();
+
+        // Update internal pre-render stuff
+        win->ReadInputs();
+        sys_time->UpdateTimeVariables();
 
         // Update behaviours
         sys_world->UpdateActiveWorld();

@@ -195,7 +195,6 @@ void RenderingSystem::RenderCycle()
     glDrawArrays(GL_TRIANGLES,0,6);
     
     window->SwapBuffers();
-    window->ReadInputs();
 }
 
 void RenderingSystem::RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType)

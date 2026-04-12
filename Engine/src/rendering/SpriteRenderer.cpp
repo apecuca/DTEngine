@@ -91,7 +91,7 @@ void SpriteRenderer::Update()
 void SpriteRenderer::RenderCall()
 {
     RenderingSystem* rend = SystemRegistry::GetSystem<RenderingSystem>();
-    Window* window = Window::instance;
+    Window* window = Window::GetInstance();
     Sprite& sprt = rend->GetSprite(usedSpriteId);
     Shader& shad = rend->GetShader(usedShaderId);
 

@@ -3,6 +3,7 @@
 #include "core/WorldSystem.hpp"
 #include "rendering/RenderingSystem.hpp"
 #include "core/PathSystem.hpp"
+#include "core/TimeSystem.hpp"
 
 #include <iostream>
 
@@ -29,6 +30,7 @@ bool SystemRegistry::IsFullyWorking() const
     if (renderingSystem == nullptr) return false;
     if (worldSystem == nullptr) return false;
     if (pathSystem == nullptr) return false;
+    if (timeSystem == nullptr) return false;
 
     return true;
 }
@@ -47,11 +49,16 @@ bool SystemRegistry::InitWorks()
     if (!worldSystem->Init()) return false;
     systems[typeid(WorldSystem)] = worldSystem.get();
 
+    timeSystem = std::make_unique<TimeSystem>();
+    if (!timeSystem->Init()) return false;
+    systems[typeid(TimeSystem)] = timeSystem.get();
+
     return true;
 }
 
 void SystemRegistry::UnloadEverything()
 {
+    timeSystem.reset();
     worldSystem.reset();
     renderingSystem.reset();
     pathSystem.reset();
