@@ -3,8 +3,8 @@
 #include <Engine/GameObject.hpp>
 #include <Engine/World.hpp>
 
-#include "core/SystemRegistry.hpp"
-#include "core/WorldSystem.hpp"
+#include "system/SystemRegistry.hpp"
+#include "system/WorldSystem.hpp"
 
 using namespace DTEngine;
 

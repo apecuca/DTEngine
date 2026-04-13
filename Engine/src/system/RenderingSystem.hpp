@@ -1,7 +1,7 @@
 #ifndef INCLUDED_RENDERINGSYSTEM_H
 #define INCLUDED_RENDERINGSYSTEM_H
 
-#include "core/InternalSystem.hpp"
+#include "system/InternalSystem.hpp"
 #include <Engine/Utils.hpp>
 #include <iostream>
 #include <memory>

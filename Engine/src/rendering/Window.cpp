@@ -1,8 +1,8 @@
 #include "Window.hpp"
 
 #include <Engine/Utils.hpp>
-#include "core/SystemRegistry.hpp"
-#include "rendering/RenderingSystem.hpp"
+#include "system/SystemRegistry.hpp"
+#include "system/RenderingSystem.hpp"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"

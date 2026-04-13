@@ -1,4 +1,4 @@
-#include "rendering/RenderingSystem.hpp"
+#include "system/RenderingSystem.hpp"
 
 #include <Engine/Window.hpp>
 #include <Engine/SpriteRenderer.hpp>
@@ -6,8 +6,8 @@
 #include <Engine/Shader.hpp>
 #include <Engine/Utils.hpp>
 #include <Engine/GameObject.hpp>
-#include "core/SystemRegistry.hpp"
-#include "core/PathSystem.hpp"
+#include "system/SystemRegistry.hpp"
+#include "system/PathSystem.hpp"
 
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"

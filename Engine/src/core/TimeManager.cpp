@@ -1,7 +1,7 @@
 #include <Engine/TimeManager.hpp>
 
-#include "core/SystemRegistry.hpp"
-#include "core/TimeSystem.hpp"
+#include "system/SystemRegistry.hpp"
+#include "system/TimeSystem.hpp"
 
 using namespace DTEngine;
 

@@ -1,7 +1,7 @@
 #ifndef DTENGINE_WORLDSYSTEM_H
 #define DTENGINE_WORLDSYSTEM_H
 
-#include "core/InternalSystem.hpp"
+#include "system/InternalSystem.hpp"
 
 #include <memory>
 

@@ -1,7 +1,7 @@
-#include "core/WorldSystem.hpp"
+#include "system/WorldSystem.hpp"
 
 #include <Engine/World.hpp>
-#include "core/SystemRegistry.hpp"
+#include "system/SystemRegistry.hpp"
 
 using namespace DTEngine;
 

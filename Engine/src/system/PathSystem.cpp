@@ -1,4 +1,4 @@
-#include "core/PathSystem.hpp"
+#include "system/PathSystem.hpp"
 
 #include "stb_image.h"
 

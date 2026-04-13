@@ -2,8 +2,8 @@
 
 #include <Engine/Shader.hpp>
 #include <Engine/Sprite.hpp>
-#include "core/SystemRegistry.hpp"
-#include "rendering/RenderingSystem.hpp"
+#include "system/SystemRegistry.hpp"
+#include "system/RenderingSystem.hpp"
 
 using namespace DTEngine;
 

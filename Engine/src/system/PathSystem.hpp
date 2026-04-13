@@ -1,7 +1,7 @@
 #ifndef DTENGINE_PATHSYSTEM_H
 #define DTENGINE_PATHSYSTEM_H
 
-#include "core/InternalSystem.hpp"
+#include "system/InternalSystem.hpp"
 
 #include <string>
 

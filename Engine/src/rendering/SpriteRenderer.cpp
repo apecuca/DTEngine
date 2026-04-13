@@ -5,8 +5,8 @@
 #include <Engine/Shader.hpp>
 #include <Engine/Sprite.hpp>
 #include <Engine/Window.hpp>
-#include "rendering/RenderingSystem.hpp"
-#include "core/SystemRegistry.hpp"
+#include "system/RenderingSystem.hpp"
+#include "system/SystemRegistry.hpp"
 
 #include "glad/glad.h"
 #include <glm/glm.hpp>

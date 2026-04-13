@@ -1,7 +1,7 @@
 #ifndef DTENGINE_TIMESYSTEM_H
 #define DTENGINE_TIMESYSTEM_H
 
-#include "core/InternalSystem.hpp"
+#include "system/InternalSystem.hpp"
 
 namespace DTEngine
 {

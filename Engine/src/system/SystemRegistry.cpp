@@ -1,9 +1,9 @@
-#include "core/SystemRegistry.hpp"
+#include "system/SystemRegistry.hpp"
 
-#include "core/WorldSystem.hpp"
-#include "rendering/RenderingSystem.hpp"
-#include "core/PathSystem.hpp"
-#include "core/TimeSystem.hpp"
+#include "system/WorldSystem.hpp"
+#include "system/RenderingSystem.hpp"
+#include "system/PathSystem.hpp"
+#include "system/TimeSystem.hpp"
 
 #include <iostream>
 
