@@ -21,6 +21,7 @@ class WorldManager final
 public:
     static void LoadWorld(std::unique_ptr<World>& world);
     static EntityHandle<GameObject> Instantiate();
+    static void Destroy(const EntityHandle<GameObject>& object);
 
 private:
     ~WorldManager() = default;

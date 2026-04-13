@@ -27,7 +27,7 @@ void SuperComponent::Awake()
 
 void SuperComponent::Start()
 {
-    auto obj = WorldManager::Instantiate();
+    obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);
 }
@@ -35,5 +35,12 @@ void SuperComponent::Start()
 void SuperComponent::Update()
 {
     float deltaTime = TimeManager::GetDeltaTime();
-    gameObject.rotation.z += 40 * deltaTime;
+    timer += deltaTime;
+    gameObject.rotation.z += 40.0f * deltaTime;
+    if (obj) {
+        obj->rotation.z -= 20.0f * deltaTime;
+        timer += deltaTime;
+        if (timer >= 7.5f)
+            WorldManager::Destroy(obj);
+    }
 }

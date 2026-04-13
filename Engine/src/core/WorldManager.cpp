@@ -15,8 +15,10 @@ void WorldManager::LoadWorld(std::unique_ptr<World>& world)
 
 EntityHandle<GameObject> WorldManager::Instantiate()
 {
-    WorldSystem* sys = SystemRegistry::GetSystem<WorldSystem>();
-    World* activeWorld = sys->GetActiveWorld();
-    EntityHandle<GameObject> newObj = activeWorld->Instantiate();
-    return newObj;
+    return SystemRegistry::GetSystem<WorldSystem>()->GetActiveWorld()->Instantiate();
+}
+
+void WorldManager::Destroy(const EntityHandle<GameObject>& object)
+{
+    SystemRegistry::GetSystem<WorldSystem>()->GetActiveWorld()->Destroy(object);
 }

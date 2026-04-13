@@ -1,6 +1,8 @@
 #pragma once
 
 #include <Engine/Component.hpp>
+#include <Engine/GameObject.hpp>
+#include <Engine/EntityHandle.hpp>
 
 using namespace DTEngine;
 
@@ -16,5 +18,9 @@ public:
     void Start() override;
 
     void Update() override;
+
+private:
+    EntityHandle<GameObject> obj;
+    float timer = 0.0f;
 
 };

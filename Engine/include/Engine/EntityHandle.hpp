@@ -4,6 +4,8 @@
 namespace DTEngine
 {
 
+class Entity;
+
 template<typename T>
 struct EntityHandle
 {
@@ -19,6 +21,7 @@ private:
 
     void UpdateValidity()
     {
+        if (!valid) return;
         valid = ((ptr != nullptr) && ((index == *generation) && !(ptr->markedForDestruction)));
         if (!valid) ptr == nullptr;
     }
