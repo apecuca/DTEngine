@@ -20,6 +20,11 @@ bool WorldSystem::Init()
     return true;
 }
 
+World* WorldSystem::GetActiveWorld()
+{
+    return activeWorld == nullptr ? nullptr : activeWorld.get();
+}
+
 bool WorldSystem::IsWorldActive()
 {
     if (activeWorld == nullptr) return false;
@@ -27,14 +32,11 @@ bool WorldSystem::IsWorldActive()
     return true;
 }
 
-World* WorldSystem::LoadWorld(std::unique_ptr<World>& world)
+void WorldSystem::LoadWorld(std::unique_ptr<World>& world)
 {
     auto instance = SystemRegistry::GetSystem<WorldSystem>();
 
     instance->activeWorld.reset(world.release());
-    instance->activeWorld->WorldStart();
-    
-    return instance->activeWorld.get();
 }
 
 void WorldSystem::UpdateActiveWorld()

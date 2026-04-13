@@ -30,6 +30,7 @@ private:
     // Processes the destruction queue
     void ProcessDestroyQueue();
 
+    void WorldAwake();
     void WorldStart();
     void WorldUpdate();
 
@@ -41,6 +42,10 @@ private:
     };
 
     std::deque<GameObjectSlot> gameObjectSlots;
+
+    // To be awoken
+    std::vector<GameObjectSlot*> pendingAwake;
+    std::vector<GameObjectSlot*> pendingStart;
 };
 
 }

@@ -21,7 +21,7 @@ public:
 
 public:
     // Loads a world as the active
-    World* LoadWorld(std::unique_ptr<World>& world);
+    void LoadWorld(std::unique_ptr<World>& world);
 
     World* GetActiveWorld();
     bool IsWorldActive();

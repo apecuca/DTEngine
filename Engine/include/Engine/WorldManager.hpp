@@ -6,6 +6,9 @@
 // with the internal world handler
 // 
 
+#include "Engine/GameObject.hpp"
+#include <Engine/EntityHandle.hpp>
+
 #include <memory>
 
 namespace DTEngine
@@ -16,7 +19,8 @@ class World;
 class WorldManager final
 {
 public:
-    static World* LoadWorld(std::unique_ptr<World>& world);
+    static void LoadWorld(std::unique_ptr<World>& world);
+    static EntityHandle<GameObject> Instantiate();
 
 private:
     ~WorldManager() = default;

@@ -17,6 +17,9 @@ public:
     Component(GameObject& _gameObject);
 
 private:
+    // Called before Start
+    virtual void Awake() {}
+
     // Called before the first frame is rendered
     virtual void Start() {}
 

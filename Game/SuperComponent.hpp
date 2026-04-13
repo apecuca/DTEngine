@@ -11,6 +11,8 @@ public:
     virtual ~SuperComponent();
     SuperComponent(GameObject& _gameObject);
 
+    void Awake() override;
+
     void Start() override;
 
     void Update() override;

@@ -100,9 +100,9 @@ private:
     void RemoveChild(GameObject* obj);
     bool HasChild(GameObject* obj, int& outPosition);
 
+    void InternalAwake();
     void InternalStart();
     void InternalUpdate();
-
 
 public:
     Vector2 position;

@@ -2,6 +2,8 @@
 
 #include <Engine/TimeManager.hpp>
 #include <Engine/GameObject.hpp>
+#include <Engine/WorldManager.hpp>
+#include <Engine/SpriteRenderer.hpp>
 
 #include <iostream>
 
@@ -18,9 +20,16 @@ SuperComponent::SuperComponent(GameObject& _gameObject) :
     //
 }
 
-void SuperComponent::Start()
+void SuperComponent::Awake()
 {
     //
+}
+
+void SuperComponent::Start()
+{
+    auto obj = WorldManager::Instantiate();
+    obj->AddComponent<SpriteRenderer>();
+    obj->position = Vector2(-2.0f, 2.0f);
 }
 
 void SuperComponent::Update()

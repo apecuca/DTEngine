@@ -26,8 +26,10 @@ EntityHandle<GameObject> World::Instantiate()
     bool available = GetAvailableSlot(slotIndex);
     if (available)
         gameObjectSlots.at(slotIndex).gameObject = std::move(newSlot.gameObject);
-    else
+    else {
         gameObjectSlots.emplace_back(std::move(newSlot));
+        slotIndex = gameObjectSlots.size() - 1;
+    }
 
     EntityHandle<GameObject> handle;
     for (auto& slot : gameObjectSlots)
@@ -37,6 +39,11 @@ EntityHandle<GameObject> World::Instantiate()
                 handle.generation = &(slot.generation);
                 handle.index = slot.generation;
             }
+
+    if (gameObjectSlots[slotIndex].gameObject != nullptr) {
+        pendingAwake.emplace_back(&gameObjectSlots[slotIndex]);
+        pendingStart.emplace_back(&gameObjectSlots[slotIndex]);
+    }
 
     return handle;
 }
@@ -85,15 +92,44 @@ void World::ProcessDestroyQueue()
             slot.gameObject->ProcessComponentDestructionQueue();
 }
 
+void World::WorldAwake()
+{
+    if (pendingAwake.empty())
+        return;
+
+    // Copy to avoid changes mid passing
+    std::vector<GameObjectSlot*> vCopy(pendingAwake.size());
+    std::copy(pendingAwake.begin(), pendingAwake.end(), vCopy.begin());
+    pendingAwake.clear();
+
+    for (auto& slot : vCopy)
+        if (slot->gameObject != nullptr)
+            slot->gameObject->InternalAwake();
+
+}
+
 void World::WorldStart()
 {
-    for (auto& slot : gameObjectSlots)
-        if (slot.gameObject != nullptr)
-            slot.gameObject->InternalStart();
+    if (pendingStart.empty())
+        return;
+
+    // Copy to avoid changes mid passing
+    std::vector<GameObjectSlot*> vCopy(pendingStart.size());
+    std::copy(pendingStart.begin(), pendingStart.end(), vCopy.begin());
+    pendingStart.clear();
+
+    for (auto& slot : vCopy)
+        if (slot->gameObject != nullptr)
+            slot->gameObject->InternalStart();
 }
 
 void World::WorldUpdate()
 {
+    // Call start/awake on unstarted/awaken objects
+    WorldAwake();
+    WorldStart();
+
+    // Update behaviour
     for (auto& slot : gameObjectSlots)
         if (slot.gameObject != nullptr)
             slot.gameObject->InternalUpdate();

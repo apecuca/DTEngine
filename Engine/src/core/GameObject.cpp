@@ -126,6 +126,14 @@ bool GameObject::HasChild(GameObject* obj, int& outPosition)
     return false;
 } 
 
+void GameObject::InternalAwake()
+{
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
+        slot.component->Awake();
+    }
+}
+
 void GameObject::InternalStart()
 {
     for (auto& slot : componentSlots) {
