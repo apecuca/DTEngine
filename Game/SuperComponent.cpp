@@ -35,8 +35,8 @@ void SuperComponent::Start()
 void SuperComponent::Update()
 {
     float deltaTime = TimeManager::GetDeltaTime();
-    timer += deltaTime;
     gameObject.rotation.z += 40.0f * deltaTime;
+    
     if (obj) {
         obj->rotation.z -= 20.0f * deltaTime;
         timer += deltaTime;
