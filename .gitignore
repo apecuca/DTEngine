@@ -16,5 +16,4 @@ CMakeUserPresets.json
 /build
 
 # Visual studio cache folders
-.vscode/
 .vs/
