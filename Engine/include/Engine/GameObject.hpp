@@ -32,9 +32,10 @@ public:
     //
 
     template <typename T>
-    requires std::derived_from<T, Component>
     EntityHandle<T> AddComponent()
     {
+        static_assert(std::derived_from<T, Entity>);
+
         ComponentSlot newSlot;
         newSlot.component = std::make_unique<T>(*this);
         int slotIndex;
@@ -48,9 +49,10 @@ public:
     }
 
     template <typename T>
-    requires std::derived_from<T, Component>
     EntityHandle<T> GetComponent()
     {
+        static_assert(std::derived_from<T, Entity>);
+
         EntityHandle<T> handle;
 
         for (auto& slot : componentSlots)
@@ -65,16 +67,18 @@ public:
     }
 
     template <typename T>
-    requires std::derived_from<T, Component>
     const EntityHandle<T> GetComponent() const
     {
-        return GetComponent<T>();
+        static_assert(std::derived_from<T, Entity>);
+
+        return const_cast<GameObject*>(this)->GetComponent<T>();
     }
 
     template <typename T>
-    requires std::derived_from<T, Component>
     void RemoveComponent()
     {
+        static_assert(std::derived_from<T, Entity>);
+
         auto slot = GetComponent<T>();
         if (slot.ptr == nullptr) {
             std::string msg = "GameObject has no component of type ";
