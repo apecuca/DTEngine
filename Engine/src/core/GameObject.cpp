@@ -1,9 +1,9 @@
 #include <GameObject.hpp>
 
-#include "World.hpp"
-#include <algorithm>
-#include "Component.hpp"
+#include <DTEngine/World.hpp>
+#include <DTEngine/Component.hpp>
 
+#include <algorithm>
 #include <iostream>
 
 using namespace DTEngine;

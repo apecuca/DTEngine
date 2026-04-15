@@ -1,10 +1,10 @@
 #include "SpriteRenderer.hpp"
 
-#include <Engine/GameObject.hpp>
-#include <Engine/Utils.hpp>
-#include <Engine/Shader.hpp>
-#include <Engine/Sprite.hpp>
-#include <Engine/Window.hpp>
+#include <DTEngine/GameObject.hpp>
+#include <DTEngine/Utils.hpp>
+#include <DTEngine/Shader.hpp>
+#include <DTEngine/Sprite.hpp>
+#include <DTEngine/Window.hpp>
 #include "system/RenderingSystem.hpp"
 #include "system/SystemRegistry.hpp"
 

@@ -1,7 +1,7 @@
 #ifndef DTENGINE_COMPONENT_H
 #define DTENGINE_COMPONENT_H
 
-#include "Entity.hpp"
+#include <DTEngine/Entity.hpp>
 
 namespace DTEngine
 {

@@ -1,7 +1,7 @@
 #ifndef DTENGINE_SPRITERENDERER_H
 #define DTENGINE_SPRITERENDERER_H
 
-#include "Component.hpp"
+#include <DTEngine/Component.hpp>
 
 namespace DTEngine 
 {

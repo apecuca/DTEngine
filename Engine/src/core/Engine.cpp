@@ -1,7 +1,7 @@
-#include "Engine.hpp"
+#include <DTEngine/Engine.hpp>
 
-#include <Engine/Window.hpp>
-#include <Engine/World.hpp>
+#include <DTEngine/Window.hpp>
+#include <DTEngine/World.hpp>
 
 #include "system/WorldSystem.hpp"
 #include "system/RenderingSystem.hpp"

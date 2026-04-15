@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Engine/Component.hpp>
-#include <Engine/GameObject.hpp>
-#include <Engine/EntityHandle.hpp>
+#include <DTEngine/Component.hpp>
+#include <DTEngine/GameObject.hpp>
+#include <DTEngine/EntityHandle.hpp>
 
 using namespace DTEngine;
 

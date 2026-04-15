@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Engine.hpp"
+#include <DTEngine/Engine.hpp>
 #include "Game/Game.hpp"
 
 int main(int, char**){

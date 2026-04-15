@@ -1,6 +1,6 @@
 #include "Shader.hpp"
 
-#include <Engine/Utils.hpp>
+#include <DTEngine/Utils.hpp>
 
 #include "glad/glad.h"
 #include "glm/glm.hpp"

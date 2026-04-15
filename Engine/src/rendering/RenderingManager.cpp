@@ -1,7 +1,7 @@
-#include <Engine/RenderingManager.hpp>
+#include <DTEngine/RenderingManager.hpp>
 
-#include <Engine/Shader.hpp>
-#include <Engine/Sprite.hpp>
+#include <DTEngine/Shader.hpp>
+#include <DTEngine/Sprite.hpp>
 #include "system/SystemRegistry.hpp"
 #include "system/RenderingSystem.hpp"
 

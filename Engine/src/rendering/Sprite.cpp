@@ -1,6 +1,6 @@
 #include "Sprite.hpp"
 
-#include <Engine/Utils.hpp>
+#include <DTEngine/Utils.hpp>
 
 #include "glad/glad.h"
 

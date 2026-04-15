@@ -1,8 +1,8 @@
 #include <World.hpp>
 
-#include <algorithm>
+#include <DTEngine/GameObject.hpp>
 
-#include "GameObject.hpp"
+#include <algorithm>
 
 using namespace DTEngine;
 

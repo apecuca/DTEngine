@@ -6,8 +6,8 @@
 // with the internal world handler
 // 
 
-#include "Engine/GameObject.hpp"
-#include <Engine/EntityHandle.hpp>
+#include <DTEngine/GameObject.hpp>
+#include <DTEngine/EntityHandle.hpp>
 
 #include <memory>
 

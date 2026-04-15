@@ -1,9 +1,9 @@
 #include "SuperComponent.hpp"
 
-#include <Engine/TimeManager.hpp>
-#include <Engine/GameObject.hpp>
-#include <Engine/WorldManager.hpp>
-#include <Engine/SpriteRenderer.hpp>
+#include <DTEngine/TimeManager.hpp>
+#include <DTEngine/GameObject.hpp>
+#include <DTEngine/WorldManager.hpp>
+#include <DTEngine/SpriteRenderer.hpp>
 
 #include <iostream>
 

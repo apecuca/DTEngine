@@ -1,11 +1,11 @@
 #include "Game.hpp"
 
-#include <Engine/World.hpp>
-#include <Engine/Component.hpp>
-#include <Engine/SpriteRenderer.hpp>
-#include <Engine/Window.hpp>
-#include <Engine/WorldManager.hpp>
-#include <Engine/RenderingManager.hpp>
+#include <DTEngine/World.hpp>
+#include <DTEngine/Component.hpp>
+#include <DTEngine/SpriteRenderer.hpp>
+#include <DTEngine/Window.hpp>
+#include <DTEngine/WorldManager.hpp>
+#include <DTEngine/RenderingManager.hpp>
 
 #include "SuperComponent.hpp"
 

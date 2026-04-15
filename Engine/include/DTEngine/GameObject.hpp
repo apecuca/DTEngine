@@ -1,9 +1,10 @@
 #ifndef DTENGINE_GAMEOBJECT_H
 #define DTENGINE_GAMEOBJECT_H
 
-#include "Entity.hpp"
-#include "Component.hpp"
-#include <Engine/EntityHandle.hpp>
+#include <DTEngine/Entity.hpp>
+
+#include <DTEngine/Component.hpp>
+#include <DTEngine/EntityHandle.hpp>
 
 #include <memory>
 #include <ostream>

@@ -6,7 +6,7 @@
 namespace DTEngine
 {
 
-class TimeSystem : InternalSystem
+class TimeSystem : public InternalSystem
 {
 friend class SystemRegistry;
 

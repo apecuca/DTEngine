@@ -1,8 +1,8 @@
 #ifndef DTENGINE_WORLD_H
 #define DTENGINE_WORLD_H
 
-#include "Engine/GameObject.hpp"
-#include <Engine/EntityHandle.hpp>
+#include <DTEngine/GameObject.hpp>
+#include <DTEngine/EntityHandle.hpp>
 
 #include <memory>
 #include <deque>

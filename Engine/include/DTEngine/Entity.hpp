@@ -1,10 +1,10 @@
 #ifndef DTENGINE_ENTITY_H
 #define DTENGINE_ENTITY_H
 
+#include <DTEngine/Utils.hpp>
+
 #include <cstdint>
 #include <vector>
-
-#include "Engine/Utils.hpp"
 
 namespace DTEngine
 {

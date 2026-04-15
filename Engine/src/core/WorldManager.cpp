@@ -1,7 +1,7 @@
-#include <Engine/WorldManager.hpp>
+#include <DTEngine/WorldManager.hpp>
 
-#include <Engine/GameObject.hpp>
-#include <Engine/World.hpp>
+#include <DTEngine/GameObject.hpp>
+#include <DTEngine/World.hpp>
 
 #include "system/SystemRegistry.hpp"
 #include "system/WorldSystem.hpp"

@@ -60,7 +60,7 @@ target_include_directories(Engine
         "${Stb_INCLUDE_DIR}"
     PRIVATE
         "${CMAKE_CURRENT_SOURCE_DIR}/src"
-        "${CMAKE_CURRENT_SOURCE_DIR}/include/Engine"
+        "${CMAKE_CURRENT_SOURCE_DIR}/include/DTEngine"
 )
 
 # ---- linking ----
