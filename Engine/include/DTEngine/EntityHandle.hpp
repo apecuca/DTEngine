@@ -23,14 +23,19 @@ private:
     {
         if (!valid) return;
         valid = ((ptr != nullptr) && ((index == *generation) && !(ptr->markedForDestruction)));
-        if (!valid) ptr == nullptr;
+        if (!valid) ptr = nullptr;
     }
 
 public:
     T* operator->() {
         UpdateValidity();
-        if (valid) return ptr;
-        else return nullptr;
+        return valid ? ptr : nullptr;
+    }
+
+    T* Get()
+    {
+        UpdateValidity();
+        return valid ? ptr : nullptr;
     }
 
     bool operator == (EntityHandle& other) {
