@@ -40,15 +40,19 @@ void SuperComponent::Update()
     float deltaTime = TimeManager::GetDeltaTime();
     gameObject.rotation.z += 40.0f * deltaTime;
 
-    if (InputManager::GetKeyDown(DTK_LCTRL))
-        std::cout << "Pressed!" << std::endl;
-    else if (InputManager::GetKeyUp(DTK_LCTRL))
-        std::cout << "Released!" << std::endl;
-    
-    if (obj) {
-        obj->rotation.z -= 20.0f * deltaTime;
-        timer += deltaTime;
-        if (timer >= 7.5f)
-            WorldManager::Destroy(obj);
+    auto inputs = InputManager::GetInput();
+        if (!inputs.empty()) {
+        std::string str = "Inputs: ";
+        for (const auto& s : inputs) {
+            str += std::to_string(s);
+            str += " ";
+        }
+        std::cout << str << std::endl;
     }
+
+    if (InputManager::GetKeyDown(DTK_LCTRL))
+        std::cout << "Left Ctrl pressed!!" << std::endl;
+    
+    if (obj)
+        obj->rotation.z -= 20.0f * deltaTime;
 }

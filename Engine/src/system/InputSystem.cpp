@@ -143,3 +143,15 @@ bool InputSystem::GetKeyUp(int key) const
 {
 	return keysReleasedThisFrame[key];
 }
+
+std::vector<int> InputSystem::GetInput() const
+{
+	std::vector<int> input = {};
+	
+	for (int i = 0; i < 256; i++) {
+		if (keysPressedThisFrame[i] || keysHeld[i])
+			input.push_back(i);
+	}
+
+	return input;
+}

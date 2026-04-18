@@ -19,3 +19,8 @@ bool InputManager::GetKeyUp(int key)
 {
     return SystemRegistry::GetSystem<InputSystem>()->GetKeyUp(key);
 }
+
+std::vector<int> InputManager::GetInput()
+{
+    return SystemRegistry::GetSystem<InputSystem>()->GetInput();
+}

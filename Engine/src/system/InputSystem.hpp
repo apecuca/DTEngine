@@ -27,6 +27,7 @@ public:
     bool GetKeyDown(int key) const;
     bool GetKey(int key) const;
     bool GetKeyUp(int key) const;
+    std::vector<int> GetInput() const;
 
 protected:
     bool Init() override;

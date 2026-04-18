@@ -6,6 +6,8 @@
 // with the internal input system
 // 
 
+#include <vector>
+
 namespace DTEngine
 {
 
@@ -15,6 +17,7 @@ public:
     static bool GetKeyUp(int key);
     static bool GetKey(int key);
     static bool GetKeyDown(int key);
+    static std::vector<int> GetInput();
 
 private:
     ~InputManager() = default;
