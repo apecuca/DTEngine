@@ -28,10 +28,10 @@ public:
     
 protected:
     bool Init() override;
+    void OnEndOfFrame();
     
 private:
     void UpdateActiveWorld();
-    void OnEndOfFrame();
 
 private:
     std::unique_ptr<World> activeWorld;

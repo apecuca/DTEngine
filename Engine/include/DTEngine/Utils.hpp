@@ -1,6 +1,8 @@
 #ifndef DTENGINE_UTILS_H
 #define DTENGINE_UTILS_H
 
+#define DTK_LCTRL 0xA2
+
 namespace DTEngine
 {
 

@@ -15,6 +15,7 @@ class Window
 friend class RenderingSystem;
 friend class Engine;
 friend class TimeSystem;
+friend class InputSystem;
 
 public:
     ~Window();
@@ -45,7 +46,6 @@ private:
     bool solid;
     bool overridingState;
     int width, height;
-    double mousex, mousey;
     constexpr static float defaultFov = 5.0f;
 
     static DTEngine::Window* instance;

@@ -12,6 +12,7 @@ class RenderingSystem;
 class WorldSystem;
 class PathSystem;
 class TimeSystem;
+class InputSystem;
 class InternalSystem;
 
 class SystemRegistry
@@ -46,6 +47,7 @@ private:
     std::unique_ptr<WorldSystem> worldSystem;
     std::unique_ptr<PathSystem> pathSystem;
     std::unique_ptr<TimeSystem> timeSystem;
+    std::unique_ptr<InputSystem> inputSystem;
 };
 
 }

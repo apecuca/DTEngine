@@ -4,6 +4,9 @@
 #include <DTEngine/GameObject.hpp>
 #include <DTEngine/WorldManager.hpp>
 #include <DTEngine/SpriteRenderer.hpp>
+#include <DTEngine/InputManager.hpp>
+
+#include <DTEngine/Utils.hpp>
 
 #include <iostream>
 
@@ -36,6 +39,11 @@ void SuperComponent::Update()
 {
     float deltaTime = TimeManager::GetDeltaTime();
     gameObject.rotation.z += 40.0f * deltaTime;
+
+    if (InputManager::GetKeyDown(DTK_LCTRL))
+        std::cout << "Pressed!" << std::endl;
+    else if (InputManager::GetKeyUp(DTK_LCTRL))
+        std::cout << "Released!" << std::endl;
     
     if (obj) {
         obj->rotation.z -= 20.0f * deltaTime;

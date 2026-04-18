@@ -4,6 +4,7 @@
 #include "system/RenderingSystem.hpp"
 #include "system/PathSystem.hpp"
 #include "system/TimeSystem.hpp"
+#include "system/InputSystem.hpp"
 
 #include <iostream>
 
@@ -31,6 +32,7 @@ bool SystemRegistry::IsFullyWorking() const
     if (worldSystem == nullptr) return false;
     if (pathSystem == nullptr) return false;
     if (timeSystem == nullptr) return false;
+    if (inputSystem == nullptr) return false;
 
     return true;
 }
@@ -53,13 +55,18 @@ bool SystemRegistry::InitWorks()
     if (!timeSystem->Init()) return false;
     systems[typeid(TimeSystem)] = timeSystem.get();
 
+    inputSystem = std::make_unique<InputSystem>();
+    if (!inputSystem->Init()) return false;
+    systems[typeid(InputSystem)] = inputSystem.get();
+
     return true;
 }
 
 void SystemRegistry::UnloadEverything()
 {
-    timeSystem.reset();
     worldSystem.reset();
+    inputSystem.reset();
+    timeSystem.reset();
     renderingSystem.reset();
     pathSystem.reset();
 }

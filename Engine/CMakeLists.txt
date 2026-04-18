@@ -14,6 +14,7 @@ set(ENGINE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/SystemRegistry.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/TimeSystem.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/WorldSystem.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/system/InputSystem.hpp
 )
 
 set(ENGINE_SOURCES
@@ -25,6 +26,7 @@ set(ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/Utils.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/World.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/core/WorldManager.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/core/InputManager.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/external/stb_image.cpp
 
@@ -39,6 +41,7 @@ set(ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/RenderingSystem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/TimeSystem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/WorldSystem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/system/InputSystem.cpp
 )
 
 # ---- library ----

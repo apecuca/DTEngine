@@ -3,6 +3,7 @@
 #include <DTEngine/Utils.hpp>
 #include "system/SystemRegistry.hpp"
 #include "system/RenderingSystem.hpp"
+#include "system/InputSystem.hpp"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -55,10 +56,8 @@ void Window::ConfigWindow()
 
 void Window::Clear()
 {
-    //glClear(GL_COLOR_BUFFER_BIT);
-    //glClearColor(0.17f, 0.29f, 0.45f, 1.0f);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void Window::SwapBuffers()
@@ -78,8 +77,8 @@ void Window::UpdateSolidState()
     if (overridingState)
         return;
 
-    glfwGetCursorPos(winPtr, &mousex, &mousey);
-    bool newSolid = SystemRegistry::GetSystem<RenderingSystem>()->IsPositionSolid(mousex, mousey, GetSize());
+    Vector2 mousePos = SystemRegistry::GetSystem<InputSystem>()->GetMousePosition();
+    bool newSolid = SystemRegistry::GetSystem<RenderingSystem>()->IsPositionSolid(mousePos.x, mousePos.y, GetSize());
     if (newSolid != solid)
         SetSolidState(newSolid, false);
 }

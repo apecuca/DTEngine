@@ -3,7 +3,7 @@
 
 //
 // This class serves as a communication interface 
-// with the internal world handler
+// with the internal world system
 // 
 
 #include <DTEngine/GameObject.hpp>

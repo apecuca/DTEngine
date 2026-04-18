@@ -3,7 +3,7 @@
 
 //
 // This class serves as a communication interface 
-// with the internal rendering handler
+// with the internal rendering system
 // 
 
 #include <string>

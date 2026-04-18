@@ -8,6 +8,7 @@
 #include "system/SystemRegistry.hpp"
 #include "system/PathSystem.hpp"
 #include "system/TimeSystem.hpp"
+#include "system/InputSystem.hpp"
 
 #include "GLFW/glfw3.h"
 
@@ -40,19 +41,22 @@ void Engine::Run()
     if (!systemRegistry->GetSystem<WorldSystem>()->IsWorldActive())
         throw std::string("No world loaded.");
 
+    // Main systems
+    WorldSystem* sys_world = systemRegistry->GetSystem<WorldSystem>();
+    RenderingSystem* sys_rendering = systemRegistry->GetSystem<RenderingSystem>();
+    TimeSystem* sys_time = systemRegistry->GetSystem<TimeSystem>();
+    InputSystem* sys_input = systemRegistry->GetSystem<InputSystem>();
+
     while (!ShouldStop()) {
         
         //
         // This is the main loop of the engine
         //
-
-        WorldSystem* sys_world = systemRegistry->GetSystem<WorldSystem>();
-        RenderingSystem* sys_rendering = systemRegistry->GetSystem<RenderingSystem>();
-        TimeSystem* sys_time = systemRegistry->GetSystem<TimeSystem>();
         Window* win = Window::GetInstance();
 
         // Update internal pre-render stuff
         win->ReadInputs();
+        sys_input->ReadInputs();
         sys_time->UpdateTimeVariables();
 
         // Update behaviours
@@ -63,6 +67,7 @@ void Engine::Run()
 
         // Finish frame
         sys_world->OnEndOfFrame();
+        sys_input->OnEndOfFrame();
     }
 
     systemRegistry->UnloadEverything();
