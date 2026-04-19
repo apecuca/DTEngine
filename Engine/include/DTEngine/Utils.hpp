@@ -2,9 +2,9 @@
 #define DTENGINE_UTILS_H
 
 // Mouse Input
-#define DTK_MOUSEL      0x01
-#define DTK_MOUSER      0x02
-#define DTK_MOUSEM      0x04
+#define DTK_MOUSEL      0x00
+#define DTK_MOUSER      0x01
+#define DTK_MOUSEM      0x02
 
 // Keyboard Input
 #define DTK_A           0x41

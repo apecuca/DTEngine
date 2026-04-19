@@ -10,7 +10,8 @@
 #include "GLFW/glfw3.h"
 #include "GLFW/glfw3native.h"
 
-HHOOK hHook;
+HHOOK hKeyboardHook;
+HHOOK hMouseHook;
 HWND hwnd;
 
 using namespace  DTEngine;
@@ -21,10 +22,14 @@ InputSystem::~InputSystem()
 {
     instance = nullptr;   
 
-	UnhookWindowsHookEx(hHook);
+	UnhookWindowsHookEx(hKeyboardHook);
+	UnhookWindowsHookEx(hMouseHook);
 }
 
-InputSystem::InputSystem()
+InputSystem::InputSystem() :
+	mouseX(0.0f), 
+	mouseY(0.0f), 
+	unfocusedInput(false)
 {
 	//
 }
@@ -36,52 +41,59 @@ bool InputSystem::Init()
 
 	// Initialize variables
     instance = this;
-	mouseX = 0.0;
-	mouseY = 0.0;
 
 	hwnd = glfwGetWin32Window(Window::instance->winPtr);
-	hHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
-
-    if (hHook == NULL) {
-        std::cerr << "InputSystem: Failed to install keyboard hook!" << std::endl;
-        return false;
-    }
-
 	if (hwnd == NULL) {
 		std::cerr << "InputSystem: Failed to get window pointer!" << std::endl;
 		return false;
 	}
+
+	// Hooks
+
+	hKeyboardHook = SetWindowsHookEx(WH_KEYBOARD_LL, KeyboardProc, NULL, 0);
+    if (hKeyboardHook == NULL) {
+        std::cerr << "InputSystem: Failed to install keyboard hook!" << std::endl;
+        return false;
+    }
+	
+	hMouseHook = SetWindowsHookEx(WH_MOUSE_LL, MouseProc, NULL, 0);
+	if (hMouseHook == NULL) {
+        std::cerr << "InputSystem: Failed to install mouse hook!" << std::endl;
+        return false;
+    }
 
     return true;
 }
 
 void InputSystem::ReadInputs()
 {
-	// Keyboard Inputs
+	// Receive input messages
 	MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);
         DispatchMessage(&msg);
     }
+}
 
-	// Mouse Inputs
-	POINT p;
-	if (GetCursorPos(&p)) {
-		if (ScreenToClient(hwnd, &p)) {
-			float newX = static_cast<float>(p.x);
-			float newY = static_cast<float>(p.y);
-			if (newX != mouseX || newY != mouseY) {
-				mouseX = newX;
-				mouseY = newY;
-			}
-        }
+void InputSystem::ResetInputBuffers()
+{
+	for (int i = 0; i < keyboardKeysQnty; i++) {
+		keysPressedThisFrame[i] = false;
+		keysHeld[i] = false;
+		keysReleasedThisFrame[i] = false;
+	}
+
+	for (int i = 0; i < mButtonsQnty; i++) {
+		mButtonsPressedThisFrame[i] = false;
+		mButtonsHeld[i] = false;
+		mButtonsReleasedThisFrame[i] = false;
 	}
 }
 
 void InputSystem::OnEndOfFrame()
 {
-	// Clear Input buffers
-	for (int i = 0; i < 256; i++) {
+	// Progress keyboard input buffers
+	for (int i = 0; i < keyboardKeysQnty; i++) {
 		// Pressed and held
 		if (keysPressedThisFrame[i]) {
 			keysHeld[i] = !keysReleasedThisFrame[i] ? true : false;
@@ -91,19 +103,81 @@ void InputSystem::OnEndOfFrame()
 		// Released
 		keysReleasedThisFrame[i] = false;
 	}
+
+	// Progress mouse input buffers
+	for (int i = 0; i < mButtonsQnty; i++) {
+		// Pressed and held
+		if (mButtonsPressedThisFrame[i]) {
+			mButtonsHeld[i] = !mButtonsReleasedThisFrame[i] ? true : false;
+			mButtonsPressedThisFrame[i] = false;
+		}
+
+		// Released
+		mButtonsReleasedThisFrame[i] = false;
+	}
 }
 
-LRESULT CALLBACK InputSystem::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) {
+LRESULT CALLBACK InputSystem::KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam) 
+{
     if (nCode >= 0) {
 		KBDLLHOOKSTRUCT* pKeyBoard = (KBDLLHOOKSTRUCT*)lParam;
 		if (wParam == WM_KEYDOWN) instance->OnKeyChanged(pKeyBoard->vkCode, KeyState::PRESSED);
 		else if (wParam == WM_KEYUP) instance->OnKeyChanged(pKeyBoard->vkCode, KeyState::RELEASED);
 	}
+	
+    return CallNextHookEx(NULL, nCode, wParam, lParam);
+}
+
+LRESULT CALLBACK InputSystem::MouseProc(int nCode, WPARAM wParam, LPARAM lParam) 
+{
+	if (nCode >= 0) {
+		MSLLHOOKSTRUCT* pMouse = (MSLLHOOKSTRUCT*)lParam;
+
+		switch (wParam) {
+			case WM_MOUSEMOVE:
+				instance->mouseX = static_cast<float>(pMouse->pt.x);
+				instance->mouseY = static_cast<float>(pMouse->pt.y);
+				break;
+
+			case WM_LBUTTONDOWN:
+				instance->OnMouseKeyChanged(0, KeyState::PRESSED);
+				break;
+
+			case WM_LBUTTONUP:
+				instance->OnMouseKeyChanged(0, KeyState::RELEASED);
+                break;
+
+            case WM_RBUTTONDOWN:
+				instance->OnMouseKeyChanged(1, KeyState::PRESSED);
+                break;
+
+            case WM_RBUTTONUP:
+				instance->OnMouseKeyChanged(1, KeyState::RELEASED);
+                break;
+
+            case WM_MOUSEWHEEL:
+                break;
+
+			case WM_MBUTTONDOWN:
+				instance->OnMouseKeyChanged(2, KeyState::PRESSED);
+				break;
+				
+			case WM_MBUTTONUP:
+				instance->OnMouseKeyChanged(2, KeyState::RELEASED);
+				break;
+
+			default: break;
+		}
+	}
+	
     return CallNextHookEx(NULL, nCode, wParam, lParam);
 }
 
 void InputSystem::OnKeyChanged(int keyCode, KeyState state)
 {
+	if (!Window::instance->solid && !unfocusedInput)
+		return;
+	
 	switch (state)
 	{
 		case PRESSED:
@@ -120,14 +194,73 @@ void InputSystem::OnKeyChanged(int keyCode, KeyState state)
 	}
 }
 
+void InputSystem::OnMouseKeyChanged(int keyCode, KeyState state)
+{
+	if (!Window::instance->solid && !unfocusedInput)
+		return;
+	
+	switch (state)
+	{
+		case PRESSED:
+			if (!mButtonsHeld[keyCode])
+				mButtonsPressedThisFrame[keyCode] = true;
+			break;
+
+		case RELEASED:
+			mButtonsHeld[keyCode] = false;
+			mButtonsReleasedThisFrame[keyCode] = true;
+			break;
+
+		default: break;
+	}
+}
+
 //
-// GETTERS 
+// GETTERS AND SETTERS
+//
+
+//
+// Misc
+//
+
+void InputSystem::SetUnfocusedInput(bool value)
+{
+    unfocusedInput = value;
+	ResetInputBuffers();
+}
+
+bool InputSystem::GetUnfocusedInput() const
+{
+    return unfocusedInput;
+}
+
+//
+// Mouse
 //
 
 Vector2 InputSystem::GetMousePosition() const
 {
 	return Vector2(mouseX, mouseY);
 }
+
+bool InputSystem::GetMouseButtonDown(int button) const
+{
+	return mButtonsPressedThisFrame[button];
+}
+
+bool InputSystem::GetMouseButton(int button) const
+{
+	return mButtonsHeld[button];
+}
+
+bool InputSystem::GetMouseButtonUp(int button) const
+{
+	return mButtonsReleasedThisFrame[button];	
+}
+
+//
+// KEYBOARD
+//
 
 bool InputSystem::GetKeyDown(int key) const
 {
@@ -136,7 +269,7 @@ bool InputSystem::GetKeyDown(int key) const
 
 bool InputSystem::GetKey(int key) const
 {
-	return (keysPressedThisFrame[key] || keysHeld[key]);
+	return keysHeld[key];
 }
 
 bool InputSystem::GetKeyUp(int key) const
@@ -147,7 +280,7 @@ bool InputSystem::GetKeyUp(int key) const
 std::vector<int> InputSystem::GetInput() const
 {
 	std::vector<int> input = {};
-	
+
 	for (int i = 0; i < 256; i++) {
 		if (keysPressedThisFrame[i] || keysHeld[i])
 			input.push_back(i);

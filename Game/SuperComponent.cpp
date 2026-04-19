@@ -40,18 +40,15 @@ void SuperComponent::Update()
     float deltaTime = TimeManager::GetDeltaTime();
     gameObject.rotation.z += 40.0f * deltaTime;
 
-    auto inputs = InputManager::GetInput();
-        if (!inputs.empty()) {
-        std::string str = "Inputs: ";
-        for (const auto& s : inputs) {
-            str += std::to_string(s);
-            str += " ";
-        }
-        std::cout << str << std::endl;
-    }
+    if (InputManager::GetMouseButtonDown(0))
+        std::cout << "Pressionou 0!" << std::endl;
+    else if (InputManager::GetMouseButton(0))
+        std::cout << "Segurou 0!" << std::endl;
+    else if (InputManager::GetMouseButtonUp(0))
+        std::cout << "Soltou 0!" << std::endl;
 
     if (InputManager::GetKeyDown(DTK_LCTRL))
-        std::cout << "Left Ctrl pressed!!" << std::endl;
+        InputManager::SetUnfocusedInput(!InputManager::GetUnfocusedInput());
     
     if (obj)
         obj->rotation.z -= 20.0f * deltaTime;
