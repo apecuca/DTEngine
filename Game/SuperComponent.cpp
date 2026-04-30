@@ -5,6 +5,7 @@
 #include <DTEngine/WorldManager.hpp>
 #include <DTEngine/SpriteRenderer.hpp>
 #include <DTEngine/InputManager.hpp>
+#include <DTEngine/Window.hpp>
 
 #include <DTEngine/Utils.hpp>
 
@@ -33,6 +34,7 @@ void SuperComponent::Start()
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);
+    Window::GetInstance()->SetSolidState(false, true);
 }
 
 void SuperComponent::Update()

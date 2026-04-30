@@ -4,7 +4,6 @@
 #include "system/InternalSystem.hpp"
 
 #include <vector>
-#include <windows.h>
 
 class GLFWwindow;
 
@@ -43,13 +42,6 @@ private:
     void ReadInputs();
     void ResetInputBuffers();
 
-    enum KeyState { PRESSED, RELEASED };
-    void OnKeyChanged(int keyCode, KeyState state);
-    void OnMouseKeyChanged(int keyCode, KeyState state);
-
-    static LRESULT CALLBACK KeyboardProc(int nCode, WPARAM wParam, LPARAM lParam);
-    static LRESULT CALLBACK MouseProc(int nCode, WPARAM wParam, LPARAM lParam);
-
 private:
     bool unfocusedInput;
 
@@ -64,8 +56,6 @@ private:
     bool mButtonsPressedThisFrame[mButtonsQnty] = {};
     bool mButtonsHeld[mButtonsQnty] = {};
     bool mButtonsReleasedThisFrame[mButtonsQnty] = {};
-
-    static InputSystem* instance;
 };
 
 }
