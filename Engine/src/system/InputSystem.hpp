@@ -5,6 +5,9 @@
 
 #include <vector>
 
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
+
 class GLFWwindow;
 
 namespace DTEngine
@@ -41,6 +44,8 @@ protected:
 private:
     void ReadInputs();
     void ResetInputBuffers();
+    static LRESULT CALLBACK WndProcHook(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+    void OnRawInput(HRAWINPUT handle);
 
 private:
     bool unfocusedInput;
@@ -56,6 +61,11 @@ private:
     bool mButtonsPressedThisFrame[mButtonsQnty] = {};
     bool mButtonsHeld[mButtonsQnty] = {};
     bool mButtonsReleasedThisFrame[mButtonsQnty] = {};
+
+    HWND m_hwnd = nullptr;
+    WNDPROC m_prevWndProc = nullptr;
+
+    static InputSystem* instance;
 };
 
 }

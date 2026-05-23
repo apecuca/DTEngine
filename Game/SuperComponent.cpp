@@ -34,7 +34,6 @@ void SuperComponent::Start()
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);
-    Window::GetInstance()->SetSolidState(false, true);
 }
 
 void SuperComponent::Update()
@@ -49,7 +48,7 @@ void SuperComponent::Update()
     else if (InputManager::GetMouseButtonUp(0))
         std::cout << "Soltou 0!" << std::endl;
 
-    if (InputManager::GetKeyDown(DTK_LCTRL))
+    if (InputManager::GetKey(DTK_A))
         InputManager::SetUnfocusedInput(!InputManager::GetUnfocusedInput());
     
     if (obj)
