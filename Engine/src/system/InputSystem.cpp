@@ -67,6 +67,9 @@ LRESULT CALLBACK InputSystem::WndProcHook(HWND hwnd, UINT msg, WPARAM wParam, LP
 
 void InputSystem::OnRawInput(HRAWINPUT handle)
 {
+    bool ignoreLCtrl = rAltClickedLastFrame;
+    rAltClickedLastFrame = false;
+
     UINT size = 0;
     GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
     if (size == 0) return;
@@ -82,9 +85,25 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
         if (!unfocusedInput && !Window::GetInstance()->solid)
             return;
 
-        USHORT vkey  = raw->data.keyboard.VKey;
-        USHORT flags = raw->data.keyboard.Flags;
-        if (vkey >= keyboardKeysQnty) return;
+        USHORT vkey     = raw->data.keyboard.VKey;
+        USHORT scanCode = raw->data.keyboard.MakeCode;
+        USHORT flags    = raw->data.keyboard.Flags;
+        bool   isE0     = (flags & RI_KEY_E0) != 0;
+
+        switch (vkey)
+        {
+            case VK_SHIFT:
+                vkey = (USHORT)MapVirtualKey(scanCode, MAPVK_VSC_TO_VK_EX);
+                break;
+            case VK_CONTROL:
+                vkey = isE0 ? VK_RCONTROL : VK_LCONTROL;
+                break;
+            case VK_MENU:
+                vkey = isE0 ? VK_RMENU : VK_LMENU;
+                break;
+        }
+
+        if (vkey == 0 || vkey >= keyboardKeysQnty) return;
 
         bool isDown = !(flags & RI_KEY_BREAK);
         if (isDown  && !keysHeld[vkey]) keysPressedThisFrame[vkey]  = true;

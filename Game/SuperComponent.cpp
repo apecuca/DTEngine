@@ -41,15 +41,14 @@ void SuperComponent::Update()
     float deltaTime = TimeManager::GetDeltaTime();
     gameObject.rotation.z += 40.0f * deltaTime;
 
-    if (InputManager::GetMouseButtonDown(0))
-        std::cout << "Pressionou 0!" << std::endl;
-    else if (InputManager::GetMouseButton(0))
-        std::cout << "Segurou 0!" << std::endl;
-    else if (InputManager::GetMouseButtonUp(0))
-        std::cout << "Soltou 0!" << std::endl;
-
-    if (InputManager::GetKey(DTK_A))
-        InputManager::SetUnfocusedInput(!InputManager::GetUnfocusedInput());
+    if (InputManager::GetKeyDown(DTK_LCTRL))    std::cout << "Apertou Left Ctrl!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_RCTRL))    std::cout << "Apertou Right Ctrl!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_LSHIFT))    std::cout << "Apertou Left Shift!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_RSHIFT))    std::cout << "Apertou Right Shift!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_LALT))    std::cout << "Apertou Left Alt!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_RALT))    std::cout << "Apertou Right Alt!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_LWIN))    std::cout << "Apertou Left Win!" << std::endl;
+    if (InputManager::GetKeyDown(DTK_RWIN))    std::cout << "Apertou Right Win!" << std::endl;
     
     if (obj)
         obj->rotation.z -= 20.0f * deltaTime;
