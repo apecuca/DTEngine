@@ -54,6 +54,11 @@ Vector2 InputManager::GetMousePosition()
     return SystemRegistry::GetSystem<InputSystem>()->GetMousePosition();
 }
 
+float InputManager::GetMouseWheel()
+{
+    return SystemRegistry::GetSystem<InputSystem>()->GetMouseWheel();
+}
+
 bool InputManager::GetMouseButtonDown(int button)
 {
     return SystemRegistry::GetSystem<InputSystem>()->GetMouseButtonDown(button);

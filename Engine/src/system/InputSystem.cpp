@@ -115,6 +115,10 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
         constexpr USHORT downFlags[3] = { RI_MOUSE_BUTTON_1_DOWN, RI_MOUSE_BUTTON_2_DOWN, RI_MOUSE_BUTTON_3_DOWN };
         constexpr USHORT upFlags[3]   = { RI_MOUSE_BUTTON_1_UP,   RI_MOUSE_BUTTON_2_UP,   RI_MOUSE_BUTTON_3_UP   };
 
+
+        if ((bf & RI_MOUSE_WHEEL) && (unfocusedInput || Window::GetInstance()->solid))
+            wheelDelta += static_cast<float>(static_cast<short>(raw->data.mouse.usButtonData)) / WHEEL_DELTA;
+
         for (int i = 0; i < (int)mButtonsQnty; i++)
         {
             if (bf & downFlags[i]) RegisterMouseButtonEvent(MouseButtonEvent(i, true));
@@ -191,6 +195,7 @@ void InputSystem::OnEndOfFrame()
         mButtonsPressedThisFrame[i]  = false;
         mButtonsReleasedThisFrame[i] = false;
     }
+    wheelDelta = 0.0f;
 }
 
 //
@@ -219,6 +224,11 @@ bool InputSystem::GetUnfocusedInput() const
 Vector2 InputSystem::GetMousePosition() const
 {
 	return Vector2(mouseX, mouseY);
+}
+
+float InputSystem::GetMouseWheel() const
+{
+    return wheelDelta;
 }
 
 bool InputSystem::GetMouseButtonDown(int button) const

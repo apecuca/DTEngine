@@ -10,6 +10,7 @@
 #include <DTEngine/Utils.hpp>
 
 #include <iostream>
+#include <string>
 
 using namespace DTEngine;
 
@@ -49,6 +50,10 @@ void SuperComponent::Update()
     if (InputManager::GetKeyDown(DTK_RALT))    std::cout << "Apertou Right Alt!" << std::endl;
     if (InputManager::GetKeyDown(DTK_LWIN))    std::cout << "Apertou Left Win!" << std::endl;
     if (InputManager::GetKeyDown(DTK_RWIN))    std::cout << "Apertou Right Win!" << std::endl;
+
+    float wheelDelta = InputManager::GetMouseWheel();
+    if (wheelDelta != 0)
+        std::cout << std::to_string(wheelDelta) << std::endl;
     
     if (obj)
         obj->rotation.z -= 20.0f * deltaTime;

@@ -20,6 +20,7 @@ public:
     static bool GetUnfocusedInput();
 
     static Vector2 GetMousePosition();
+    static float GetMouseWheel();
     static bool GetMouseButtonDown(int button);
     static bool GetMouseButton(int button);
     static bool GetMouseButtonUp(int button);

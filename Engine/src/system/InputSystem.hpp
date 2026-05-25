@@ -12,6 +12,7 @@ class GLFWwindow;
 
 namespace DTEngine
 {
+
 class Vector2;
 struct KeyboardEvent;
 struct MouseButtonEvent;
@@ -30,6 +31,7 @@ public:
     bool GetUnfocusedInput() const;
 
     Vector2 GetMousePosition() const;
+    float GetMouseWheel() const;
     bool GetMouseButtonDown(int button) const;
     bool GetMouseButton(int button) const;
     bool GetMouseButtonUp(int button) const;
@@ -55,6 +57,7 @@ private:
     bool unfocusedInput;
 
     float mouseX, mouseY;
+    float wheelDelta = 0.0f;
 
     static constexpr unsigned int keyboardKeysQnty = 256;
     bool keysPressedThisFrame[keyboardKeysQnty] = {};
