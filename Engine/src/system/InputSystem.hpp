@@ -13,6 +13,7 @@ class GLFWwindow;
 namespace DTEngine
 {
 class Vector2;
+struct KeyboardEvent;
     
 class InputSystem : public InternalSystem
 {
@@ -46,6 +47,7 @@ private:
     void ResetInputBuffers();
     static LRESULT CALLBACK WndProcHook(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
     void OnRawInput(HRAWINPUT handle);
+    void RegisterKeyboardEvent(const KeyboardEvent& e);
 
 private:
     bool unfocusedInput;
@@ -61,6 +63,8 @@ private:
     bool mButtonsPressedThisFrame[mButtonsQnty] = {};
     bool mButtonsHeld[mButtonsQnty] = {};
     bool mButtonsReleasedThisFrame[mButtonsQnty] = {};
+
+    std::vector<KeyboardEvent> keyboardQueue;
 
     HWND m_hwnd = nullptr;
     WNDPROC m_prevWndProc = nullptr;

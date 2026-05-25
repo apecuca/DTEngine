@@ -8,6 +8,8 @@ project(Engine LANGUAGES C CXX)
 # ---- sources ----
 
 set(ENGINE_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/utils/InputUtils.hpp
+
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/InternalSystem.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/PathSystem.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/RenderingSystem.hpp

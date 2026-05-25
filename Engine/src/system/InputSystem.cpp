@@ -3,6 +3,7 @@
 #include <DTEngine/Window.hpp>
 #include <DTEngine/Utils.hpp>
 #include "system/SystemRegistry.hpp"
+#include "utils/InputUtils.hpp"
 
 #include <iostream>
 
@@ -32,7 +33,7 @@ InputSystem::~InputSystem()
 InputSystem::InputSystem() :
 	mouseX(0.0f), 
 	mouseY(0.0f), 
-	unfocusedInput(false)
+	unfocusedInput(true)
 {
 	//
 }
@@ -67,9 +68,6 @@ LRESULT CALLBACK InputSystem::WndProcHook(HWND hwnd, UINT msg, WPARAM wParam, LP
 
 void InputSystem::OnRawInput(HRAWINPUT handle)
 {
-    bool ignoreLCtrl = rAltClickedLastFrame;
-    rAltClickedLastFrame = false;
-
     UINT size = 0;
     GetRawInputData(handle, RID_INPUT, nullptr, &size, sizeof(RAWINPUTHEADER));
     if (size == 0) return;
@@ -82,9 +80,6 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
 
     if (raw->header.dwType == RIM_TYPEKEYBOARD)
     {
-        if (!unfocusedInput && !Window::GetInstance()->solid)
-            return;
-
         USHORT vkey     = raw->data.keyboard.VKey;
         USHORT scanCode = raw->data.keyboard.MakeCode;
         USHORT flags    = raw->data.keyboard.Flags;
@@ -106,9 +101,7 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
         if (vkey == 0 || vkey >= keyboardKeysQnty) return;
 
         bool isDown = !(flags & RI_KEY_BREAK);
-        if (isDown  && !keysHeld[vkey]) keysPressedThisFrame[vkey]  = true;
-        if (!isDown &&  keysHeld[vkey]) keysReleasedThisFrame[vkey] = true;
-        keysHeld[vkey] = isDown;
+        RegisterKeyboardEvent(KeyboardEvent(vkey, isDown));
     }
     else if (raw->header.dwType == RIM_TYPEMOUSE)
     {
@@ -118,12 +111,12 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
         mouseX = static_cast<float>(pt.x);
         mouseY = static_cast<float>(pt.y);
 
-        if (!unfocusedInput && !Window::GetInstance()->solid)
-            return;
-
         const USHORT bf = raw->data.mouse.usButtonFlags;
         constexpr USHORT downFlags[3] = { RI_MOUSE_BUTTON_1_DOWN, RI_MOUSE_BUTTON_2_DOWN, RI_MOUSE_BUTTON_3_DOWN };
         constexpr USHORT upFlags[3]   = { RI_MOUSE_BUTTON_1_UP,   RI_MOUSE_BUTTON_2_UP,   RI_MOUSE_BUTTON_3_UP   };
+
+        if (!unfocusedInput && !Window::GetInstance()->solid)
+            return;
 
         for (int i = 0; i < (int)mButtonsQnty; i++)
         {
@@ -133,9 +126,30 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
     }
 }
 
+void InputSystem::RegisterKeyboardEvent(const KeyboardEvent& e)
+{
+    if (!unfocusedInput && !Window::GetInstance()->solid)
+        return;
+
+    keyboardQueue.push_back(e);
+}
+
 void InputSystem::ReadInputs()
 {
-	//
+    for (size_t i = 0; i < keyboardQueue.size(); i++) {
+        auto e = keyboardQueue.at(i); 
+
+        if (e.key == VK_RCONTROL) {
+            if (i + 1 < keyboardQueue.size() && keyboardQueue.at(i + 1).key == VK_RMENU)
+                continue;
+        }
+
+        if (e.pressed && !keysHeld[e.key]) keysPressedThisFrame[e.key] = true;
+        if (!e.pressed && keysHeld[e.key]) keysReleasedThisFrame[e.key] = true;
+        keysHeld[e.key] = e.pressed;
+    }
+
+    keyboardQueue.clear();
 }
 
 void InputSystem::ResetInputBuffers()
