@@ -14,7 +14,18 @@ public:
 
 	int key;
 	bool pressed;
+};
 
+struct MouseButtonEvent
+{
+public:
+	MouseButtonEvent() = default;
+	MouseButtonEvent(int _button, bool _pressed) :
+		button(_button), pressed(_pressed)
+	{ }
+
+	int button;
+	bool pressed;
 };
 
 }

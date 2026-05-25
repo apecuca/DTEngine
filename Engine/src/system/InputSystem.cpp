@@ -115,13 +115,10 @@ void InputSystem::OnRawInput(HRAWINPUT handle)
         constexpr USHORT downFlags[3] = { RI_MOUSE_BUTTON_1_DOWN, RI_MOUSE_BUTTON_2_DOWN, RI_MOUSE_BUTTON_3_DOWN };
         constexpr USHORT upFlags[3]   = { RI_MOUSE_BUTTON_1_UP,   RI_MOUSE_BUTTON_2_UP,   RI_MOUSE_BUTTON_3_UP   };
 
-        if (!unfocusedInput && !Window::GetInstance()->solid)
-            return;
-
         for (int i = 0; i < (int)mButtonsQnty; i++)
         {
-            if (bf & downFlags[i]) { if (!mButtonsHeld[i]) mButtonsPressedThisFrame[i] = true;  mButtonsHeld[i] = true;  }
-            if (bf & upFlags[i])   {                       mButtonsReleasedThisFrame[i] = true; mButtonsHeld[i] = false; }
+            if (bf & downFlags[i]) RegisterMouseButtonEvent(MouseButtonEvent(i, true));
+            if (bf & upFlags[i])   RegisterMouseButtonEvent(MouseButtonEvent(i, false));
         }
     }
 }
@@ -132,6 +129,14 @@ void InputSystem::RegisterKeyboardEvent(const KeyboardEvent& e)
         return;
 
     keyboardQueue.push_back(e);
+}
+
+void InputSystem::RegisterMouseButtonEvent(const MouseButtonEvent& e)
+{
+    if (!unfocusedInput && !Window::GetInstance()->solid)
+        return;
+
+    mouseButtonQueue.push_back(e);
 }
 
 void InputSystem::ReadInputs()
@@ -150,6 +155,15 @@ void InputSystem::ReadInputs()
     }
 
     keyboardQueue.clear();
+
+    for (const auto& e : mouseButtonQueue)
+    {
+        if (e.pressed  && !mButtonsHeld[e.button]) mButtonsPressedThisFrame[e.button]  = true;
+        if (!e.pressed &&  mButtonsHeld[e.button]) mButtonsReleasedThisFrame[e.button] = true;
+        mButtonsHeld[e.button] = e.pressed;
+    }
+
+    mouseButtonQueue.clear();
 }
 
 void InputSystem::ResetInputBuffers()

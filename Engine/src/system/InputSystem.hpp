@@ -14,6 +14,7 @@ namespace DTEngine
 {
 class Vector2;
 struct KeyboardEvent;
+struct MouseButtonEvent;
     
 class InputSystem : public InternalSystem
 {
@@ -48,6 +49,7 @@ private:
     static LRESULT CALLBACK WndProcHook(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
     void OnRawInput(HRAWINPUT handle);
     void RegisterKeyboardEvent(const KeyboardEvent& e);
+    void RegisterMouseButtonEvent(const MouseButtonEvent& e);
 
 private:
     bool unfocusedInput;
@@ -65,6 +67,7 @@ private:
     bool mButtonsReleasedThisFrame[mButtonsQnty] = {};
 
     std::vector<KeyboardEvent> keyboardQueue;
+    std::vector<MouseButtonEvent> mouseButtonQueue;
 
     HWND m_hwnd = nullptr;
     WNDPROC m_prevWndProc = nullptr;
