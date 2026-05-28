@@ -12,6 +12,8 @@
 #include <glad/glad.h>
 #include "GLFW/glfw3.h"
 
+#include <algorithm>
+
 using namespace DTEngine;
 
 RenderingSystem::~RenderingSystem()
@@ -300,6 +302,21 @@ Sprite& RenderingSystem::GetSprite(int spriteIndex)
         throw std::string("Shader index out of bounds");
 
     return *(loadedSprites[spriteIndex].get());
+}
+
+void RenderingSystem::SetAnimationFramerate(int framerate)
+{
+    animationFramerate = framerate;
+}
+
+int RenderingSystem::GetAnimationFramerate() const
+{
+    return animationFramerate;
+}
+
+float RenderingSystem::GetFramesInTimeInterval(float time) const
+{
+    return (time * (float)animationFramerate);
 }
 
 bool RenderingSystem::IsPositionSolid(int x, int y, Vector2 size) const

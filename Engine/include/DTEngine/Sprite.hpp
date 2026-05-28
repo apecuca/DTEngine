@@ -12,13 +12,23 @@ friend class SpriteRenderer;
 
 public:
     ~Sprite();
+    Sprite() = default;
     Sprite(unsigned char* data, int _width, int _height, float _pixelsPerUnit, int nrChannels);
 
-public:
-    Vector2 GetSize();
+    //MyClass& operator=(const MyClass& other)
+    Sprite& operator = (const Sprite& other) {
+        pixelsPerUnit = other.pixelsPerUnit;
+        width = other.width;
+        height = other.height;
+
+        return *this;
+    };
 
 public:
-    const float pixelsPerUnit;
+    Vector2 GetSize() const;
+
+public:
+    float pixelsPerUnit = 100.0f;
 
 private:
     int width, height;

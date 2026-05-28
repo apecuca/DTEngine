@@ -36,7 +36,7 @@ Sprite::Sprite(unsigned char* data, int _width, int _height, float _pixelsPerUni
     glGenerateMipmap(GL_TEXTURE_2D);
 }
 
-Vector2 Sprite::GetSize()
+Vector2 Sprite::GetSize() const
 {
     return Vector2(width, height);
 }

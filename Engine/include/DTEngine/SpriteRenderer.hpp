@@ -6,9 +6,10 @@
 namespace DTEngine 
 {
 
-class SpriteRenderer : public Component
+class SpriteRenderer final : public Component
 {
 friend class RenderingSystem;
+friend class Animator;
 
 public:
     virtual ~SpriteRenderer();
@@ -24,12 +25,15 @@ private:
 
     void RenderCall();
 
+    void SetAnimationSprite(int spriteIndex);
+
 public:
     Vector4 color;
 
 private:
     int usedShaderId = 0;
     int usedSpriteId = 0;
+    int animationSpriteId = -1;
 
     unsigned int VAO, VBO, EBO; 
 };

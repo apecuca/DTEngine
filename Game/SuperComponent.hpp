@@ -3,6 +3,7 @@
 #include <DTEngine/Component.hpp>
 #include <DTEngine/GameObject.hpp>
 #include <DTEngine/EntityHandle.hpp>
+#include <DTEngine/Animator.hpp>
 
 using namespace DTEngine;
 
@@ -21,6 +22,6 @@ public:
 
 private:
     EntityHandle<GameObject> obj;
-    float timer = 0.0f;
+    EntityHandle<Animator> anim;
 
 };

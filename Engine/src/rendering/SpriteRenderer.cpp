@@ -7,6 +7,7 @@
 #include <DTEngine/Window.hpp>
 #include "system/RenderingSystem.hpp"
 #include "system/SystemRegistry.hpp"
+#include <DTEngine/Animator.hpp>
 
 #include "glad/glad.h"
 #include <glm/glm.hpp>
@@ -25,7 +26,7 @@ SpriteRenderer::~SpriteRenderer()
 }
 
 SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
-Component(_gameObject)
+    Component(_gameObject), animationSpriteId(-1)
 {
     SystemRegistry::GetSystem<RenderingSystem>()->AddRenderSource(this);
     
@@ -92,7 +93,7 @@ void SpriteRenderer::RenderCall()
 {
     RenderingSystem* rend = SystemRegistry::GetSystem<RenderingSystem>();
     Window* window = Window::GetInstance();
-    Sprite& sprt = rend->GetSprite(usedSpriteId);
+    Sprite& sprt = animationSpriteId != -1 ? rend->GetSprite(animationSpriteId) : rend->GetSprite(usedSpriteId);
     Shader& shad = rend->GetShader(usedShaderId);
 
     // Cool variables :)
@@ -152,4 +153,9 @@ void SpriteRenderer::SetShader(int shaderIndex)
 void SpriteRenderer::SetSprite(int spriteIndex)
 {
     usedSpriteId = spriteIndex;
+}
+
+void SpriteRenderer::SetAnimationSprite(int spriteIndex)
+{
+    animationSpriteId = spriteIndex;
 }

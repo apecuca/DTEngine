@@ -35,26 +35,27 @@ void SuperComponent::Start()
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);
+
+    anim = obj->AddComponent<Animator>();
+
+    AnimationClip clip1(true);
+    clip1.InsertFrame(0, 12);
+    clip1.InsertFrame(1, 12);
+    anim->AddClip(clip1);
+
+    AnimationClip clip2(true);
+    clip2.InsertFrame(1, 6);
+    clip2.InsertFrame(2, 6);
+    anim->AddClip(clip2);
 }
 
 void SuperComponent::Update()
 {
-    float deltaTime = TimeManager::GetDeltaTime();
-    gameObject.rotation.z += 40.0f * deltaTime;
-
-    if (InputManager::GetKeyDown(DTK_LCTRL))    std::cout << "Apertou Left Ctrl!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_RCTRL))    std::cout << "Apertou Right Ctrl!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_LSHIFT))    std::cout << "Apertou Left Shift!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_RSHIFT))    std::cout << "Apertou Right Shift!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_LALT))    std::cout << "Apertou Left Alt!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_RALT))    std::cout << "Apertou Right Alt!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_LWIN))    std::cout << "Apertou Left Win!" << std::endl;
-    if (InputManager::GetKeyDown(DTK_RWIN))    std::cout << "Apertou Right Win!" << std::endl;
-
-    float wheelDelta = InputManager::GetMouseWheel();
-    if (wheelDelta != 0)
-        std::cout << std::to_string(wheelDelta) << std::endl;
-    
-    if (obj)
-        obj->rotation.z -= 20.0f * deltaTime;
+    if (InputManager::GetKeyDown(DTK_LCTRL)) anim->Play(1);
+    if (InputManager::GetKeyUp(DTK_LCTRL)) anim->Play(0);
+    if (InputManager::GetKeyDown(DTK_P)) anim->Pause();
+    if (InputManager::GetKeyDown(DTK_R)) anim->Play();
+    if (InputManager::GetKeyDown(DTK_S)) anim->Stop();
+    if (InputManager::GetKeyDown(DTK_RIGHT)) anim->speed += 0.5f;
+    if (InputManager::GetKeyDown(DTK_LEFT)) anim->speed -= 0.25f;
 }

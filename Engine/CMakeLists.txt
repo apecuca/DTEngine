@@ -2,8 +2,10 @@ cmake_minimum_required(VERSION 3.31.6)
 
 # ---- config ----
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-project(Engine LANGUAGES C CXX)
+project(Engine 
+    LANGUAGES C CXX)
+set(CMAKE_CXX_STANDARD			20)
+set(CMAKE_CXX_STANDARD_REQUIRED	ON)
 
 # ---- sources ----
 
@@ -37,6 +39,8 @@ set(ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/Sprite.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/SpriteRenderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/Window.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/Animator.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/AnimationClip.cpp
     
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/SystemRegistry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/PathSystem.cpp

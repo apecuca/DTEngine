@@ -19,6 +19,7 @@ class RenderingSystem : public InternalSystem
 {
 friend class SystemRegistry;
 friend class RenderingManager;
+friend class Engine;
 
 public:
     virtual ~RenderingSystem();
@@ -38,10 +39,12 @@ public:
     Sprite& GetSprite(int spriteIndex);
     int LoadSprite(const std::string& file, float pixelsPerUnit);
     void LoadInternalSprite(const std::string& file, float pixelsPerUnit);
+
+    void SetAnimationFramerate(int framerate);
+    int GetAnimationFramerate() const;
+    float GetFramesInTimeInterval(float time) const;
     
     bool IsPositionSolid(int x, int y, Vector2 size) const;
-    
-    void RenderCycle();
     
 protected:
     bool Init() override;
@@ -49,6 +52,7 @@ protected:
 private:
     bool InitAndConfigWindow();
     bool ConfigPostProcessing();
+    void RenderCycle();
 
     enum RenderPassType { WORLD };
     void RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType);
@@ -60,6 +64,8 @@ private:
     std::vector<std::unique_ptr<Sprite>> loadedSprites;
 
     std::vector<SpriteRenderer*> renderers;
+
+    int animationFramerate = 24;
 
     // Frame Buffer Object, Frame Buffer Texture, Render Buffer Object
     unsigned int worldFBO, worldFBT, worldRBO;
