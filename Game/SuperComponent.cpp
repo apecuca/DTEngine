@@ -32,6 +32,8 @@ void SuperComponent::Awake()
 
 void SuperComponent::Start()
 {
+    gameObject.clickable = false;
+
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);

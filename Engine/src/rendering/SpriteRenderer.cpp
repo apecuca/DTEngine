@@ -89,12 +89,12 @@ void SpriteRenderer::Update()
     //
 }
 
-void SpriteRenderer::RenderCall()
+void SpriteRenderer::RenderCall(Shader* overrideShader)
 {
     RenderingSystem* rend = SystemRegistry::GetSystem<RenderingSystem>();
     Window* window = Window::GetInstance();
     Sprite& sprt = animationSpriteId != -1 ? rend->GetSprite(animationSpriteId) : rend->GetSprite(usedSpriteId);
-    Shader& shad = rend->GetShader(usedShaderId);
+    Shader& shad = overrideShader ? *overrideShader : rend->GetShader(usedShaderId);
 
     // Cool variables :)
     Vector2 winSize = window->GetSize();

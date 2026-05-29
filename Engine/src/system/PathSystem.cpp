@@ -64,9 +64,10 @@ PathSystem::~PathSystem()
     //
 }
 
-PathSystem::PathSystem()
+PathSystem::PathSystem(const std::string& assetsPath, const std::string& resourcesPath)
 {
-    //
+    SetAssetsPath(assetsPath);
+    SetResourcesPath(resourcesPath);
 }
 
 bool PathSystem::Init()
@@ -77,13 +78,25 @@ bool PathSystem::Init()
 void PathSystem::SetAssetsPath(const std::string& path)
 {
     assetsPath = path;
-    if (*assetsPath.end() != '/')
+    if (assetsPath.back() != '/')
         assetsPath += "/";
 }
 
 std::string PathSystem::GetAssetsPath() const
 {
     return assetsPath;
+}
+
+void PathSystem::SetResourcesPath(const std::string& path)
+{
+    resourcesPath = path;
+    if (resourcesPath.back() != '/')
+        resourcesPath += "/";
+}
+
+std::string PathSystem::GetResourcesPath() const
+{
+    return resourcesPath;
 }
 
 std::string PathSystem::GetFileContents(const std::string& path) const

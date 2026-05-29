@@ -34,7 +34,7 @@ public:
     }
 
 private:
-    bool InitWorks();
+    bool InitWorks(const std::string& assetsPath, const std::string& resourcesPath);
     bool IsFullyWorking() const;
     void UnloadEverything();
 

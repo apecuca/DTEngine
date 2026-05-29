@@ -34,13 +34,14 @@ friend class SystemRegistry;
 
 public:
     ~PathSystem();
-    PathSystem();
+    PathSystem(const std::string& assetsPath, const std::string& resourcesPath);
 
 public:
     void SetAssetsPath(const std::string& path);
     std::string GetAssetsPath() const;
 
-    inline std::string GetResourcesPath() const { return resourcesPath; }
+    void SetResourcesPath(const std::string& path);
+    std::string GetResourcesPath() const;
 
     std::string GetFileContents(const std::string& path) const;
     ImageData GetImageContent(const std::string& path) const;
@@ -50,7 +51,7 @@ protected:
 
 private:
     std::string assetsPath;
-    const std::string resourcesPath = "Engine/resources/";
+    std::string resourcesPath;
 
 };
 

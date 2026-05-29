@@ -6,6 +6,8 @@
 namespace DTEngine 
 {
 
+class Shader;
+
 class SpriteRenderer final : public Component
 {
 friend class RenderingSystem;
@@ -23,7 +25,7 @@ private:
 
     void Update() override;
 
-    void RenderCall();
+    void RenderCall(Shader* overrideShader = nullptr);
 
     void SetAnimationSprite(int spriteIndex);
 

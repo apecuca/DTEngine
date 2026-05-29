@@ -21,14 +21,12 @@ Engine::~Engine()
     //
 }
 
-Engine::Engine(const std::string& assetsPaths)
+Engine::Engine(const std::string& assetsPath, const std::string& resourcesPath)
 {
     // Internal stuff
     systemRegistry = std::make_unique<SystemRegistry>();
-    if (!systemRegistry->InitWorks())
+    if (!systemRegistry->InitWorks(assetsPath, resourcesPath))
         throw std::string("Failed to initialize internal systems");
-
-    systemRegistry->GetSystem<PathSystem>()->SetAssetsPath(assetsPaths);
 
     running = true;
 }

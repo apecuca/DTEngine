@@ -14,7 +14,7 @@ class SystemRegistry;
 class Engine
 {
 public:
-    Engine(const std::string& assetsPaths);
+    Engine(const std::string& assetsPath, const std::string& resourcesPath);
     ~Engine();
 
 public:

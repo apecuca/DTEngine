@@ -54,7 +54,7 @@ private:
     bool ConfigPostProcessing();
     void RenderCycle();
 
-    enum RenderPassType { WORLD };
+    enum RenderPassType { WORLD, SOLID };
     void RenderPass(unsigned int& frameBufferObject, const RenderPassType renderType);
 
 private:
@@ -69,6 +69,8 @@ private:
 
     // Frame Buffer Object, Frame Buffer Texture, Render Buffer Object
     unsigned int worldFBO, worldFBT, worldRBO;
+    unsigned int solidFBO, solidFBT;
+    std::unique_ptr<Shader> solidPassShader;
     unsigned int screenquadVAO, screenquadVBO;
     std::unique_ptr<Shader> screenShader;
 };

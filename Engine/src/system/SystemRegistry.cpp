@@ -37,9 +37,9 @@ bool SystemRegistry::IsFullyWorking() const
     return true;
 }
 
-bool SystemRegistry::InitWorks()
+bool SystemRegistry::InitWorks(const std::string& assetsPath, const std::string& resourcesPath)
 {
-    pathSystem = std::make_unique<PathSystem>();
+    pathSystem = std::make_unique<PathSystem>(assetsPath, resourcesPath);
     if (!pathSystem->Init()) return false;
     systems[typeid(PathSystem)] = pathSystem.get();
 
