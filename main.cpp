@@ -7,7 +7,7 @@ int main(int, char**){
     std::cout << "Hello, from DTEngine!\n";
     
     try {
-        DTEngine::Engine engine("../../Game/Assets", "../../Engine/resources");
+        DTEngine::Engine engine("../../Game/Assets", "resources");
         Game game;
         engine.Run();
     } catch (std::string err) {

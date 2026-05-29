@@ -84,7 +84,7 @@ target_link_libraries(Engine
 # ---- resources ----
 
 set(RESOURCES_SOURCE "${CMAKE_CURRENT_SOURCE_DIR}/resources")
-set(RESOURCES_DEST "$<TARGET_FILE_DIR:Engine>/resources")
+set(RESOURCES_DEST "$<TARGET_FILE_DIR:${EXECUTABLE_NAME}>/resources")
 
 add_custom_target(copy_resources ALL
     COMMAND ${CMAKE_COMMAND} -E remove_directory ${RESOURCES_DEST}

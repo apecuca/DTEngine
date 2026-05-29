@@ -34,3 +34,5 @@ target_link_libraries(${EXECUTABLE_NAME}
     PRIVATE
         Engine
 )
+
+add_dependencies(${EXECUTABLE_NAME} copy_resources)
