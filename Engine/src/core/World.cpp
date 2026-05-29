@@ -33,7 +33,7 @@ EntityHandle<GameObject> World::Instantiate()
 
     EntityHandle<GameObject> handle;
     for (auto& slot : gameObjectSlots)
-            if (*slot.gameObject == *objRawPtr)
+            if (slot.gameObject != nullptr && *slot.gameObject == *objRawPtr)
             {
                 handle.ptr = objRawPtr;
                 handle.generation = &(slot.generation);

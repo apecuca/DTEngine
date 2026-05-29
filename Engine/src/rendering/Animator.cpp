@@ -15,8 +15,10 @@ Animator::~Animator()
 {
     if (!spr) {
         auto c = gameObject.GetComponent<SpriteRenderer>();
-        if (c);
-            spr = c;
+        if (!c)
+            return;
+        
+        spr = c;
     }
 
     spr->animationSpriteId = -1;

@@ -57,7 +57,7 @@ public:
         EntityHandle<T> handle;
 
         for (auto& slot : componentSlots)
-            if (typeid(*slot.component) == typeid(T))
+            if (slot.component != nullptr && typeid(*slot.component) == typeid(T))
             {
                 handle.ptr = static_cast<T*>(slot.component.get());
                 handle.generation = &(slot.generation);
