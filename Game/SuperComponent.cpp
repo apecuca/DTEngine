@@ -46,11 +46,13 @@ void SuperComponent::Start()
     anim->AddClip(clip2);
 
     rb = obj->AddComponent<Rigidbody>();
+    rb->angularDrag = 1.0f;
 }
 
 void SuperComponent::Update()
 {
     if (InputManager::GetKeyDown(DTK_LCTRL)) anim->Play(0);
     if (InputManager::GetKeyUp(DTK_LCTRL)) anim->Stop();
-    if (InputManager::GetKey(DTK_SPACE)) rb->velocity.y = 1.0f;
+    if (InputManager::GetKey(DTK_SPACE)) rb->linearVelocity.y = 10.0f;
+    if (InputManager::GetKey(DTK_R)) rb->angularVelocity += 2.5f;
 }
