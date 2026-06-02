@@ -35,6 +35,16 @@ float Vector2::Distance(const Vector2& a, const Vector2& b)
     return d;
 }
 
+Vector2 operator+ (const Vector2& lhs, const Vector2& rhs)
+{
+    return Vector2(lhs.x + rhs.x, lhs.y + rhs.y);
+}
+
+Vector2 operator* (const Vector2& lhs, const Vector2& rhs)
+{
+    return Vector2(lhs.x * rhs.x, lhs.y * rhs.y);
+}
+
 //
 // VECTOR3
 //

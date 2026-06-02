@@ -24,9 +24,19 @@ bool TimeSystem::Init()
     return true;
 }
 
-float TimeSystem::GetDeltaTime()
+float TimeSystem::GetDeltaTime() const
 {
     return (float)deltaTime;
+}
+
+void TimeSystem::SetFixedTimeStep(double value)
+{
+    fixedTimeStep = value;
+}
+
+double TimeSystem::GetFixedTimeStep() const
+{
+    return fixedTimeStep;
 }
 
 void TimeSystem::UpdateTimeVariables()

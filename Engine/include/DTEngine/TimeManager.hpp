@@ -15,6 +15,9 @@ class TimeManager final
 public:
     static float GetDeltaTime();
 
+    static void SetFixedTimeStep(double value);
+    static double GetFixedTimeStep();
+
 private:
     ~TimeManager() = default;
     TimeManager() = default;

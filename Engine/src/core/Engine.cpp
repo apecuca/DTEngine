@@ -9,6 +9,7 @@
 #include "system/PathSystem.hpp"
 #include "system/TimeSystem.hpp"
 #include "system/InputSystem.hpp"
+#include "system/PhysicsSystem.hpp"
 
 #include "GLFW/glfw3.h"
 
@@ -44,6 +45,9 @@ void Engine::Run()
     RenderingSystem* sys_rendering = systemRegistry->GetSystem<RenderingSystem>();
     TimeSystem* sys_time = systemRegistry->GetSystem<TimeSystem>();
     InputSystem* sys_input = systemRegistry->GetSystem<InputSystem>();
+    PhysicsSystem* sys_physics = systemRegistry->GetSystem<PhysicsSystem>();
+
+    double fixedTimer = 0.0;
 
     while (!ShouldStop()) {
         
@@ -57,6 +61,14 @@ void Engine::Run()
         sys_input->ReadInputs();
         sys_time->UpdateTimeVariables();
 
+        double fixedTimeStep = sys_time->GetFixedTimeStep();
+        fixedTimer += sys_time->GetDeltaTime();
+        int fixedCatchUpTimes = static_cast<int>(fixedTimer / fixedTimeStep);
+
+        // Update active physics bodies
+        for (int i = 0; i < fixedCatchUpTimes; i++)
+            sys_physics->UpdatePhysics();
+
         // Update behaviours
         sys_world->UpdateActiveWorld();
 
@@ -66,6 +78,9 @@ void Engine::Run()
         // Finish frame
         sys_world->OnEndOfFrame();
         sys_input->OnEndOfFrame();
+
+        for (int i = 0; i < fixedCatchUpTimes; i++)
+            fixedTimer -= fixedTimeStep;
     }
 
     systemRegistry->UnloadEverything();

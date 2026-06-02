@@ -4,6 +4,7 @@
 #include <DTEngine/GameObject.hpp>
 #include <DTEngine/EntityHandle.hpp>
 #include <DTEngine/Animator.hpp>
+#include <DTEngine/Rigidbody.hpp>
 
 using namespace DTEngine;
 
@@ -23,5 +24,6 @@ public:
 private:
     EntityHandle<GameObject> obj;
     EntityHandle<Animator> anim;
+    EntityHandle<Rigidbody> rb;
 
 };

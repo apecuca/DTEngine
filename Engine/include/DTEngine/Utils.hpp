@@ -156,6 +156,27 @@ public:
     Vector2(const Vector2& _other);
     Vector2(float _x, float _y);
 
+    friend Vector2 operator+ (const Vector2& lhs, const Vector2& rhs);
+    friend Vector2 operator* (const Vector2& lhs, const Vector2& rhs);
+
+    Vector2 operator* (float scalar) const {
+       return Vector2(this->x * scalar, this->y * scalar);
+    }
+
+    Vector2& operator+= (const Vector2& rhs) {
+       this->x += rhs.x;
+       this->y += rhs.y;
+
+       return *this;
+    }
+
+    Vector2& operator*= (const Vector2& rhs) {
+       this->x *= rhs.x;
+       this->y *= rhs.y;
+
+       return *this;
+    }
+
 public:
     // Calculates the distance between two vectors
     static float Distance(const Vector2& a, const Vector2& b);

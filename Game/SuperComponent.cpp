@@ -40,24 +40,17 @@ void SuperComponent::Start()
 
     anim = obj->AddComponent<Animator>();
 
-    AnimationClip clip1(true);
-    clip1.InsertFrame(0, 12);
-    clip1.InsertFrame(1, 12);
-    anim->AddClip(clip1);
-
     AnimationClip clip2(true);
     clip2.InsertFrame(1, 6);
     clip2.InsertFrame(2, 6);
     anim->AddClip(clip2);
+
+    rb = obj->AddComponent<Rigidbody>();
 }
 
 void SuperComponent::Update()
 {
-    if (InputManager::GetKeyDown(DTK_LCTRL)) anim->Play(1);
-    if (InputManager::GetKeyUp(DTK_LCTRL)) anim->Play(0);
-    if (InputManager::GetKeyDown(DTK_P)) anim->Pause();
-    if (InputManager::GetKeyDown(DTK_R)) anim->Play();
-    if (InputManager::GetKeyDown(DTK_S)) anim->Stop();
-    if (InputManager::GetKeyDown(DTK_RIGHT)) anim->speed += 0.5f;
-    if (InputManager::GetKeyDown(DTK_LEFT)) anim->speed -= 0.25f;
+    if (InputManager::GetKeyDown(DTK_LCTRL)) anim->Play(0);
+    if (InputManager::GetKeyUp(DTK_LCTRL)) anim->Stop();
+    if (InputManager::GetKey(DTK_SPACE)) rb->velocity.y = 1.0f;
 }

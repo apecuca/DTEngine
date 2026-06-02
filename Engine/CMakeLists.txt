@@ -19,6 +19,7 @@ set(ENGINE_HEADERS
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/TimeSystem.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/WorldSystem.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/InputSystem.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/system/PhysicsSystem.hpp
 )
 
 set(ENGINE_SOURCES
@@ -41,6 +42,8 @@ set(ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/Window.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/Animator.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/AnimationClip.cpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/physics/Rigidbody.cpp
     
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/SystemRegistry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/PathSystem.cpp
@@ -48,6 +51,7 @@ set(ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/TimeSystem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/WorldSystem.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/InputSystem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/system/PhysicsSystem.cpp
 )
 
 # ---- library ----
