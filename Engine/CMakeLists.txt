@@ -44,6 +44,8 @@ set(ENGINE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/rendering/AnimationClip.cpp
 
     ${CMAKE_CURRENT_SOURCE_DIR}/src/physics/Rigidbody.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/physics/BoxCollider.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/physics/PhysicsManager.cpp
     
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/SystemRegistry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/src/system/PathSystem.cpp

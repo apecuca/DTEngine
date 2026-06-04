@@ -8,6 +8,7 @@
 #include "system/PhysicsSystem.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 using namespace DTEngine;
 
@@ -22,7 +23,7 @@ SystemRegistry::~SystemRegistry()
 SystemRegistry::SystemRegistry()
 {
     if (instance != nullptr)
-        throw std::string("SystemRegistry instance duplicate found");
+        throw std::runtime_error("SystemRegistry instance duplicate found");
 
     instance = this;
 }

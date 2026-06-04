@@ -7,6 +7,7 @@
 #include <DTEngine/EntityHandle.hpp>
 
 #include <memory>
+#include <stdexcept>
 #include <ostream>
 #include <deque>
 
@@ -84,7 +85,7 @@ public:
         if (slot.ptr == nullptr) {
             std::string msg = "GameObject has no component of type ";
             msg += typeid(T).name();
-            throw std::string(msg);
+            throw std::runtime_error(msg);
         }
 
         slot.ptr->markedForDestruction = true;

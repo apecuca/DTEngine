@@ -6,6 +6,8 @@
 #include <DTEngine/SpriteRenderer.hpp>
 #include <DTEngine/InputManager.hpp>
 #include <DTEngine/Window.hpp>
+#include <DTEngine/RenderingManager.hpp>
+#include <DTEngine/PhysicsManager.hpp>
 
 #include <DTEngine/Utils.hpp>
 
@@ -32,27 +34,47 @@ void SuperComponent::Awake()
 
 void SuperComponent::Start()
 {
-    gameObject.clickable = false;
+    RenderingManager::LoadSprite("pose.png", 1920.0f);
+    PhysicsManager::SetGravity(Vector2(0.0f, -9.8f * 2));
+
+    rb = gameObject.AddComponent<Rigidbody>();
+    //rb->gravityScale = 0.0f;
+    col = gameObject.AddComponent<BoxCollider>();
 
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);
+    gameObject.GetComponent<SpriteRenderer>()->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
 
-    anim = obj->AddComponent<Animator>();
+    auto otherRb = obj->AddComponent<Rigidbody>();
+    //otherRb->gravityScale = 0.0f;
+    auto otherCol = obj->AddComponent<BoxCollider>();
 
-    AnimationClip clip2(true);
-    clip2.InsertFrame(1, 6);
-    clip2.InsertFrame(2, 6);
-    anim->AddClip(clip2);
-
-    rb = obj->AddComponent<Rigidbody>();
-    rb->angularDrag = 1.0f;
+    auto ground = WorldManager::Instantiate();
+    ground->position.y = -4.0f;
+    ground->scale.x = 10.0f;
+    auto s = ground->AddComponent<SpriteRenderer>();
+    auto r = ground->AddComponent<Rigidbody>();
+    auto b = ground->AddComponent<BoxCollider>();
+    s->color = Vector4(0.6f, 1.0f, 0.6f, 1.0f);
+    b->size.x = 10.0f;
+    r->isKinematic = true;
+    r->gravityScale = 0.0f;
 }
 
 void SuperComponent::Update()
 {
-    if (InputManager::GetKeyDown(DTK_LCTRL)) anim->Play(0);
-    if (InputManager::GetKeyUp(DTK_LCTRL)) anim->Stop();
-    if (InputManager::GetKey(DTK_SPACE)) rb->linearVelocity.y = 10.0f;
-    if (InputManager::GetKey(DTK_R)) rb->angularVelocity += 2.5f;
+    if (InputManager::GetKey(DTK_LCTRL)) {
+        gameObject.position = Window::GetInstance()->ScreenToWorldPoint(InputManager::GetMousePosition());
+        rb->linearVelocity = Vector2::zero();
+    }
+    else {
+        if (InputManager::GetKey(DTK_RIGHT))
+            rb->linearVelocity.x = moveSpeed;
+        else if (InputManager::GetKey(DTK_LEFT))
+            rb->linearVelocity.x = -moveSpeed;
+
+        if (InputManager::GetKeyDown(DTK_SPACE))
+            rb->linearVelocity.y = jumpForce;
+    }
 }

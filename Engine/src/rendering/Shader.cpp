@@ -3,6 +3,7 @@
 #include <DTEngine/Utils.hpp>
 
 #include "glad/glad.h"
+#include <stdexcept>
 #include "glm/glm.hpp"
 
 using namespace DTEngine;
@@ -28,7 +29,7 @@ Shader::Shader(
     if (!success)
     {
         glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-        throw std::string("Error compiling vertex shader from file: " + std::string(vertexFile));
+        throw std::runtime_error("Error compiling vertex shader from file: " + std::string(vertexFile));
     }
 
     // fragment shader
@@ -41,7 +42,7 @@ Shader::Shader(
     if (!success)
     {
         glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-        throw std::string("Error compiling fragment shader from file: " + std::string(fragmentFile));
+        throw std::runtime_error("Error compiling fragment shader from file: " + std::string(fragmentFile));
     }
 
     // link shaders
@@ -54,7 +55,7 @@ Shader::Shader(
     glGetProgramiv(program, GL_LINK_STATUS, &success);
     if (!success) {
         glGetProgramInfoLog(program, 512, NULL, infoLog);
-        throw std::string("Error linking shader program from vertex " + std::string(vertexFile) + " and fragment " + std::string(fragmentFile));
+        throw std::runtime_error("Error linking shader program from vertex " + std::string(vertexFile) + " and fragment " + std::string(fragmentFile));
     }
 
     glDeleteShader(vertexShader);

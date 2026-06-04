@@ -10,6 +10,7 @@ namespace DTEngine
 {
 
 class Rigidbody;
+class BoxCollider;
 
 class PhysicsSystem : InternalSystem
 {
@@ -23,6 +24,9 @@ public:
     void AddPhysicsSource(Rigidbody* rb);
     void RemovePhysicsSource(Rigidbody* rb);
 
+    void AddCollider(BoxCollider* col);
+    void RemoveCollider(BoxCollider* col);
+
     void SetGravity(Vector2 g);
     Vector2 GetGravity() const;
 
@@ -32,11 +36,14 @@ protected:
     bool Init() override;
 
 private:
-    std::vector<Rigidbody*> activeBodies;
+    void DetectAndResolveCollisions();
+    void ResolveCollision(BoxCollider* a, BoxCollider* b, Vector2 normal, float penetration);
+
+private:
+    std::vector<Rigidbody*>    activeBodies;
+    std::vector<BoxCollider*>  activeColliders;
 
     Vector2 gravity;
-
-
 };
 
 }

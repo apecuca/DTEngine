@@ -18,12 +18,12 @@ Rigidbody::~Rigidbody()
 Rigidbody::Rigidbody(GameObject& _gameObject) :
 	Component(_gameObject)
 {
-    gravityScale = 1.0f;
-    mass = 1.0f;
-    linearDrag = 0.0f;
-    angularDrag = 0.05f;
+    gravityScale    = 1.0f;
+    mass            = 1.0f;
+    linearDrag      = 0.0f;
+    angularDrag     = 0.05f;
     angularVelocity = 0.0f;
-    isKinematic = false;
+    isKinematic     = false;
 
 	SystemRegistry::GetSystem<PhysicsSystem>()->AddPhysicsSource(this);
 }
@@ -39,9 +39,7 @@ void Rigidbody::UpdatePhysics()
     // Linear
     linearVelocity += (sys_physics->GetGravity() * gravityScale + acceleration) * dt;
     linearVelocity = linearVelocity * std::max(0.0f, 1.0f - linearDrag * dt);
-    auto newPosition = gameObject.position + linearVelocity * dt;
-    newPosition.y = std::clamp(newPosition.y, -2.5f, 20.0f); // Provisorio
-    gameObject.position = newPosition;
+    gameObject.position += linearVelocity * dt;
 
     // Angular
     gameObject.rotation.z += angularVelocity * dt;

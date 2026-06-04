@@ -37,6 +37,7 @@ public:
     void LoadInternalShader(const std::string& vertexFile, const std::string& fragmentFile);
     
     Sprite& GetSprite(int spriteIndex);
+    bool IsValidSpriteIndex(int spriteIndex) const;
     int LoadSprite(const std::string& file, float pixelsPerUnit);
     void LoadInternalSprite(const std::string& file, float pixelsPerUnit);
 

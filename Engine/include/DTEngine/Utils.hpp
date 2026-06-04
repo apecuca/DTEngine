@@ -181,6 +181,7 @@ public:
     // Calculates the distance between two vectors
     static float Distance(const Vector2& a, const Vector2& b);
 
+    inline static Vector2 zero() { return Vector2(0.0f, 0.0f); }
     inline static Vector2 one() { return Vector2(1.0f, 1.0f); }
 
 public:

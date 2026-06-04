@@ -5,6 +5,7 @@
 #include <DTEngine/EntityHandle.hpp>
 #include <DTEngine/Animator.hpp>
 #include <DTEngine/Rigidbody.hpp>
+#include <DTEngine/BoxCollider.hpp>
 
 using namespace DTEngine;
 
@@ -23,7 +24,10 @@ public:
 
 private:
     EntityHandle<GameObject> obj;
-    EntityHandle<Animator> anim;
     EntityHandle<Rigidbody> rb;
+    EntityHandle<BoxCollider> col;
+    
+    float moveSpeed = 4.0f;
+    float jumpForce = 7.5f;
 
 };

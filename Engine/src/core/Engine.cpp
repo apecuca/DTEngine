@@ -12,6 +12,7 @@
 #include "system/PhysicsSystem.hpp"
 
 #include "GLFW/glfw3.h"
+#include <stdexcept>
 
 //std::unique_ptr<DTEngine::World> DTEngine::Engine::activeWorld;
 
@@ -27,7 +28,7 @@ Engine::Engine(const std::string& assetsPath, const std::string& resourcesPath)
     // Internal stuff
     systemRegistry = std::make_unique<SystemRegistry>();
     if (!systemRegistry->InitWorks(assetsPath, resourcesPath))
-        throw std::string("Failed to initialize internal systems");
+        throw std::runtime_error("Failed to initialize internal systems");
 
     running = true;
 }
@@ -35,10 +36,10 @@ Engine::Engine(const std::string& assetsPath, const std::string& resourcesPath)
 void Engine::Run()
 {
     if (!systemRegistry->GetSystem<RenderingSystem>()->IsWindowRunning())
-        throw std::string("Window was not initialized.");
+        throw std::runtime_error("Window was not initialized.");
 
     if (!systemRegistry->GetSystem<WorldSystem>()->IsWorldActive())
-        throw std::string("No world loaded.");
+        throw std::runtime_error("No world loaded.");
 
     // Main systems
     WorldSystem* sys_world = systemRegistry->GetSystem<WorldSystem>();
