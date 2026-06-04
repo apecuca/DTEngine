@@ -68,12 +68,15 @@ void PhysicsSystem::DetectAndResolveCollisions()
             Bounds ba = a->GetBounds();
             Bounds bb = b->GetBounds();
 
+            // Separating Axis Test - no overlap on any axis means no collision
             if (ba.max.x <= bb.min.x || bb.max.x <= ba.min.x) continue;
             if (ba.max.y <= bb.min.y || bb.max.y <= ba.min.y) continue;
 
+            // Penetration depth on each axis
             float ox = std::min(ba.max.x, bb.max.x) - std::max(ba.min.x, bb.min.x);
             float oy = std::min(ba.max.y, bb.max.y) - std::max(ba.min.y, bb.min.y);
 
+            // Minimum penetration axis determines the collision normal and depth
             Vector2 normal;
             float penetration;
             if (ox < oy) {
@@ -94,35 +97,44 @@ void PhysicsSystem::DetectAndResolveCollisions()
 void PhysicsSystem::ResolveCollision(BoxCollider* a, BoxCollider* b,
                                       Vector2 normal, float penetration)
 {
+    // Resolve only against dynamic (non-kinematic) rigidbodies
     auto handleA = a->gameObject.GetComponent<Rigidbody>();
     auto handleB = b->gameObject.GetComponent<Rigidbody>();
 
     Rigidbody* rbA = (handleA && !handleA->isKinematic) ? handleA.Get() : nullptr;
     Rigidbody* rbB = (handleB && !handleB->isKinematic) ? handleB.Get() : nullptr;
 
+    // Nothing to resolve if both sides are static or kinematic
     if (!rbA && !rbB) return;
 
+    // Inverse mass: heavier objects contribute less to the separation
     float invMassA     = rbA ? 1.0f / rbA->mass : 0.0f;
     float invMassB     = rbB ? 1.0f / rbB->mass : 0.0f;
     float totalInvMass = invMassA + invMassB;
 
+    // Push objects apart proportional to their mass ratio (positional correction)
     if (rbA) a->gameObject.position += normal * (penetration * invMassA / totalInvMass);
     if (rbB) b->gameObject.position += normal * -(penetration * invMassB / totalInvMass);
 
+    // Relative velocity between the two bodies
     Vector2 velA = rbA ? rbA->linearVelocity : Vector2(0.0f, 0.0f);
     Vector2 velB = rbB ? rbB->linearVelocity : Vector2(0.0f, 0.0f);
     Vector2 relVel = Vector2(velA.x - velB.x, velA.y - velB.y);
     float velAlongNormal = relVel.x * normal.x + relVel.y * normal.y;
 
+    // Objects already moving apart - no impulse needed
     if (velAlongNormal > 0.0f) return;
 
+    // Bounciness: lower value from both colliders is used (conservative)
     float restitution = std::min(a->bounciness, b->bounciness);
-    float j = -(1.0f + restitution) * velAlongNormal / totalInvMass;
+
+    // Momentum conservation
+    float j = -(1.0f + restitution) * velAlongNormal / totalInvMass; 
 
     if (rbA) rbA->linearVelocity += normal * (j * invMassA);
     if (rbB) rbB->linearVelocity += normal * -(j * invMassB);
 
-    // Fricção tangencial (Lei de Coulomb)
+    // Coulomb's friction
     Vector2 tangent(-normal.y, normal.x);
     float velAlongTangent = relVel.x * tangent.x + relVel.y * tangent.y;
 
