@@ -77,4 +77,7 @@ void SuperComponent::Update()
         if (InputManager::GetKeyDown(DTK_SPACE))
             rb->linearVelocity.y = jumpForce;
     }
+
+    if (InputManager::GetKeyDown(DTK_ESCAPE))
+        WorldManager::Destroy(obj);
 }

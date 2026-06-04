@@ -12,6 +12,13 @@ namespace DTEngine
 class Rigidbody;
 class BoxCollider;
 
+struct POHandler
+{
+public:
+    Rigidbody* rb = nullptr;
+    BoxCollider* col = nullptr;
+};
+
 class PhysicsSystem : InternalSystem
 {
 friend class SystemRegistry;
@@ -37,11 +44,12 @@ protected:
 
 private:
     void DetectAndResolveCollisions();
-    void ResolveCollision(BoxCollider* a, BoxCollider* b, Vector2 normal, float penetration);
+    void ResolveCollision(POHandler& a, POHandler& b, Vector2 normal, float penetration);
 
 private:
-    std::vector<Rigidbody*>    activeBodies;
-    std::vector<BoxCollider*>  activeColliders;
+    std::vector<POHandler> activeBodies;
+    //std::vector<Rigidbody*>    activeBodies;
+    //std::vector<BoxCollider*>  activeColliders;
 
     Vector2 gravity;
 };

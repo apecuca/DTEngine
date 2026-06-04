@@ -28,42 +28,75 @@ bool PhysicsSystem::Init()
 
 void PhysicsSystem::AddPhysicsSource(Rigidbody* rb)
 {
-    activeBodies.emplace_back(rb);
+    for (auto& body : activeBodies) {
+        if (body.col->gameObject == rb->gameObject) {
+            body.rb = rb;
+            return;
+        }
+    }
+    
+    POHandler newPO;
+    newPO.rb = rb;
+    activeBodies.emplace_back(newPO);
 }
 
 void PhysicsSystem::RemovePhysicsSource(Rigidbody* rb)
 {
-    std::erase_if(activeBodies, [&](const Rigidbody* it) {
-        return it == rb;
-    });
+    for (size_t i = 0; i < activeBodies.size(); i++) {
+        auto& body = activeBodies.at(i);
+        if (body.rb == rb) {
+            body.rb = nullptr;
+            if (body.col == nullptr)
+                activeBodies.erase(activeBodies.begin() + i);
+            return;
+        }
+    }
 }
 
 void PhysicsSystem::AddCollider(BoxCollider* col)
 {
-    activeColliders.emplace_back(col);
+    for (auto& body : activeBodies) {
+        if (body.rb->gameObject == col->gameObject) {
+            body.col = col;
+            return;
+        }
+    }
+
+    POHandler newPO;
+    newPO.col = col;
+    activeBodies.emplace_back(newPO);
 }
 
 void PhysicsSystem::RemoveCollider(BoxCollider* col)
 {
-    std::erase_if(activeColliders, [&](const BoxCollider* it) {
-        return it == col;
-    });
+    for (size_t i = 0; i < activeBodies.size(); i++) {
+        auto& body = activeBodies.at(i);
+        if (body.col == col) {
+            body.col = nullptr;
+            if (body.rb == nullptr)
+                activeBodies.erase(activeBodies.begin() + i);
+            return;
+        }
+    }
 }
 
 void PhysicsSystem::UpdatePhysics()
 {
-    for (auto& rb : activeBodies)
-        rb->UpdatePhysics();
+    for (auto& body : activeBodies)
+        if (body.rb != nullptr) body.rb->UpdatePhysics();
+        //rb->UpdatePhysics();
 
     DetectAndResolveCollisions();
 }
 
 void PhysicsSystem::DetectAndResolveCollisions()
 {
-    for (size_t i = 0; i < activeColliders.size(); i++) {
-        for (size_t j = i + 1; j < activeColliders.size(); j++) {
-            BoxCollider* a = activeColliders[i];
-            BoxCollider* b = activeColliders[j];
+    for (size_t i = 0; i < activeBodies.size(); i++) {
+        for (size_t j = i + 1; j < activeBodies.size(); j++) {
+            POHandler bodyA = activeBodies[i];
+            BoxCollider* a = bodyA.col;
+            POHandler bodyB = activeBodies[j];
+            BoxCollider* b = bodyB.col;
 
             Bounds ba = a->GetBounds();
             Bounds bb = b->GetBounds();
@@ -89,23 +122,24 @@ void PhysicsSystem::DetectAndResolveCollisions()
                     ? Vector2(0.0f, -1.0f) : Vector2(0.0f, 1.0f);
             }
 
-            ResolveCollision(a, b, normal, penetration);
+            ResolveCollision(bodyA, bodyB, normal, penetration);
         }
     }
 }
 
-void PhysicsSystem::ResolveCollision(BoxCollider* a, BoxCollider* b,
+void PhysicsSystem::ResolveCollision(POHandler& a, POHandler& b,
                                       Vector2 normal, float penetration)
 {
     // Resolve only against dynamic (non-kinematic) rigidbodies
-    auto handleA = a->gameObject.GetComponent<Rigidbody>();
-    auto handleB = b->gameObject.GetComponent<Rigidbody>();
-
-    Rigidbody* rbA = (handleA && !handleA->isKinematic) ? handleA.Get() : nullptr;
-    Rigidbody* rbB = (handleB && !handleB->isKinematic) ? handleB.Get() : nullptr;
+    Rigidbody* rbA = (a.rb && !a.rb->isKinematic) ? a.rb : nullptr;
+    Rigidbody* rbB = (b.rb && !b.rb->isKinematic) ? b.rb : nullptr;
 
     // Nothing to resolve if both sides are static or kinematic
     if (!rbA && !rbB) return;
+
+    // Colliders, for easier reading
+    BoxCollider* colA = a.col;
+    BoxCollider* colB = b.col;
 
     // Inverse mass: heavier objects contribute less to the separation
     float invMassA     = rbA ? 1.0f / rbA->mass : 0.0f;
@@ -113,8 +147,8 @@ void PhysicsSystem::ResolveCollision(BoxCollider* a, BoxCollider* b,
     float totalInvMass = invMassA + invMassB;
 
     // Push objects apart proportional to their mass ratio (positional correction)
-    if (rbA) a->gameObject.position += normal * (penetration * invMassA / totalInvMass);
-    if (rbB) b->gameObject.position += normal * -(penetration * invMassB / totalInvMass);
+    if (rbA) colA->gameObject.position += normal * (penetration * invMassA / totalInvMass);
+    if (rbB) colB->gameObject.position += normal * -(penetration * invMassB / totalInvMass);
 
     // Relative velocity between the two bodies
     Vector2 velA = rbA ? rbA->linearVelocity : Vector2(0.0f, 0.0f);
@@ -126,7 +160,7 @@ void PhysicsSystem::ResolveCollision(BoxCollider* a, BoxCollider* b,
     if (velAlongNormal > 0.0f) return;
 
     // Bounciness: lower value from both colliders is used (conservative)
-    float restitution = std::min(a->bounciness, b->bounciness);
+    float restitution = std::min(colA->bounciness, colB->bounciness);
 
     // Momentum conservation
     float j = -(1.0f + restitution) * velAlongNormal / totalInvMass; 
@@ -139,7 +173,7 @@ void PhysicsSystem::ResolveCollision(BoxCollider* a, BoxCollider* b,
     float velAlongTangent = relVel.x * tangent.x + relVel.y * tangent.y;
 
     float jt = -velAlongTangent / totalInvMass;
-    float mu = (a->friction + b->friction) * 0.5f;
+    float mu = (colA->friction + colB->friction) * 0.5f;
     float frictionMagnitude = std::clamp(jt, -mu * j, mu * j);
 
     Vector2 frictionImpulse = tangent * frictionMagnitude;
