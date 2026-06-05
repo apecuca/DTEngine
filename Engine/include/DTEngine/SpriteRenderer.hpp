@@ -31,6 +31,7 @@ private:
 
 public:
     Vector4 color;
+    int renderOrder;
 
 private:
     int usedShaderId = 0;

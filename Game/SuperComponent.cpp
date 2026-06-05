@@ -40,12 +40,13 @@ void SuperComponent::Start()
     rb = gameObject.AddComponent<Rigidbody>();
     //rb->gravityScale = 0.25f;
     col = gameObject.AddComponent<BoxCollider>();
-    col->sensor = true;
+    spr = gameObject.GetComponent<SpriteRenderer>();
+    spr->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
+    spr->renderOrder = 1;
 
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
     obj->position = Vector2(-2.0f, 2.0f);
-    gameObject.GetComponent<SpriteRenderer>()->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
 
     auto otherRb = obj->AddComponent<Rigidbody>();
     //otherRb->gravityScale = 0.0f;
@@ -78,34 +79,40 @@ void SuperComponent::Update()
         if (InputManager::GetKeyDown(DTK_SPACE))
             rb->linearVelocity.y = jumpForce;
     }
+
+    timer += TimeManager::GetDeltaTime();
+    if (timer >= 1.0f) {
+        spr->renderOrder *= -1;
+        timer = 0.0f;
+    }
 }
 
 void SuperComponent::OnCollisionEnter(Collision& col)
 {
-    std::cout << "Collision entered!" << std::endl;
+    //
 }
 
 void SuperComponent::OnCollisionStay(Collision& col)
 {
-    std::cout << "Collision stayed!" << std::endl;
+    //
 }
 
 void SuperComponent::OnCollisionExit(Collision& col)
 {
-    std::cout << "Collision exited!" << std::endl;
+    //
 }
 
 void SuperComponent::OnSensorEnter(Collision& col)
 {
-    std::cout << "Sensor entered!" << std::endl;
+    //
 }
 
 void SuperComponent::OnSensorStay(Collision& col)
 {
-    std::cout << "Sensor stayed!" << std::endl;
+    //
 }
 
 void SuperComponent::OnSensorExit(Collision& col)
 {
-    std::cout << "Sensor exited!" << std::endl;
+    //
 }

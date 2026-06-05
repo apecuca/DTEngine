@@ -32,6 +32,7 @@ SpriteRenderer::SpriteRenderer(GameObject& _gameObject) :
     
     // Default values
     color = Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+    renderOrder = 0;
 
     // Basic vertices
     float vertices[] = {

@@ -205,6 +205,12 @@ bool RenderingSystem::IsWindowRunning() const
 
 void RenderingSystem::RenderCycle()
 {
+    // Sort by renderOrder
+    std::sort(renderers.begin(), renderers.end(),
+        [](const SpriteRenderer* a, const SpriteRenderer* b) -> bool {
+            return (a->renderOrder < b->renderOrder);
+        });
+
     // SCENE PASS
     RenderPass(worldFBO, RenderPassType::WORLD);
 
