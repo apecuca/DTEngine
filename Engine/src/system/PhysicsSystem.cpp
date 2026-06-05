@@ -87,10 +87,12 @@ void PhysicsSystem::UpdatePhysics()
         //rb->UpdatePhysics();
 
     DetectAndResolveCollisions();
+    DispatchCollisionMessages();
 }
 
 void PhysicsSystem::DetectAndResolveCollisions()
 {
+    currentCollisions.clear();
     for (size_t i = 0; i < activeBodies.size(); i++) {
         for (size_t j = i + 1; j < activeBodies.size(); j++) {
             POHandler bodyA = activeBodies[i];
@@ -122,7 +124,10 @@ void PhysicsSystem::DetectAndResolveCollisions()
                     ? Vector2(0.0f, -1.0f) : Vector2(0.0f, 1.0f);
             }
 
-            ResolveCollision(bodyA, bodyB, normal, penetration);
+            RegisterCollision(a, b, penetration);
+
+            if (!a->sensor && !b->sensor)
+                ResolveCollision(bodyA, bodyB, normal, penetration);
         }
     }
 }
@@ -179,6 +184,46 @@ void PhysicsSystem::ResolveCollision(POHandler& a, POHandler& b,
     Vector2 frictionImpulse = tangent * frictionMagnitude;
     if (rbA) rbA->linearVelocity += frictionImpulse * invMassA;
     if (rbB) rbB->linearVelocity += frictionImpulse * (-invMassB);
+}
+
+void PhysicsSystem::RegisterCollision(BoxCollider* a, BoxCollider* b, float penetration)
+{
+    currentCollisions.push_back({a, b});
+}
+
+void PhysicsSystem::DispatchCollisionMessages()
+{
+    // ENTER (new this frame) and STAY (persisted from last frame)
+    for (auto& curr : currentCollisions) {
+        bool wasColliding = false;
+        for (auto& prev : previousCollisions)
+            if (prev.matches(curr.a, curr.b)) { wasColliding = true; break; }
+
+        CollisionType type = wasColliding ? CollisionType::STAY : CollisionType::ENTER;
+        Collision col(type, *curr.a, *curr.b);
+        if (curr.a->sensor) curr.a->gameObject.ReceiveSensorMessage(col);
+        else                curr.a->gameObject.ReceiveCollisionMessage(col);
+        if (curr.b->sensor) curr.b->gameObject.ReceiveSensorMessage(col);
+        else                curr.b->gameObject.ReceiveCollisionMessage(col);
+    }
+
+    // EXIT: was colliding last frame but not this frame
+    for (auto& prev : previousCollisions) {
+        bool stillColliding = false;
+        for (auto& curr : currentCollisions)
+            if (curr.matches(prev.a, prev.b)) { stillColliding = true; break; }
+
+        if (!stillColliding) {
+            Collision col(CollisionType::EXIT, *prev.a, *prev.b);
+            if (prev.a->sensor) prev.a->gameObject.ReceiveSensorMessage(col);
+            else                prev.a->gameObject.ReceiveCollisionMessage(col);
+            if (prev.b->sensor) prev.b->gameObject.ReceiveSensorMessage(col);
+            else                prev.b->gameObject.ReceiveCollisionMessage(col);
+        }
+    }
+
+    // Advance frame: current becomes previous
+    previousCollisions = std::move(currentCollisions);
 }
 
 void PhysicsSystem::SetGravity(Vector2 g)

@@ -22,6 +22,14 @@ public:
 
     void Update() override;
 
+    void OnCollisionEnter(Collision& col) override;
+    void OnCollisionStay(Collision& col) override;
+    void OnCollisionExit(Collision& col) override;
+
+    void OnSensorEnter(Collision& col) override;
+    void OnSensorStay(Collision& col) override;
+    void OnSensorExit(Collision& col) override;
+
 private:
     EntityHandle<GameObject> obj;
     EntityHandle<Rigidbody> rb;

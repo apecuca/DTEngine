@@ -22,6 +22,7 @@ public:
 public:
 	Vector2 size;
 	Vector2 offset;
+	bool sensor;
 	float   bounciness;
 	float   friction;
 };
@@ -35,6 +36,24 @@ struct Bounds
 public:
 	Vector2 min;
 	Vector2 max;
+};
+
+//
+// Collision
+//
+
+enum CollisionType { ENTER, STAY, EXIT };
+
+struct Collision
+{
+public:
+	Collision(CollisionType _type, BoxCollider& _a, BoxCollider& _b) :
+		type(_type), a(_a), b(_b) 
+		{ }
+
+	const CollisionType type;
+	BoxCollider& a;
+	BoxCollider& b;
 };
 
 }

@@ -38,8 +38,9 @@ void SuperComponent::Start()
     PhysicsManager::SetGravity(Vector2(0.0f, -9.8f * 2));
 
     rb = gameObject.AddComponent<Rigidbody>();
-    //rb->gravityScale = 0.0f;
+    //rb->gravityScale = 0.25f;
     col = gameObject.AddComponent<BoxCollider>();
+    col->sensor = true;
 
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
@@ -77,7 +78,34 @@ void SuperComponent::Update()
         if (InputManager::GetKeyDown(DTK_SPACE))
             rb->linearVelocity.y = jumpForce;
     }
+}
 
-    if (InputManager::GetKeyDown(DTK_ESCAPE))
-        WorldManager::Destroy(obj);
+void SuperComponent::OnCollisionEnter(Collision& col)
+{
+    std::cout << "Collision entered!" << std::endl;
+}
+
+void SuperComponent::OnCollisionStay(Collision& col)
+{
+    std::cout << "Collision stayed!" << std::endl;
+}
+
+void SuperComponent::OnCollisionExit(Collision& col)
+{
+    std::cout << "Collision exited!" << std::endl;
+}
+
+void SuperComponent::OnSensorEnter(Collision& col)
+{
+    std::cout << "Sensor entered!" << std::endl;
+}
+
+void SuperComponent::OnSensorStay(Collision& col)
+{
+    std::cout << "Sensor stayed!" << std::endl;
+}
+
+void SuperComponent::OnSensorExit(Collision& col)
+{
+    std::cout << "Sensor exited!" << std::endl;
 }

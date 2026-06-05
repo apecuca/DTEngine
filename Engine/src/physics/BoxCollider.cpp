@@ -14,9 +14,10 @@ BoxCollider::~BoxCollider()
 BoxCollider::BoxCollider(GameObject& _gameObject) :
     Component(_gameObject)
 {
-    size       = Vector2(1.0f, 1.0f);
-    bounciness = 0.05f;
-    friction   = 0.3f;
+    size        = Vector2(1.0f, 1.0f);
+    sensor      = false;
+    bounciness  = 0.05f;
+    friction    = 0.3f;
 
     SystemRegistry::GetSystem<PhysicsSystem>()->AddCollider(this);
 }

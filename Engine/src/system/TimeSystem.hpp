@@ -29,7 +29,7 @@ private:
     double lastTime;
     double deltaTime;
 
-    double fixedTimeStep = 1.0 / 60.0;
+    double fixedTimeStep = 1.0 / 50.0;
 
 };
 
