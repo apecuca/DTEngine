@@ -2,9 +2,11 @@
 
 #include <DTEngine/World.hpp>
 #include <DTEngine/Component.hpp>
+#include <DTEngine/BoxCollider.hpp>
 
 #include <algorithm>
 #include <iostream>
+#include <string>
 
 using namespace DTEngine;
 
@@ -112,6 +114,14 @@ void GameObject::RemoveChild(GameObject* obj)
     children.erase(children.begin() + position);
 }
 
+GameObject* GameObject::ChildAt(int position)
+{
+    if (position < 0 || position >= (int)children.size())
+        throw std::runtime_error("Child position" + std::to_string(position) + "out of bounds");
+
+    return children.at(position);
+}
+
 bool GameObject::HasChild(GameObject* obj, int& outPosition)
 {
     outPosition = -1;
@@ -147,5 +157,47 @@ void GameObject::InternalUpdate()
     for (auto& slot : componentSlots) {
         if (slot.component == nullptr) continue;
         slot.component->Update();
+    }
+}
+
+void GameObject::ReceiveCollisionMessage(Collision& collision)
+{
+    for (auto& c : componentSlots) {
+        if (c.component != nullptr) {
+            switch (collision.type) {
+                case CollisionType::ENTER:
+                    c.component->OnCollisionEnter(collision);
+                    break;
+
+                case CollisionType::STAY:
+                    c.component->OnCollisionStay(collision);
+                    break;
+
+                case CollisionType::EXIT:
+                    c.component->OnCollisionExit(collision);
+                    break;
+            }
+        }
+    }
+}
+
+void GameObject::ReceiveSensorMessage(Collision& collision)
+{
+    for (auto& c : componentSlots) {
+        if (c.component != nullptr) {
+            switch (collision.type) {
+                case CollisionType::ENTER:
+                    c.component->OnSensorEnter(collision);
+                    break;
+
+                case CollisionType::STAY:
+                    c.component->OnSensorStay(collision);
+                    break;
+
+                case CollisionType::EXIT:
+                    c.component->OnSensorExit(collision);
+                    break;
+                }
+        }
     }
 }

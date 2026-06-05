@@ -6,6 +6,7 @@
 #include "system/InputSystem.hpp"
 
 #include "glad/glad.h"
+#include <stdexcept>
 #include "GLFW/glfw3.h"
 
 DTEngine::Window* DTEngine::Window::instance;
@@ -22,7 +23,7 @@ Window::Window(int _width, int _height, std::string _name)
 width(_width), height(_height), fov(defaultFov), overridingState(false)
 {
     if (instance != nullptr)
-        throw std::string("Duplicated window instance");
+        throw std::runtime_error("Duplicated window instance");
     
     instance = this;
 
@@ -37,7 +38,7 @@ width(_width), height(_height), fov(defaultFov), overridingState(false)
 
     if (!winPtr) {
         glfwTerminate();
-        throw std::string("Failed to initialize Window");
+        throw std::runtime_error("Failed to initialize Window");
     }
 
     int xpos, ypos;
@@ -106,4 +107,12 @@ void Window::callback_framebufferSize(GLFWwindow* window, int newWidth, int newH
 Vector2 Window::GetSize() const
 {
     return Vector2(width, height);
+}
+
+Vector2 Window::ScreenToWorldPoint(const Vector2& point) const
+{
+    float aspect = (float)width / (float)height;
+    float ndcX   = (point.x / (float)width)  * 2.0f - 1.0f;
+    float ndcY   = 1.0f - (point.y / (float)height) * 2.0f;
+    return Vector2(ndcX * aspect * fov, ndcY * fov);
 }

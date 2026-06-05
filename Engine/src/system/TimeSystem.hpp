@@ -15,7 +15,10 @@ public:
     TimeSystem();
 
 public:
-    float GetDeltaTime();
+    float GetDeltaTime() const;
+
+    void SetFixedTimeStep(double value);
+    double GetFixedTimeStep() const;
 
     void UpdateTimeVariables();
 
@@ -25,6 +28,8 @@ protected:
 private:
     double lastTime;
     double deltaTime;
+
+    double fixedTimeStep = 1.0 / 50.0;
 
 };
 

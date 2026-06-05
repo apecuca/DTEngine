@@ -5,8 +5,10 @@
 #include "system/PathSystem.hpp"
 #include "system/TimeSystem.hpp"
 #include "system/InputSystem.hpp"
+#include "system/PhysicsSystem.hpp"
 
 #include <iostream>
+#include <stdexcept>
 
 using namespace DTEngine;
 
@@ -21,7 +23,7 @@ SystemRegistry::~SystemRegistry()
 SystemRegistry::SystemRegistry()
 {
     if (instance != nullptr)
-        throw std::string("SystemRegistry instance duplicate found");
+        throw std::runtime_error("SystemRegistry instance duplicate found");
 
     instance = this;
 }
@@ -33,6 +35,7 @@ bool SystemRegistry::IsFullyWorking() const
     if (pathSystem == nullptr) return false;
     if (timeSystem == nullptr) return false;
     if (inputSystem == nullptr) return false;
+    if (physicsSystem == nullptr) return false;
 
     return true;
 }
@@ -55,6 +58,10 @@ bool SystemRegistry::InitWorks(const std::string& assetsPath, const std::string&
     if (!timeSystem->Init()) return false;
     systems[typeid(TimeSystem)] = timeSystem.get();
 
+    physicsSystem = std::make_unique<PhysicsSystem>();
+    if (!physicsSystem->Init()) return false;
+    systems[typeid(PhysicsSystem)] = physicsSystem.get();
+
     inputSystem = std::make_unique<InputSystem>();
     if (!inputSystem->Init()) return false;
     systems[typeid(InputSystem)] = inputSystem.get();
@@ -65,6 +72,7 @@ bool SystemRegistry::InitWorks(const std::string& assetsPath, const std::string&
 void SystemRegistry::UnloadEverything()
 {
     worldSystem.reset();
+    physicsSystem.reset();
     inputSystem.reset();
     timeSystem.reset();
     renderingSystem.reset();

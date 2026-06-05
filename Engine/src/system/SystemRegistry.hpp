@@ -14,6 +14,7 @@ class PathSystem;
 class TimeSystem;
 class InputSystem;
 class InternalSystem;
+class PhysicsSystem;
 
 class SystemRegistry
 {
@@ -48,6 +49,7 @@ private:
     std::unique_ptr<PathSystem> pathSystem;
     std::unique_ptr<TimeSystem> timeSystem;
     std::unique_ptr<InputSystem> inputSystem;
+    std::unique_ptr<PhysicsSystem> physicsSystem;
 };
 
 }

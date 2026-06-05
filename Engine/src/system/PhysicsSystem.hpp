@@ -1,0 +1,73 @@
+#ifndef DTENGINE_PHYSICSSYSTEM_H
+#define DTENGINE_PHYSICSSYSTEM_H
+
+#include "system/InternalSystem.hpp"
+#include <DTEngine/Utils.hpp>
+
+#include <vector>
+
+namespace DTEngine
+{
+
+class Rigidbody;
+class BoxCollider;
+struct Collision;
+
+struct POHandler
+{
+public:
+    Rigidbody* rb = nullptr;
+    BoxCollider* col = nullptr;
+};
+
+struct CollisionPair
+{
+public:
+    BoxCollider* a;
+    BoxCollider* b;
+    bool matches(BoxCollider* x, BoxCollider* y) const {
+        return (a == x && b == y) || (a == y && b == x);
+    }
+};
+
+class PhysicsSystem : InternalSystem
+{
+friend class SystemRegistry;
+
+public:
+    ~PhysicsSystem();
+    PhysicsSystem();
+
+public:
+    void AddPhysicsSource(Rigidbody* rb);
+    void RemovePhysicsSource(Rigidbody* rb);
+
+    void AddCollider(BoxCollider* col);
+    void RemoveCollider(BoxCollider* col);
+
+    void SetGravity(Vector2 g);
+    Vector2 GetGravity() const;
+
+    void UpdatePhysics();
+
+protected:
+    bool Init() override;
+
+private:
+    void DetectAndResolveCollisions();
+    void ResolveCollision(POHandler& a, POHandler& b, Vector2 normal, float penetration);
+
+    void RegisterCollision(BoxCollider* a, BoxCollider* b, float penetration);
+    void DispatchCollisionMessages();
+
+private:
+    std::vector<POHandler>    activeBodies;
+    std::vector<CollisionPair> currentCollisions;
+    std::vector<CollisionPair> previousCollisions;
+
+    Vector2 gravity;
+};
+
+}
+
+#endif

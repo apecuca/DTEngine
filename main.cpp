@@ -3,6 +3,8 @@
 #include <DTEngine/Engine.hpp>
 #include "Game/Game.hpp"
 
+#include <stdexcept>
+
 int main(int, char**){
     std::cout << "Hello, from DTEngine!\n";
     
@@ -10,7 +12,7 @@ int main(int, char**){
         DTEngine::Engine engine("../../Game/Assets", "resources");
         Game game;
         engine.Run();
-    } catch (std::string err) {
-        std::cout << "Err: " << err << std::endl;
+    } catch (const std::string& e) {
+        std::cout << "Err: " << e << std::endl;
     }
 }

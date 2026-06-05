@@ -3,6 +3,7 @@
 #include "stb_image.h"
 
 #include <fstream>
+#include <stdexcept>
 #include <sstream>
 #include <algorithm>
 
@@ -119,7 +120,7 @@ std::string PathSystem::GetFileContents(const std::string& path) const
         content = fileStream.str();
     }
     catch (std::ifstream::failure& e) {
-        throw std::string("File read err: " + std::string(e.what()));
+        throw std::runtime_error("File read err: " + std::string(e.what()));
     }
 
     return content;
@@ -133,7 +134,7 @@ ImageData PathSystem::GetImageContent(const std::string& path) const
     img.data = stbi_load(path.c_str(), &img.width, &img.height, &img.channels, 0);
 
     if (!img.data)
-        throw std::string("Failed to read image from " + path);
+        throw std::runtime_error("Failed to read image from " + path);
 
     return img;
 }

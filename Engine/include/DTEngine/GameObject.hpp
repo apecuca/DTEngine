@@ -7,6 +7,7 @@
 #include <DTEngine/EntityHandle.hpp>
 
 #include <memory>
+#include <stdexcept>
 #include <ostream>
 #include <deque>
 
@@ -15,10 +16,12 @@ namespace DTEngine
 
 class World;
 class Component;
+struct Collision;
 
 class GameObject : public Entity
 {
 friend class World;
+friend class PhysicsSystem;
 
 public:
     virtual ~GameObject();
@@ -27,6 +30,10 @@ public:
 public:
     void SetParent(GameObject* obj);
     GameObject* GetParent();
+    void AddChild(GameObject* obj);
+    void RemoveChild(GameObject* obj);
+    GameObject* ChildAt(int position);
+    bool HasChild(GameObject* obj, int& outPosition);
 
     //
     // Component logic
@@ -84,7 +91,7 @@ public:
         if (slot.ptr == nullptr) {
             std::string msg = "GameObject has no component of type ";
             msg += typeid(T).name();
-            throw std::string(msg);
+            throw std::runtime_error(msg);
         }
 
         slot.ptr->markedForDestruction = true;
@@ -101,21 +108,21 @@ private:
     bool GetMarkedForDestruction() const;
     bool GetAvailableSlot(int& position);
 
-    void AddChild(GameObject* obj);
-    void RemoveChild(GameObject* obj);
-    bool HasChild(GameObject* obj, int& outPosition);
-
     void InternalAwake();
     void InternalStart();
     void InternalUpdate();
+
+    void ReceiveCollisionMessage(Collision& collision);
+    void ReceiveSensorMessage(Collision& collision);
 
 public:
     Vector2 position;
     Vector2 scale;
     Vector3 rotation;
-    GameObject* parent;
     bool clickable;
-    
+
+private:
+    GameObject* parent;
     GameObject* originalParent;
     std::vector<GameObject*> children;
 

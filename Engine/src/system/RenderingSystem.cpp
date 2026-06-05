@@ -13,6 +13,7 @@
 #include "GLFW/glfw3.h"
 
 #include <algorithm>
+#include <stdexcept>
 
 using namespace DTEngine;
 
@@ -29,7 +30,7 @@ RenderingSystem::RenderingSystem()
 bool RenderingSystem::Init()
 {
     if (!glfwInit())
-        throw std::string("Failed to initialize GLFW");
+        throw std::runtime_error("Failed to initialize GLFW");
 
     bool win = InitAndConfigWindow();
     bool postProc = ConfigPostProcessing();
@@ -293,7 +294,7 @@ void RenderingSystem::LoadInternalShader(const std::string& vertexFile, const st
 Shader& RenderingSystem::GetShader(int shaderIndex)
 {
     if (shaderIndex >= loadedShaders.size())
-        throw std::string("Shader index out of bounds");
+        throw std::runtime_error("Shader index out of bounds");
 
     return *(loadedShaders[shaderIndex].get());
 }
@@ -324,10 +325,15 @@ void RenderingSystem::LoadInternalSprite(const std::string& path, float pixelsPe
     loadedSprites.push_back(std::move(newSprite));
 }
 
+bool RenderingSystem::IsValidSpriteIndex(int spriteIndex) const
+{
+    return spriteIndex >= 0 && (size_t)spriteIndex < loadedSprites.size();
+}
+
 Sprite& RenderingSystem::GetSprite(int spriteIndex)
 {
-    if (spriteIndex >= loadedSprites.size())
-        throw std::string("Shader index out of bounds");
+    if (!IsValidSpriteIndex(spriteIndex))
+        throw std::runtime_error("Sprite index out of bounds: " + std::to_string(spriteIndex));
 
     return *(loadedSprites[spriteIndex].get());
 }

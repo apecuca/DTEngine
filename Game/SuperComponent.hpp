@@ -4,6 +4,8 @@
 #include <DTEngine/GameObject.hpp>
 #include <DTEngine/EntityHandle.hpp>
 #include <DTEngine/Animator.hpp>
+#include <DTEngine/Rigidbody.hpp>
+#include <DTEngine/BoxCollider.hpp>
 
 using namespace DTEngine;
 
@@ -20,8 +22,20 @@ public:
 
     void Update() override;
 
+    void OnCollisionEnter(Collision& col) override;
+    void OnCollisionStay(Collision& col) override;
+    void OnCollisionExit(Collision& col) override;
+
+    void OnSensorEnter(Collision& col) override;
+    void OnSensorStay(Collision& col) override;
+    void OnSensorExit(Collision& col) override;
+
 private:
     EntityHandle<GameObject> obj;
-    EntityHandle<Animator> anim;
+    EntityHandle<Rigidbody> rb;
+    EntityHandle<BoxCollider> col;
+    
+    float moveSpeed = 4.0f;
+    float jumpForce = 7.5f;
 
 };

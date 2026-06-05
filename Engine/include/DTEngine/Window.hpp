@@ -23,6 +23,7 @@ public:
 
 public:
     Vector2 GetSize() const;
+    Vector2 ScreenToWorldPoint(const Vector2& point) const;
 
     void SetSolidState(bool state, bool overrideInternalLogic);
 
