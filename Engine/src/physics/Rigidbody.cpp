@@ -21,8 +21,8 @@ Rigidbody::Rigidbody(GameObject& _gameObject) :
     gravityScale    = 1.0f;
     mass            = 1.0f;
     linearDrag      = 0.0f;
-    angularDrag     = 0.05f;
-    angularVelocity = 0.0f;
+    //angularDrag     = 0.05f;
+    //angularVelocity = 0.0f;
     isKinematic     = false;
 
 	SystemRegistry::GetSystem<PhysicsSystem>()->AddPhysicsSource(this);
@@ -41,9 +41,9 @@ void Rigidbody::UpdatePhysics()
     linearVelocity = linearVelocity * std::max(0.0f, 1.0f - linearDrag * dt);
     gameObject.position += linearVelocity * dt;
 
-    // Angular
-    gameObject.rotation.z += angularVelocity * dt;
-    angularVelocity *= std::max(0.0f, 1.0f - angularDrag * dt);
+    // Angular (for a future update on collision)
+    //gameObject.rotation.z += angularVelocity * dt;
+    //angularVelocity *= std::max(0.0f, 1.0f - angularDrag * dt);
 
     acceleration = Vector2(0.0f, 0.0f);
 }

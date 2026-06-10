@@ -25,11 +25,11 @@ private:
 public:
     Vector2 linearVelocity;
     Vector2 acceleration;
-    float angularVelocity;
+    //float angularVelocity;
     float gravityScale;
     float mass;
     float linearDrag;
-    float angularDrag;
+    //float angularDrag;
     bool isKinematic;
 
 };
