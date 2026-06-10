@@ -110,7 +110,9 @@ private:
 
     void InternalAwake();
     void InternalStart();
+    void InternalFixedUpdate();
     void InternalUpdate();
+    void InternalLateUpdate();
 
     void ReceiveCollisionMessage(Collision& collision);
     void ReceiveSensorMessage(Collision& collision);

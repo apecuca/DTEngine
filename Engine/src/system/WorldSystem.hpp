@@ -32,6 +32,7 @@ protected:
     
 private:
     void UpdateActiveWorld();
+    void FixedUpdateActiveWorld();
 
 private:
     std::unique_ptr<World> activeWorld;

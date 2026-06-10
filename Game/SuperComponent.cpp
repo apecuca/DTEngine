@@ -65,6 +65,11 @@ void SuperComponent::Start()
     r->gravityScale = 0.0f;
 }
 
+void SuperComponent::FixedUpdate()
+{
+    //
+}
+
 void SuperComponent::Update()
 {
     if (InputManager::GetKey(DTK_LCTRL)) {
@@ -80,12 +85,11 @@ void SuperComponent::Update()
         if (InputManager::GetKeyDown(DTK_SPACE))
             rb->linearVelocity.y = jumpForce;
     }
+}
 
-    timer += TimeManager::GetDeltaTime();
-    if (timer >= 1.0f) {
-        spr->renderOrder *= -1;
-        timer = 0.0f;
-    }
+void SuperComponent::LateUpdate()
+{
+    //
 }
 
 void SuperComponent::OnCollisionEnter(Collision& col)

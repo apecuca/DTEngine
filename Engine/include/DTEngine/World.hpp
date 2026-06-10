@@ -32,6 +32,7 @@ private:
 
     void WorldAwake();
     void WorldStart();
+    void WorldFixedUpdate();
     void WorldUpdate();
 
 private:

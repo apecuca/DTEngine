@@ -24,8 +24,14 @@ private:
     // Called before the first frame is rendered
     virtual void Start() {}
 
+    // Called before every physics update, runs on a fixed timer
+    virtual void FixedUpdate() {}
+
     // Main loop, called every frame
     virtual void Update() {}
+
+    // Called every frame after Update
+    virtual void LateUpdate() {}
 
     virtual void OnCollisionEnter(Collision& collision) {};
     virtual void OnCollisionStay(Collision& collision) {};

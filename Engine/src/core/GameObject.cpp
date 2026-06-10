@@ -151,12 +151,27 @@ void GameObject::InternalStart()
         slot.component->Start();
     }
 }
+void GameObject::InternalFixedUpdate()
+{
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
+        slot.component->FixedUpdate();
+    }
+}
 
 void GameObject::InternalUpdate()
 {
     for (auto& slot : componentSlots) {
         if (slot.component == nullptr) continue;
         slot.component->Update();
+    }
+}
+
+void GameObject::InternalLateUpdate()
+{
+    for (auto& slot : componentSlots) {
+        if (slot.component == nullptr) continue;
+        slot.component->LateUpdate();
     }
 }
 

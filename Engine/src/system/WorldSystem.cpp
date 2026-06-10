@@ -44,6 +44,11 @@ void WorldSystem::UpdateActiveWorld()
     activeWorld->WorldUpdate();
 }
 
+void WorldSystem::FixedUpdateActiveWorld()
+{
+    activeWorld->WorldFixedUpdate();
+}
+
 void WorldSystem::OnEndOfFrame()
 {
     activeWorld->ProcessDestroyQueue();

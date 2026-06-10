@@ -123,6 +123,13 @@ void World::WorldStart()
             slot->gameObject->InternalStart();
 }
 
+void World::WorldFixedUpdate()
+{
+    for (auto& slot : gameObjectSlots)
+        if (slot.gameObject != nullptr)
+            slot.gameObject->InternalFixedUpdate();
+}
+
 void World::WorldUpdate()
 {
     // Call start/awake on unstarted/awaken objects
@@ -133,4 +140,9 @@ void World::WorldUpdate()
     for (auto& slot : gameObjectSlots)
         if (slot.gameObject != nullptr)
             slot.gameObject->InternalUpdate();
+
+    // Late update behaviour
+    for (auto& slot : gameObjectSlots)
+        if (slot.gameObject != nullptr)
+            slot.gameObject->InternalLateUpdate();
 }

@@ -20,7 +20,9 @@ public:
 
     void Start() override;
 
+    void FixedUpdate() override;
     void Update() override;
+    void LateUpdate() override;
 
     void OnCollisionEnter(Collision& col) override;
     void OnCollisionStay(Collision& col) override;

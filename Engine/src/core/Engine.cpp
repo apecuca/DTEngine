@@ -65,10 +65,14 @@ void Engine::Run()
         double fixedTimeStep = sys_time->GetFixedTimeStep();
         fixedTimer += sys_time->GetDeltaTime();
         int fixedCatchUpTimes = static_cast<int>(fixedTimer / fixedTimeStep);
+        
+        if (fixedCatchUpTimes >= 1) {
+            sys_world->FixedUpdateActiveWorld();
 
-        // Update active physics bodies
-        for (int i = 0; i < fixedCatchUpTimes; i++)
-            sys_physics->UpdatePhysics();
+            // Update active physics bodies
+            for (int i = 0; i < fixedCatchUpTimes; i++)
+                sys_physics->UpdatePhysics();
+        }
 
         // Update behaviours
         sys_world->UpdateActiveWorld();
