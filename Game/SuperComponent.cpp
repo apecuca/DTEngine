@@ -43,6 +43,7 @@ void SuperComponent::Start()
     spr = gameObject.GetComponent<SpriteRenderer>();
     spr->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
     spr->renderOrder = 1;
+    spr->gameObject.scale = Vector3::one() * 0.8f;
 
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();

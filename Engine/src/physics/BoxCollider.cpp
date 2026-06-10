@@ -28,8 +28,8 @@ Bounds BoxCollider::GetBounds() const
                              gameObject.position.y + offset.y);
     Vector2 half = size * 0.5f;
     Bounds b;
-    b.min = Vector2(center.x - half.x, center.y - half.y);
-    b.max = Vector2(center.x + half.x, center.y + half.y);
+    b.min = Vector2(center.x - (half.x * gameObject.scale.x), center.y - (half.y * gameObject.scale.y));
+    b.max = Vector2(center.x + (half.x * gameObject.scale.x), center.y + (half.y * gameObject.scale.y));
     return b;
 }
 
