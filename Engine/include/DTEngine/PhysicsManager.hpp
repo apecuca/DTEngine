@@ -11,12 +11,16 @@
 namespace DTEngine
 {
 
+struct RaycastHit;
+
 class PhysicsManager final
 {
 
 public:
     static Vector2 GetGravity();
     static void SetGravity(const Vector2& value);
+    static bool Raycast(Vector2 origin, Vector2 direction, float distance);
+    static bool Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& out);
 
 private:
     ~PhysicsManager() = default;

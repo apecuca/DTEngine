@@ -42,5 +42,6 @@ private:
     float jumpForce = 7.5f;
 
     float timer = 0.0f;
+    bool grounded = false;
 
 };

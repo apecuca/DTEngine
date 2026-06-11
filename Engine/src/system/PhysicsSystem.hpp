@@ -12,6 +12,7 @@ namespace DTEngine
 class Rigidbody;
 class BoxCollider;
 struct Collision;
+struct RaycastHit;
 
 struct POHandler
 {
@@ -47,6 +48,8 @@ public:
 
     void SetGravity(Vector2 g);
     Vector2 GetGravity() const;
+
+    bool Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& out);
 
     void UpdatePhysics();
 

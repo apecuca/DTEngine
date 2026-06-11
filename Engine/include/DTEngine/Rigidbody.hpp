@@ -7,6 +7,11 @@ namespace DTEngine
 {
 
 struct Vector2;
+class BoxCollider;
+
+//
+// RIGIDBODY
+//
 
 class Rigidbody : public Component
 {
@@ -32,6 +37,33 @@ public:
     //float angularDrag;
     bool isKinematic;
 
+};
+
+//
+// RAYCAST
+//
+
+struct RaycastHit
+{
+public:
+   ~RaycastHit() = default;
+   RaycastHit() = default;
+   RaycastHit(BoxCollider* _collider, Rigidbody* _rigidbody, float _distance, Vector2 _point, bool _valid) :
+      collider(_collider), rigidbody(_rigidbody), distance(_distance), point(_point), valid(_valid) 
+      {}
+
+   explicit operator bool() const noexcept {
+      return valid;
+   }
+
+public:
+   BoxCollider* collider = nullptr;
+   Rigidbody* rigidbody = nullptr;
+   float distance = 0.0f;
+   Vector2 point = Vector2(0.0f, 0.0f);
+
+private:
+   bool valid = false;
 };
 
 }

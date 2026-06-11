@@ -6,6 +6,7 @@
 #include <DTEngine/Utils.hpp>
 
 #include <algorithm>
+#include <cmath>
 
 using namespace DTEngine;
 
@@ -234,4 +235,57 @@ void PhysicsSystem::SetGravity(Vector2 g)
 Vector2 PhysicsSystem::GetGravity() const
 {
     return gravity;
+}
+
+bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& out)
+{
+    float len = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+    if (len == 0.0f) return false;
+
+    Vector2 dir(direction.x / len, direction.y / len);
+
+    float closestT = distance;
+    BoxCollider* hitCollider = nullptr;
+    Rigidbody* hitRigidbody = nullptr;
+
+    for (const auto& body : activeBodies)
+    {
+        if (body.col == nullptr) continue;
+
+        Bounds b = body.col->GetBounds();
+
+        float tmin = 0.0f;
+        float tmax = closestT;
+
+        // X slab — 1/0 = ±inf handles dir.x == 0 correctly via IEEE 754
+        float invDx = 1.0f / dir.x;
+        float tx0 = (b.min.x - origin.x) * invDx;
+        float tx1 = (b.max.x - origin.x) * invDx;
+        if (tx0 > tx1) std::swap(tx0, tx1);
+        tmin = std::max(tmin, tx0);
+        tmax = std::min(tmax, tx1);
+        if (tmax < tmin) continue;
+
+        // Y slab
+        float invDy = 1.0f / dir.y;
+        float ty0 = (b.min.y - origin.y) * invDy;
+        float ty1 = (b.max.y - origin.y) * invDy;
+        if (ty0 > ty1) std::swap(ty0, ty1);
+        tmin = std::max(tmin, ty0);
+        tmax = std::min(tmax, ty1);
+        if (tmax < tmin) continue;
+
+        if (tmin <= 0.0f) continue; // origin inside or on the surface of the box — skip (self-hit)
+
+        // Closest hit so far — subsequent iterations reject anything farther
+        closestT = tmin;
+        hitCollider = body.col;
+        hitRigidbody = body.rb; // nullptr if no Rigidbody attached
+    }
+
+    if (hitCollider == nullptr) return false;
+
+    Vector2 point(origin.x + dir.x * closestT, origin.y + dir.y * closestT);
+    out = RaycastHit(hitCollider, hitRigidbody, closestT, point, true);
+    return true;
 }

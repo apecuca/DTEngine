@@ -43,7 +43,7 @@ void SuperComponent::Start()
     spr = gameObject.GetComponent<SpriteRenderer>();
     spr->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
     spr->renderOrder = 1;
-    spr->gameObject.scale = Vector3::one() * 0.8f;
+    //spr->gameObject.scale = Vector3::one() * 0.8f;
 
     obj = WorldManager::Instantiate();
     obj->AddComponent<SpriteRenderer>();
@@ -60,7 +60,6 @@ void SuperComponent::Start()
     auto r = ground->AddComponent<Rigidbody>();
     auto b = ground->AddComponent<BoxCollider>();
     s->color = Vector4(0.6f, 1.0f, 0.6f, 1.0f);
-    b->size.x = 10.0f;
     r->isKinematic = true;
     r->gravityScale = 0.0f;
 }
@@ -72,6 +71,14 @@ void SuperComponent::FixedUpdate()
 
 void SuperComponent::Update()
 {
+    RaycastHit hit;
+    Vector2 feetPosition = gameObject.position;
+    feetPosition.y -= 0.495f;
+    grounded = PhysicsManager::Raycast(feetPosition, -Vector2::up(), 0.1f, hit);
+    if (grounded) {
+        std::cout << "Hit id " << std::to_string(hit.collider->gameObject.GetID()) << " at distance " << std::to_string(hit.distance) << "!!" << std::endl;
+    }
+
     if (InputManager::GetKey(DTK_LCTRL)) {
         gameObject.position = Window::GetInstance()->ScreenToWorldPoint(InputManager::GetMousePosition());
         rb->linearVelocity = Vector2::zero();
@@ -82,7 +89,7 @@ void SuperComponent::Update()
         else if (InputManager::GetKey(DTK_LEFT))
             rb->linearVelocity.x = -moveSpeed;
 
-        if (InputManager::GetKeyDown(DTK_SPACE))
+        if (InputManager::GetKeyDown(DTK_SPACE) && grounded)
             rb->linearVelocity.y = jumpForce;
     }
 }

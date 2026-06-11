@@ -163,6 +163,10 @@ public:
        return Vector2(this->x * scalar, this->y * scalar);
     }
 
+    Vector2 operator- () const {
+       return Vector2(-this->x, -this->y);
+    }
+
     Vector2& operator+= (const Vector2& rhs) {
        this->x += rhs.x;
        this->y += rhs.y;
@@ -183,6 +187,8 @@ public:
 
     inline static Vector2 zero() { return Vector2(0.0f, 0.0f); }
     inline static Vector2 one() { return Vector2(1.0f, 1.0f); }
+    inline static Vector2 right() { return Vector2(1.0f, 0.0f); }
+    inline static Vector2 up() { return Vector2(0.0f, 1.0f); }
 
 public:
     float x, y;
