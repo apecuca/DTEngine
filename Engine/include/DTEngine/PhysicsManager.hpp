@@ -8,6 +8,8 @@
 
 #include <DTEngine/Utils.hpp>
 
+#include <vector>
+
 namespace DTEngine
 {
 
@@ -20,7 +22,9 @@ public:
     static Vector2 GetGravity();
     static void SetGravity(const Vector2& value);
     static bool Raycast(Vector2 origin, Vector2 direction, float distance);
-    static bool Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& out);
+    static bool Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& result);
+    static bool OverlapBox(Vector2 origin, Vector2 size);
+    static bool OverlapBox(Vector2 origin, Vector2 size, std::vector<RaycastHit>& result);
 
 private:
     ~PhysicsManager() = default;

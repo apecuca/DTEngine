@@ -237,7 +237,7 @@ Vector2 PhysicsSystem::GetGravity() const
     return gravity;
 }
 
-bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& out)
+bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& result)
 {
     float len = std::sqrt(direction.x * direction.x + direction.y * direction.y);
     if (len == 0.0f) return false;
@@ -286,6 +286,37 @@ bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, R
     if (hitCollider == nullptr) return false;
 
     Vector2 point(origin.x + dir.x * closestT, origin.y + dir.y * closestT);
-    out = RaycastHit(hitCollider, hitRigidbody, closestT, point, true);
+    result = RaycastHit(hitCollider, hitRigidbody, closestT, point, true);
     return true;
+}
+
+bool PhysicsSystem::OverlapBox(Vector2 origin, Vector2 size, std::vector<RaycastHit>& result)
+{
+    Vector2 half = size * 0.5f;
+    Bounds query;
+    query.min = Vector2(origin.x - half.x, origin.y - half.y);
+    query.max = Vector2(origin.x + half.x, origin.y + half.y);
+
+    bool found = false;
+
+    for (const auto& body : activeBodies)
+    {
+        if (body.col == nullptr) continue;
+
+        Bounds b = body.col->GetBounds();
+
+        // Same convention as DetectAndResolveCollisions: touching edges don't overlap
+        if (query.max.x <= b.min.x || b.max.x <= query.min.x) continue;
+        if (query.max.y <= b.min.y || b.max.y <= query.min.y) continue;
+
+        // Closest point on the collider's bounds to the query origin
+        Vector2 point(std::max(b.min.x, std::min(origin.x, b.max.x)),
+                      std::max(b.min.y, std::min(origin.y, b.max.y)));
+        float dist = Vector2::Distance(origin, point);
+
+        result.push_back(RaycastHit(body.col, body.rb, dist, point, true));
+        found = true;
+    }
+
+    return found;
 }

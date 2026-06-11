@@ -18,11 +18,22 @@ void PhysicsManager::SetGravity(const Vector2& value)
 
 bool PhysicsManager::Raycast(Vector2 origin, Vector2 direction, float distance)
 {
-    RaycastHit out;
-    return SystemRegistry::GetSystem<PhysicsSystem>()->Raycast(origin, direction, distance, out);
+    RaycastHit result;
+    return SystemRegistry::GetSystem<PhysicsSystem>()->Raycast(origin, direction, distance, result);
 }
 
-bool PhysicsManager::Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& out)
+bool PhysicsManager::Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& result)
 {
-    return SystemRegistry::GetSystem<PhysicsSystem>()->Raycast(origin, direction, distance, out);
+    return SystemRegistry::GetSystem<PhysicsSystem>()->Raycast(origin, direction, distance, result);
+}
+
+bool PhysicsManager::OverlapBox(Vector2 origin, Vector2 size)
+{
+    std::vector<RaycastHit> result;
+    return SystemRegistry::GetSystem<PhysicsSystem>()->OverlapBox(origin, size, result);
+}
+
+bool PhysicsManager::OverlapBox(Vector2 origin, Vector2 size, std::vector<RaycastHit>& result)
+{
+    return SystemRegistry::GetSystem<PhysicsSystem>()->OverlapBox(origin, size, result);
 }
