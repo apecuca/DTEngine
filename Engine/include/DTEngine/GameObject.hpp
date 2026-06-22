@@ -5,6 +5,7 @@
 
 #include <DTEngine/Component.hpp>
 #include <DTEngine/EntityHandle.hpp>
+#include <DTEngine/Utils.hpp>
 
 #include <memory>
 #include <stdexcept>
@@ -15,7 +16,6 @@ namespace DTEngine
 {
 
 class World;
-class Component;
 struct Collision;
 
 class GameObject : public Entity
@@ -34,6 +34,9 @@ public:
     void RemoveChild(GameObject* obj);
     GameObject* ChildAt(int position);
     bool HasChild(GameObject* obj, int& outPosition);
+
+    void SetLayer(const std::string& layerName);
+    std::string GetLayer() const;
 
     //
     // Component logic
@@ -122,11 +125,13 @@ public:
     Vector2 scale;
     Vector3 rotation;
     bool clickable;
+    std::string tag;
 
 private:
     GameObject* parent;
     GameObject* originalParent;
     std::vector<GameObject*> children;
+    std::string layer;
 
     struct ComponentSlot
     {

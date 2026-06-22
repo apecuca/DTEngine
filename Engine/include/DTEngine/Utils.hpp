@@ -1,6 +1,8 @@
 #ifndef DTENGINE_UTILS_H
 #define DTENGINE_UTILS_H
 
+#include <cstdint>
+
 // Mouse Input
 #define DTK_MOUSEL      0x00
 #define DTK_MOUSER      0x01
@@ -147,6 +149,19 @@
 
 namespace DTEngine
 {
+
+///
+/// MISC
+/// 
+
+typedef uint32_t LayerMask;
+
+// Mask matching every layer
+constexpr LayerMask LAYER_MASK_ALL = ~0u;
+
+///
+/// MISC
+/// 
 
 struct Vector2
 {

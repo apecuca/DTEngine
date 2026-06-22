@@ -5,6 +5,8 @@
 #include <DTEngine/Utils.hpp>
 
 #include <vector>
+#include <unordered_map>
+#include <string>
 
 namespace DTEngine
 {
@@ -46,13 +48,19 @@ public:
     void AddCollider(BoxCollider* col);
     void RemoveCollider(BoxCollider* col);
 
+    void UpdatePhysics();
+
     void SetGravity(Vector2 g);
     Vector2 GetGravity() const;
 
-    bool Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& result);
-    bool OverlapBox(Vector2 origin, Vector2 size, std::vector<RaycastHit>& result);
+    bool Raycast(Vector2 origin, Vector2 direction, float distance, LayerMask mask, RaycastHit& result);
+    bool OverlapBox(Vector2 origin, Vector2 size, LayerMask mask, std::vector<RaycastHit>& result);
 
-    void UpdatePhysics();
+    void CreateLayer(const std::string& name);
+    void SetCollisionRule(const std::string& a, const std::string& b, bool enabled);
+    bool HasLayer(const std::string& name) const;
+    LayerMask GetLayerMask(const std::vector<std::string>& layerNames) const;
+    int NameToLayer(const std::string& name) const;
 
 protected:
     bool Init() override;
@@ -64,10 +72,18 @@ private:
     void RegisterCollision(BoxCollider* a, BoxCollider* b, float penetration);
     void DispatchCollisionMessages();
 
+    bool ShouldCollide(const std::string& layerA, const std::string& layerB) const;
+    bool MaskContains(LayerMask mask, const std::string& layerName) const;
+
 private:
     std::vector<POHandler>    activeBodies;
     std::vector<CollisionPair> currentCollisions;
     std::vector<CollisionPair> previousCollisions;
+
+    // Layer name -> mask of ignored layer bits
+    std::unordered_map<std::string, LayerMask> collisionMatrix;
+    // Layer name -> bit index, assigned in creation order
+    std::unordered_map<std::string, uint32_t> layerBits;
 
     Vector2 gravity;
 };

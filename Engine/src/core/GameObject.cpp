@@ -3,6 +3,8 @@
 #include <DTEngine/World.hpp>
 #include <DTEngine/Component.hpp>
 #include <DTEngine/BoxCollider.hpp>
+#include "system/SystemRegistry.hpp"
+#include "system/PhysicsSystem.hpp"
 
 #include <algorithm>
 #include <iostream>
@@ -24,7 +26,7 @@ GameObject::GameObject() :
     scale(1.0f, 1.0f),
     clickable(true)
 {
-    //
+    SetLayer("Default");
 }
 
 void GameObject::MarkForDestruction()
@@ -135,6 +137,23 @@ bool GameObject::HasChild(GameObject* obj, int& outPosition)
 
     return false;
 } 
+
+void GameObject::SetLayer(const std::string& layerName)
+{
+    // PhysicsSystem may not exist yet during engine bootstrap; skip validation then
+    PhysicsSystem* physics = SystemRegistry::GetSystem<PhysicsSystem>();
+    if (physics != nullptr && !physics->HasLayer(layerName)) {
+        std::cerr << "[GameObject] SetLayer: layer '" << layerName << "' does not exist\n";
+        return;
+    }
+
+    layer = layerName;
+}
+
+std::string GameObject::GetLayer() const
+{
+    return layer;
+}
 
 void GameObject::InternalAwake()
 {

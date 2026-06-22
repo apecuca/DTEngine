@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <iostream>
 
 using namespace DTEngine;
 
@@ -23,6 +24,7 @@ PhysicsSystem::PhysicsSystem()
 bool PhysicsSystem::Init()
 {
     SetGravity(Vector2(0.0f, -9.8f));
+    CreateLayer("Default");
 
     return true;
 }
@@ -30,7 +32,7 @@ bool PhysicsSystem::Init()
 void PhysicsSystem::AddPhysicsSource(Rigidbody* rb)
 {
     for (auto& body : activeBodies) {
-        if (body.col->gameObject == rb->gameObject) {
+        if (body.col != nullptr && body.col->gameObject == rb->gameObject) {
             body.rb = rb;
             return;
         }
@@ -57,7 +59,7 @@ void PhysicsSystem::RemovePhysicsSource(Rigidbody* rb)
 void PhysicsSystem::AddCollider(BoxCollider* col)
 {
     for (auto& body : activeBodies) {
-        if (body.rb->gameObject == col->gameObject) {
+        if (body.rb != nullptr && body.rb->gameObject == col->gameObject) {
             body.col = col;
             return;
         }
@@ -95,11 +97,19 @@ void PhysicsSystem::DetectAndResolveCollisions()
 {
     currentCollisions.clear();
     for (size_t i = 0; i < activeBodies.size(); i++) {
+        // Bodies without a collider (Rigidbody only) can't collide
+        if (activeBodies[i].col == nullptr) continue;
+
         for (size_t j = i + 1; j < activeBodies.size(); j++) {
+            if (activeBodies[j].col == nullptr) continue;
+
             POHandler bodyA = activeBodies[i];
             BoxCollider* a = bodyA.col;
             POHandler bodyB = activeBodies[j];
             BoxCollider* b = bodyB.col;
+
+            if (!ShouldCollide(a->gameObject.GetLayer(), b->gameObject.GetLayer()))
+                continue;
 
             Bounds ba = a->GetBounds();
             Bounds bb = b->GetBounds();
@@ -237,7 +247,7 @@ Vector2 PhysicsSystem::GetGravity() const
     return gravity;
 }
 
-bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, RaycastHit& result)
+bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, LayerMask mask, RaycastHit& result)
 {
     float len = std::sqrt(direction.x * direction.x + direction.y * direction.y);
     if (len == 0.0f) return false;
@@ -251,6 +261,7 @@ bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, R
     for (const auto& body : activeBodies)
     {
         if (body.col == nullptr) continue;
+        if (!MaskContains(mask, body.col->gameObject.GetLayer())) continue;
 
         Bounds b = body.col->GetBounds();
 
@@ -290,7 +301,7 @@ bool PhysicsSystem::Raycast(Vector2 origin, Vector2 direction, float distance, R
     return true;
 }
 
-bool PhysicsSystem::OverlapBox(Vector2 origin, Vector2 size, std::vector<RaycastHit>& result)
+bool PhysicsSystem::OverlapBox(Vector2 origin, Vector2 size, LayerMask mask, std::vector<RaycastHit>& result)
 {
     Vector2 half = size * 0.5f;
     Bounds query;
@@ -302,6 +313,7 @@ bool PhysicsSystem::OverlapBox(Vector2 origin, Vector2 size, std::vector<Raycast
     for (const auto& body : activeBodies)
     {
         if (body.col == nullptr) continue;
+        if (!MaskContains(mask, body.col->gameObject.GetLayer())) continue;
 
         Bounds b = body.col->GetBounds();
 
@@ -319,4 +331,92 @@ bool PhysicsSystem::OverlapBox(Vector2 origin, Vector2 size, std::vector<Raycast
     }
 
     return found;
+}
+
+void PhysicsSystem::CreateLayer(const std::string& name)
+{
+    if (collisionMatrix.count(name) > 0)
+        return;
+
+    // LayerMask is 32 bits wide, so one bit per layer caps us at 32
+    if (layerBits.size() >= 32) {
+        std::cerr << "[PhysicsSystem] CreateLayer: layer limit (32) reached, '"
+                  << name << "' not created\n";
+        return;
+    }
+
+    layerBits[name] = (uint32_t)layerBits.size();
+    collisionMatrix[name] = 0;
+}
+
+void PhysicsSystem::SetCollisionRule(const std::string& a, const std::string& b, bool enabled)
+{
+    auto itA = layerBits.find(a);
+    auto itB = layerBits.find(b);
+    if (itA == layerBits.end() || itB == layerBits.end()) {
+        std::cerr << "[PhysicsSystem] SetCollisionRule: unknown layer '"
+                  << (itA == layerBits.end() ? a : b) << "'\n";
+        return;
+    }
+
+    if (enabled) {
+        collisionMatrix[a] &= ~(1u << itB->second);
+        collisionMatrix[b] &= ~(1u << itA->second);
+    } else {
+        collisionMatrix[a] |= (1u << itB->second);
+        collisionMatrix[b] |= (1u << itA->second);
+    }
+}
+
+bool PhysicsSystem::HasLayer(const std::string& name) const
+{
+    return collisionMatrix.find(name) != collisionMatrix.end();
+}
+
+LayerMask PhysicsSystem::GetLayerMask(const std::vector<std::string>& layerNames) const
+{
+    LayerMask mask = 0;
+    for (const auto& name : layerNames) {
+        auto it = layerBits.find(name);
+        if (it == layerBits.end()) {
+            std::cerr << "[PhysicsSystem] GetLayerMask: unknown layer '" << name << "'\n";
+            continue;
+        }
+        mask |= (1u << it->second);
+    }
+
+    return mask;
+}
+
+int PhysicsSystem::NameToLayer(const std::string& name) const
+{
+    auto it = layerBits.find(name);
+    if (it == layerBits.end())
+        return -1;
+
+    return (int)it->second;
+}
+
+bool PhysicsSystem::MaskContains(LayerMask mask, const std::string& layerName) const
+{
+    auto it = layerBits.find(layerName);
+
+    // Unknown layers match any mask, same rule as ShouldCollide
+    if (it == layerBits.end())
+        return true;
+
+    return (mask & (1u << it->second)) != 0;
+}
+
+bool PhysicsSystem::ShouldCollide(const std::string& layerA, const std::string& layerB) const
+{
+    auto itA = collisionMatrix.find(layerA);
+    auto itB = layerBits.find(layerB);
+
+    // Unknown layers collide by default
+    if (itA == collisionMatrix.end() || itB == layerBits.end())
+        return true;
+
+    // Rules are written symmetrically, so checking one direction suffices
+    return (itA->second & (1u << itB->second)) == 0;
 }
