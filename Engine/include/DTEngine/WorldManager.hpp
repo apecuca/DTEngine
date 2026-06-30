@@ -10,6 +10,8 @@
 #include <DTEngine/EntityHandle.hpp>
 
 #include <memory>
+#include <functional>
+#include <string>
 
 namespace DTEngine
 {
@@ -19,7 +21,9 @@ class World;
 class WorldManager final
 {
 public:
-    static void LoadWorld(std::unique_ptr<World>& world);
+    static int RegisterWorld(std::string name, std::function<void()> startFunction);
+    static void LoadWorld(int index);
+    static void LoadWorld(std::string name);
     static EntityHandle<GameObject> Instantiate();
     static void Destroy(const EntityHandle<GameObject>& object);
 

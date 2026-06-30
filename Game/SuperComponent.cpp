@@ -29,43 +29,12 @@ SuperComponent::SuperComponent(GameObject& _gameObject) :
 
 void SuperComponent::Awake()
 {
-    RenderingManager::LoadSprite("pose.png", 1920.0f);
-    PhysicsManager::SetGravity(Vector2(0.0f, -9.8f * 2));
-    PhysicsManager::CreateLayer("Player");
-    PhysicsManager::CreateLayer("Enemy");
-    PhysicsManager::CreateLayer("Ground");
-    PhysicsManager::SetCollisionRule("Player", "Enemy", false);
-
-    gameObject.SetLayer("Player");
-    rb = gameObject.AddComponent<Rigidbody>();
-    col = gameObject.AddComponent<BoxCollider>();
-    spr = gameObject.GetComponent<SpriteRenderer>();
-    spr->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
-    spr->renderOrder = 1;
+    rb = gameObject.GetComponent<Rigidbody>();
 }
 
 void SuperComponent::Start()
 {
-    obj = WorldManager::Instantiate();
-    obj->AddComponent<SpriteRenderer>();
-    obj->position = Vector2(-2.0f, 2.0f);
-    obj->SetLayer("Enemy");
-
-    auto otherRb = obj->AddComponent<Rigidbody>();
-    //otherRb->gravityScale = 0.0f;
-    auto otherCol = obj->AddComponent<BoxCollider>();
-    otherRb->mass *= 10.0f;
-
-    auto ground = WorldManager::Instantiate();
-    ground->SetLayer("Ground");
-    ground->position.y = -4.0f;
-    ground->scale.x = 10.0f;
-    auto s = ground->AddComponent<SpriteRenderer>();
-    auto r = ground->AddComponent<Rigidbody>();
-    auto b = ground->AddComponent<BoxCollider>();
-    s->color = Vector4(0.6f, 1.0f, 0.6f, 1.0f);
-    r->isKinematic = true;
-    r->gravityScale = 0.0f;
+    //
 }
 
 void SuperComponent::FixedUpdate()
@@ -94,6 +63,12 @@ void SuperComponent::Update()
         if (InputManager::GetKey(DTK_SPACE) && grounded)
             rb->linearVelocity.y = jumpForce;
     }
+
+    if (InputManager::GetKeyDown(DTK_ALPHA1))
+        WorldManager::LoadWorld("First");
+
+    if (InputManager::GetKeyDown(DTK_ALPHA2))
+        WorldManager::LoadWorld(1);
 }
 
 void SuperComponent::LateUpdate()

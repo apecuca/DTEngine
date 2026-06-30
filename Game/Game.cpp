@@ -6,6 +6,7 @@
 #include <DTEngine/Window.hpp>
 #include <DTEngine/WorldManager.hpp>
 #include <DTEngine/RenderingManager.hpp>
+#include <DTEngine/PhysicsManager.hpp>
 
 #include "SuperComponent.hpp"
 
@@ -15,13 +16,69 @@ using namespace DTEngine;
 
 Game::Game()
 {
-    std::unique_ptr<World> _world = std::make_unique<World>();
-    
-    auto newobj = _world->Instantiate();
-    auto rnd = newobj->AddComponent<SpriteRenderer>();
-    newobj->AddComponent<SuperComponent>();
+    RenderingManager::LoadSprite("pose.png", 1920.0f);
+    PhysicsManager::SetGravity(Vector2(0.0f, -9.8f * 2));
+    PhysicsManager::CreateLayer("Player");
+    PhysicsManager::CreateLayer("Enemy");
+    PhysicsManager::CreateLayer("Ground");
+    PhysicsManager::SetCollisionRule("Player", "Enemy", false);
 
-    //engine.InitWindow(800, 600, "Omg hi bestie");
-    //engine.LoadWorld(_world);
-    WorldManager::LoadWorld(_world);
+    int firstIndex = WorldManager::RegisterWorld("First", []() {
+        // Player
+        auto player = WorldManager::Instantiate();
+        player->SetLayer("Player");
+        player->AddComponent<Rigidbody>();
+        player->AddComponent<BoxCollider>();
+        auto spr = player->AddComponent<SpriteRenderer>();
+        spr->color = Vector4(0.6f, 1.0f, 1.0f, 1.0f);
+        spr->renderOrder = 1;
+        player->AddComponent<SuperComponent>();
+
+        // Enemy
+        auto enemy = WorldManager::Instantiate();
+        enemy->SetLayer("Enemy");
+        enemy->position = Vector2(-2.0f, 2.0f);
+        enemy->AddComponent<SpriteRenderer>();
+        enemy->AddComponent<BoxCollider>();
+        auto eRb = enemy->AddComponent<Rigidbody>();
+        eRb->mass *= 10.0f;
+
+        // Ground
+        auto ground = WorldManager::Instantiate();
+        ground->SetLayer("Ground");
+        ground->position.y = -4.0f;
+        ground->scale.x = 10.0f;
+        auto s = ground->AddComponent<SpriteRenderer>();
+        auto r = ground->AddComponent<Rigidbody>();
+        auto b = ground->AddComponent<BoxCollider>();
+        s->color = Vector4(0.6f, 1.0f, 0.6f, 1.0f);
+        r->isKinematic = true;
+        r->gravityScale = 0.0f;
+    });
+
+    int secondIndex = WorldManager::RegisterWorld("Second", []() {
+        // Player
+        auto player = WorldManager::Instantiate();
+        player->SetLayer("Player");
+        player->AddComponent<Rigidbody>();
+        player->AddComponent<BoxCollider>();
+        auto spr = player->AddComponent<SpriteRenderer>();
+        spr->color = Vector4(1.0f, 0.6f, 1.0f, 1.0f);
+        spr->renderOrder = 1;
+        player->AddComponent<SuperComponent>();
+
+        // Ground
+        auto ground = WorldManager::Instantiate();
+        ground->SetLayer("Ground");
+        ground->position.y = -4.0f;
+        ground->scale.x = 10.0f;
+        auto s = ground->AddComponent<SpriteRenderer>();
+        auto r = ground->AddComponent<Rigidbody>();
+        auto b = ground->AddComponent<BoxCollider>();
+        s->color = Vector4(0.6f, 1.0f, 0.6f, 1.0f);
+        r->isKinematic = true;
+        r->gravityScale = 0.0f;
+    });
+
+    WorldManager::LoadWorld(firstIndex);
 }

@@ -72,6 +72,17 @@ void PhysicsSystem::AddCollider(BoxCollider* col)
 
 void PhysicsSystem::RemoveCollider(BoxCollider* col)
 {
+    // Drop pending collision pairs referencing this collider; otherwise
+    // DispatchCollisionMessages would dereference a dangling pointer next frame
+    // (e.g. EXIT events after the collider/world is destroyed).
+    auto refs = [col](const CollisionPair& p) { return p.a == col || p.b == col; };
+    currentCollisions.erase(
+        std::remove_if(currentCollisions.begin(), currentCollisions.end(), refs),
+        currentCollisions.end());
+    previousCollisions.erase(
+        std::remove_if(previousCollisions.begin(), previousCollisions.end(), refs),
+        previousCollisions.end());
+
     for (size_t i = 0; i < activeBodies.size(); i++) {
         auto& body = activeBodies.at(i);
         if (body.col == col) {

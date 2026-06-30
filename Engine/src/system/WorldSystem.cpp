@@ -32,11 +32,68 @@ bool WorldSystem::IsWorldActive()
     return true;
 }
 
+/*
 void WorldSystem::LoadWorld(std::unique_ptr<World>& world)
 {
     auto instance = SystemRegistry::GetSystem<WorldSystem>();
 
     instance->activeWorld.reset(world.release());
+}
+*/
+
+int WorldSystem::RegisterWorld(std::string name, std::function<void()> startFunction)
+{
+    if (GetWorldIndex(name) != -1)
+        throw std::runtime_error("World " + name + " was already registered");
+
+    registeredWorlds.emplace_back(name, startFunction);
+
+    return static_cast<int>(registeredWorlds.size() - 1);
+}
+
+void WorldSystem::LoadWorld(int index)
+{
+    if (index < 0 || index >= registeredWorlds.size())
+        throw std::runtime_error("World index " + std::to_string(index) + " out of bounds");
+
+    // Defer the actual swap to a safe point (OnEndOfFrame). Performing it here
+    // would destroy the world while it may still be mid-update, freeing the
+    // very component/object that requested the load (use-after-free).
+    pendingWorldIndex = index;
+    worldLoadPending = true;
+}
+
+void WorldSystem::LoadWorld(std::string name)
+{
+    int worldIndex = GetWorldIndex(name);
+    if (worldIndex == -1)
+        throw std::runtime_error("World " + name + " isn't registered");
+
+    LoadWorld(worldIndex);
+}
+
+void WorldSystem::ProcessWorldLoad()
+{
+    if (!worldLoadPending) return;
+
+    int index = pendingWorldIndex;
+    worldLoadPending = false;
+    pendingWorldIndex = -1;
+
+    activeWorld.reset();
+    activeWorld = std::make_unique<World>();
+
+    registeredWorlds.at(index).second();
+}
+
+int WorldSystem::GetWorldIndex(std::string name)
+{
+    for (int i = 0; i < registeredWorlds.size(); i++) {
+        if (registeredWorlds.at(i).first == name)
+            return i;
+    }
+
+    return -1;
 }
 
 void WorldSystem::UpdateActiveWorld()
@@ -51,5 +108,13 @@ void WorldSystem::FixedUpdateActiveWorld()
 
 void WorldSystem::OnEndOfFrame()
 {
+    // Apply a pending world swap here, after the frame's updates have unwound.
+    // The old world is being discarded, so there's no need to process its
+    // destroy queue.
+    if (worldLoadPending) {
+        ProcessWorldLoad();
+        return;
+    }
+
     activeWorld->ProcessDestroyQueue();
 }

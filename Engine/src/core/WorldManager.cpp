@@ -8,9 +8,26 @@
 
 using namespace DTEngine;
 
+/*
 void WorldManager::LoadWorld(std::unique_ptr<World>& world)
 {
     SystemRegistry::GetSystem<WorldSystem>()->LoadWorld(world);
+}
+*/
+
+int WorldManager::RegisterWorld(std::string name, std::function<void()> startFunction)
+{
+    return SystemRegistry::GetSystem<WorldSystem>()->RegisterWorld(name, startFunction);
+}
+
+void WorldManager::LoadWorld(int index)
+{
+    return SystemRegistry::GetSystem<WorldSystem>()->LoadWorld(index);
+}
+
+void WorldManager::LoadWorld(std::string name)
+{
+    return SystemRegistry::GetSystem<WorldSystem>()->LoadWorld(name);
 }
 
 EntityHandle<GameObject> WorldManager::Instantiate()

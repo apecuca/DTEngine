@@ -4,6 +4,9 @@
 #include "system/InternalSystem.hpp"
 
 #include <memory>
+#include <functional>
+#include <string>
+#include <utility>
 
 namespace DTEngine
 {
@@ -20,8 +23,10 @@ public:
     WorldSystem();
 
 public:
-    // Loads a world as the active
-    void LoadWorld(std::unique_ptr<World>& world);
+    // Saves a world to be loaded
+    int RegisterWorld(std::string name, std::function<void()> startFunction);
+    void LoadWorld(int index);
+    void LoadWorld(std::string name);
 
     World* GetActiveWorld();
     bool IsWorldActive();
@@ -34,8 +39,18 @@ private:
     void UpdateActiveWorld();
     void FixedUpdateActiveWorld();
 
+    // Applies a pending world load, if any (safe point only)
+    void ProcessWorldLoad();
+
+    int GetWorldIndex(std::string name);
+
 private:
     std::unique_ptr<World> activeWorld;
+
+    std::vector<std::pair<std::string, std::function<void()>>> registeredWorlds;
+
+    bool worldLoadPending = false;
+    int  pendingWorldIndex = -1;
 
 };
 

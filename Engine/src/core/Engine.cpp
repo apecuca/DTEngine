@@ -35,18 +35,22 @@ Engine::Engine(const std::string& assetsPath, const std::string& resourcesPath)
 
 void Engine::Run()
 {
-    if (!systemRegistry->GetSystem<RenderingSystem>()->IsWindowRunning())
-        throw std::runtime_error("Window was not initialized.");
-
-    if (!systemRegistry->GetSystem<WorldSystem>()->IsWorldActive())
-        throw std::runtime_error("No world loaded.");
-
     // Main systems
     WorldSystem* sys_world = systemRegistry->GetSystem<WorldSystem>();
     RenderingSystem* sys_rendering = systemRegistry->GetSystem<RenderingSystem>();
     TimeSystem* sys_time = systemRegistry->GetSystem<TimeSystem>();
     InputSystem* sys_input = systemRegistry->GetSystem<InputSystem>();
     PhysicsSystem* sys_physics = systemRegistry->GetSystem<PhysicsSystem>();
+
+    // Apply any world load requested before the loop started (e.g. from Game's
+    // constructor). LoadWorld only marks the request as pending now.
+    sys_world->ProcessWorldLoad();
+
+    if (!sys_rendering->IsWindowRunning())
+        throw std::runtime_error("Window was not initialized.");
+
+    if (!sys_world->IsWorldActive())
+        throw std::runtime_error("No world loaded.");
 
     double fixedTimer = 0.0;
 

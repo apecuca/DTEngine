@@ -33,10 +33,7 @@ public:
     void OnSensorExit(Collision& col) override;
 
 private:
-    EntityHandle<GameObject> obj;
     EntityHandle<Rigidbody> rb;
-    EntityHandle<BoxCollider> col;
-    EntityHandle<SpriteRenderer> spr;
     
     float moveSpeed = 4.0f;
     float jumpForce = 7.5f;
